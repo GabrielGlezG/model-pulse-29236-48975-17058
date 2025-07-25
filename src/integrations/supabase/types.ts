@@ -159,7 +159,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_automatic_insights: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          insight_type: string
+          title: string
+          description: string
+          data: Json
+          priority: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
