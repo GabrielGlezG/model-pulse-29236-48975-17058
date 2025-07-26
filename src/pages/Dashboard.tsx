@@ -110,7 +110,17 @@ export default function Dashboard() {
     )
   }
 
-  if (!analytics) return null
+  if (!analytics || !analytics.chart_data) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <p className="text-muted-foreground">No hay datos disponibles para mostrar</p>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-MX', {
@@ -240,7 +250,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={analytics.chart_data.prices_by_brand}>
+              <BarChart data={analytics.chart_data?.prices_by_brand || []}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="brand" />
                 <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} />
@@ -260,7 +270,7 @@ export default function Dashboard() {
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
-                  data={analytics.chart_data.models_by_category}
+                  data={analytics.chart_data?.models_by_category || []}
                   cx="50%"
                   cy="50%"
                   labelLine={false}
@@ -269,7 +279,7 @@ export default function Dashboard() {
                   fill="#8884d8"
                   dataKey="count"
                 >
-                  {analytics.chart_data.models_by_category.map((_, index) => (
+                  {(analytics.chart_data?.models_by_category || []).map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
@@ -289,7 +299,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {analytics.chart_data.top_5_expensive.map((item, index) => (
+              {(analytics.chart_data?.top_5_expensive || []).map((item, index) => (
                 <div key={index} className="flex items-center justify-between">
                   <div>
                     <p className="font-medium">{item.brand} {item.name}</p>
@@ -309,7 +319,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {analytics.chart_data.bottom_5_cheap.map((item, index) => (
+              {(analytics.chart_data?.bottom_5_cheap || []).map((item, index) => (
                 <div key={index} className="flex items-center justify-between">
                   <div>
                     <p className="font-medium">{item.brand} {item.name}</p>
@@ -324,7 +334,7 @@ export default function Dashboard() {
       </div>
 
       {/* Información de filtros aplicados */}
-      {Object.values(analytics.applied_filters).some(Boolean) && (
+      {analytics.applied_filters && Object.values(analytics.applied_filters).some(Boolean) && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -334,13 +344,13 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="flex gap-2 flex-wrap">
-              {analytics.applied_filters.brand && (
+              {analytics.applied_filters?.brand && (
                 <Badge>Marca: {analytics.applied_filters.brand}</Badge>
               )}
-              {analytics.applied_filters.category && (
+              {analytics.applied_filters?.category && (
                 <Badge>Categoría: {analytics.applied_filters.category}</Badge>
               )}
-              {analytics.applied_filters.model && (
+              {analytics.applied_filters?.model && (
                 <Badge>Modelo: {analytics.applied_filters.model}</Badge>
               )}
             </div>
