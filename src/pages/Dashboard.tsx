@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { CalendarIcon, DollarSign, Package, TrendingUp, BarChart3, RefreshCw } from "lucide-react"
+import { CalendarIcon, DollarSign, Package, TrendingUp, BarChart3, RefreshCw, Target, Award, AlertTriangle } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts'
 import { useState } from "react"
 
@@ -13,14 +13,23 @@ interface AnalyticsData {
   metrics: {
     total_models: number
     total_brands: number
+    total_categories: number
     avg_price: number
+    median_price: number
     min_price: number
     max_price: number
     price_std_dev: number
+    price_range: number
+    variation_coefficient: number
+    lower_quartile: number
+    upper_quartile: number
   }
   chart_data: {
-    prices_by_brand: Array<{brand: string, avg_price: number, count: number}>
+    prices_by_brand: Array<{brand: string, avg_price: number, min_price: number, max_price: number, count: number, value_score: number}>
+    prices_by_category: Array<{category: string, avg_price: number, min_price: number, max_price: number, count: number}>
     models_by_category: Array<{category: string, count: number}>
+    price_distribution: Array<{range: string, count: number}>
+    best_value_models: Array<{brand: string, name: string, category: string, price: number, value_rating: string}>
     top_5_expensive: Array<{name: string, brand: string, price: number}>
     bottom_5_cheap: Array<{name: string, brand: string, price: number}>
   }
@@ -190,7 +199,7 @@ export default function Dashboard() {
       </Card>
 
       {/* Métricas principales */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Modelos</CardTitle>
@@ -199,7 +208,7 @@ export default function Dashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{analytics.metrics.total_models}</div>
             <p className="text-xs text-muted-foreground">
-              {analytics.metrics.total_brands} marcas diferentes
+              {analytics.metrics.total_brands} marcas
             </p>
           </CardContent>
         </Card>
@@ -212,33 +221,68 @@ export default function Dashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{formatPrice(analytics.metrics.avg_price)}</div>
             <p className="text-xs text-muted-foreground">
-              Desviación: ±{formatPrice(analytics.metrics.price_std_dev)}
+              CV: {analytics.metrics.variation_coefficient.toFixed(1)}%
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Precio Mínimo</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Precio Mediano</CardTitle>
+            <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatPrice(analytics.metrics.min_price)}</div>
+            <div className="text-2xl font-bold">{formatPrice(analytics.metrics.median_price)}</div>
             <p className="text-xs text-muted-foreground">
-              Modelo más económico
+              Valor central
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Precio Máximo</CardTitle>
+            <CardTitle className="text-sm font-medium">Rango de Precios</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatPrice(analytics.metrics.max_price)}</div>
+            <div className="text-2xl font-bold">{formatPrice(analytics.metrics.price_range)}</div>
             <p className="text-xs text-muted-foreground">
-              Modelo más caro
+              {formatPrice(analytics.metrics.min_price)} - {formatPrice(analytics.metrics.max_price)}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Q1 - Q3</CardTitle>
+            <BarChart3 className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-lg font-bold">
+              {formatPrice(analytics.metrics.lower_quartile)}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {formatPrice(analytics.metrics.upper_quartile)}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Variabilidad</CardTitle>
+            {analytics.metrics.variation_coefficient > 50 ? (
+              <AlertTriangle className="h-4 w-4 text-orange-500" />
+            ) : (
+              <Award className="h-4 w-4 text-green-500" />
+            )}
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {analytics.metrics.variation_coefficient > 50 ? 'Alta' : 
+               analytics.metrics.variation_coefficient > 25 ? 'Media' : 'Baja'}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {analytics.metrics.variation_coefficient.toFixed(1)}% coef.
             </p>
           </CardContent>
         </Card>
@@ -293,8 +337,91 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      {/* Top modelos */}
+      {/* Análisis Comparativo por Categorías */}
       <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Precios por Categoría</CardTitle>
+            <CardDescription>Comparación de rangos de precio por tipo de vehículo</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={analytics.chart_data?.prices_by_category || []}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="category" />
+                <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} />
+                <Tooltip 
+                  formatter={(value: number, name: string) => [
+                    formatPrice(value), 
+                    name === 'avg_price' ? 'Promedio' : 
+                    name === 'min_price' ? 'Mínimo' : 'Máximo'
+                  ]} 
+                />
+                <Bar dataKey="min_price" fill="hsl(var(--muted))" name="min_price" />
+                <Bar dataKey="avg_price" fill="hsl(var(--primary))" name="avg_price" />
+                <Bar dataKey="max_price" fill="hsl(var(--secondary))" name="max_price" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Distribución por Rango de Precio</CardTitle>
+            <CardDescription>Cantidad de modelos en cada segmento de mercado</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={analytics.chart_data?.price_distribution || []}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ range, percent }) => `${range} ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={100}
+                  fill="#8884d8"
+                  dataKey="count"
+                >
+                  {(analytics.chart_data?.price_distribution || []).map((_, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Modelos por Valor y Análisis de Precio */}
+      <div className="grid gap-6 md:grid-cols-3">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Award className="h-4 w-4 text-green-500" />
+              Mejores Oportunidades
+            </CardTitle>
+            <CardDescription>Modelos con mejor relación calidad-precio</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {(analytics.chart_data?.best_value_models || []).map((item, index) => (
+                <div key={index} className="flex items-center justify-between border-b pb-2">
+                  <div>
+                    <p className="font-medium text-sm">{item.brand} {item.name}</p>
+                    <div className="flex gap-1 mt-1">
+                      <Badge variant="outline" className="text-xs">{item.category}</Badge>
+                      <Badge variant="secondary" className="text-xs">-{item.value_rating}%</Badge>
+                    </div>
+                  </div>
+                  <p className="font-bold text-green-600 text-sm">{formatPrice(item.price)}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>Top 5 Más Caros</CardTitle>
@@ -335,6 +462,44 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Análisis de Competitividad por Marca */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Análisis de Competitividad por Marca</CardTitle>
+          <CardDescription>Comparación de precios, rangos y posicionamiento de valor</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4">
+            {(analytics.chart_data?.prices_by_brand || []).map((brand, index) => (
+              <div key={index} className="flex items-center justify-between p-3 rounded-lg border">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3">
+                    <h4 className="font-semibold">{brand.brand}</h4>
+                    <Badge variant={brand.value_score < -10 ? "default" : brand.value_score > 10 ? "destructive" : "secondary"}>
+                      {brand.value_score < -10 ? "Buen Valor" : brand.value_score > 10 ? "Premium" : "Estándar"}
+                    </Badge>
+                  </div>
+                  <div className="flex gap-4 mt-2 text-sm text-muted-foreground">
+                    <span>Promedio: {formatPrice(brand.avg_price)}</span>
+                    <span>Rango: {formatPrice(brand.min_price)} - {formatPrice(brand.max_price)}</span>
+                    <span>{brand.count} modelos</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-medium">Score de Valor</p>
+                  <p className={`text-lg font-bold ${
+                    brand.value_score < -10 ? 'text-green-600' : 
+                    brand.value_score > 10 ? 'text-red-600' : 'text-yellow-600'
+                  }`}>
+                    {brand.value_score > 0 ? '+' : ''}{brand.value_score.toFixed(1)}%
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Información de filtros aplicados */}
       {analytics.applied_filters && Object.values(analytics.applied_filters).some(Boolean) && (
