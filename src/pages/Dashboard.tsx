@@ -110,12 +110,15 @@ export default function Dashboard() {
     )
   }
 
-  if (!analytics || !analytics.chart_data) {
+  if (!analytics) {
     return (
       <div className="space-y-6">
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <p className="text-muted-foreground">No hay datos disponibles para mostrar</p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Sube archivos JSON desde la página de Upload para comenzar el análisis
+            </p>
           </CardContent>
         </Card>
       </div>
