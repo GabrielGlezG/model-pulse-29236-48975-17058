@@ -65,6 +65,7 @@ Deno.serve(async (req) => {
           .from('products')
           .select('id')
           .eq('brand', item.Marca)
+          .eq('category', item.Categoría)
           .eq('model', item["Modelo Principal"])
           .eq('name', item.Modelo)
           .maybeSingle();

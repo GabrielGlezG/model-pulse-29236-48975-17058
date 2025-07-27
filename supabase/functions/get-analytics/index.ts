@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
   try {
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
     const url = new URL(req.url);
@@ -148,19 +148,31 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         metrics,
-        charts: {
-          pricesByBrand,
-          modelsByCategory,
-          top5Expensive,
-          top5Cheapest,
-          historicalData: historicalData.map(item => ({
-            date: item.date,
-            price: parseFloat(item.price),
-            brand: item.products?.brand,
-            model: item.products?.name
+        chart_data: {
+          prices_by_brand: pricesByBrand,
+          models_by_category: modelsByCategory,
+          top_5_expensive: top5Expensive.map(item => ({
+            brand: item.brand,
+            name: item.model,
+            price: item.price
+          })),
+          bottom_5_cheap: top5Cheapest.map(item => ({
+            brand: item.brand,
+            name: item.model,
+            price: item.price
           }))
         },
-        filters,
+        historical_data: historicalData.map(item => ({
+          date: item.date,
+          price: parseFloat(item.price)
+        })),
+        applied_filters: {
+          brand: filters.brand,
+          category: filters.category,
+          model: filters.model,
+          date_from: filters.dateFrom,
+          date_to: filters.dateTo
+        },
         generated_at: new Date().toISOString()
       }),
       {
