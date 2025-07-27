@@ -149,24 +149,24 @@ export default function Dashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
-            <Select value={filters.brand} onValueChange={(value) => setFilters(f => ({ ...f, brand: value }))}>
+            <Select value={filters.brand || "all"} onValueChange={(value) => setFilters(f => ({ ...f, brand: value === "all" ? "" : value }))}>
               <SelectTrigger>
                 <SelectValue placeholder="Todas las marcas" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Todas las marcas</SelectItem>
+                <SelectItem value="all">Todas las marcas</SelectItem>
                 {brands?.map(brand => (
                   <SelectItem key={brand} value={brand}>{brand}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
 
-            <Select value={filters.category} onValueChange={(value) => setFilters(f => ({ ...f, category: value }))}>
+            <Select value={filters.category || "all"} onValueChange={(value) => setFilters(f => ({ ...f, category: value === "all" ? "" : value }))}>
               <SelectTrigger>
                 <SelectValue placeholder="Todas las categorías" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Todas las categorías</SelectItem>
+                <SelectItem value="all">Todas las categorías</SelectItem>
                 {categories?.map(category => (
                   <SelectItem key={category} value={category}>{category}</SelectItem>
                 ))}
