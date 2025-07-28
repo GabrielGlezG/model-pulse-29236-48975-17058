@@ -51,10 +51,14 @@ export default function Insights() {
     switch (type) {
       case 'price_trend':
         return <TrendingUp className="h-5 w-5" />
+      case 'best_value':
+        return <DollarSign className="h-5 w-5 text-green-600" />
       case 'price_max':
-        return <DollarSign className="h-5 w-5" />
+        return <DollarSign className="h-5 w-5 text-red-600" />
       case 'price_stability':
         return <BarChart3 className="h-5 w-5" />
+      case 'category_comparison':
+        return <BarChart3 className="h-5 w-5 text-blue-600" />
       default:
         return <Lightbulb className="h-5 w-5" />
     }
@@ -108,6 +112,31 @@ export default function Insights() {
           </div>
         )
 
+      case 'best_value':
+        if (Array.isArray(insight.data)) {
+          return (
+            <div className="space-y-3">
+              {insight.data.slice(0, 3).map((model: any, index: number) => (
+                <div key={index} className="p-3 bg-green-50 border border-green-200 rounded-md">
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <p className="font-medium">{model.brand} {model.model}</p>
+                      <div className="flex gap-1 mt-1">
+                        <Badge variant="outline" className="text-xs">{model.category}</Badge>
+                        <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
+                          -{model.savings_vs_median}% vs mediana
+                        </Badge>
+                      </div>
+                    </div>
+                    <p className="font-bold text-green-600">{formatPrice(model.price)}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )
+        }
+        return <div>Datos no disponibles</div>
+
       case 'price_max':
         return (
           <div className="space-y-3">
@@ -135,16 +164,23 @@ export default function Insights() {
       case 'price_stability':
         if (Array.isArray(insight.data)) {
           return (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {insight.data.map((item: any, index: number) => (
-                <div key={index} className="p-3 bg-muted/50 rounded-md">
+                <div key={index} className="p-3 bg-blue-50 border border-blue-200 rounded-md">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-medium">{item.brand} {item.model}</span>
-                    <Badge variant="outline">#{index + 1}</Badge>
+                    <div>
+                      <p className="font-medium">{item.brand} {item.model}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Promedio: {formatPrice(item.avg_price)}
+                      </p>
+                    </div>
+                    <Badge variant={item.stability_score < 5 ? "default" : item.stability_score < 15 ? "secondary" : "destructive"}>
+                      {item.stability_score < 5 ? "Muy Estable" : 
+                       item.stability_score < 15 ? "Estable" : "Variable"}
+                    </Badge>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Estabilidad:</span>
-                    <span className="text-sm font-medium">{item.stability_score}% variación</span>
+                  <div className="text-sm text-muted-foreground">
+                    Variación: {item.stability_score}%
                   </div>
                 </div>
               ))}
@@ -152,6 +188,56 @@ export default function Insights() {
           )
         }
         return <div>Datos no disponibles</div>
+
+      case 'category_comparison':
+        return (
+          <div className="space-y-4">
+            <div className="grid gap-3 md:grid-cols-2">
+              <div className="p-4 rounded-lg border border-red-200 bg-red-50">
+                <h4 className="font-semibold text-red-800 mb-2 flex items-center gap-2">
+                  🔴 Segmento Más Caro
+                </h4>
+                <p className="font-medium text-lg">{insight.data.most_expensive_category.category}</p>
+                <div className="space-y-1 mt-2">
+                  <p className="text-sm">
+                    <span className="font-medium">Promedio:</span> {formatPrice(insight.data.most_expensive_category.avg_price)}
+                  </p>
+                  <p className="text-sm">
+                    <span className="font-medium">Modelos:</span> {insight.data.most_expensive_category.model_count}
+                  </p>
+                  <p className="text-sm">
+                    <span className="font-medium">Rango:</span> {formatPrice(insight.data.most_expensive_category.price_range)}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="p-4 rounded-lg border border-green-200 bg-green-50">
+                <h4 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
+                  🟢 Segmento Más Accesible
+                </h4>
+                <p className="font-medium text-lg">{insight.data.most_affordable_category.category}</p>
+                <div className="space-y-1 mt-2">
+                  <p className="text-sm">
+                    <span className="font-medium">Promedio:</span> {formatPrice(insight.data.most_affordable_category.avg_price)}
+                  </p>
+                  <p className="text-sm">
+                    <span className="font-medium">Modelos:</span> {insight.data.most_affordable_category.model_count}
+                  </p>
+                  <p className="text-sm">
+                    <span className="font-medium">Rango:</span> {formatPrice(insight.data.most_affordable_category.price_range)}
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
+              <p className="text-sm text-blue-800">
+                💡 <strong>Tip para compradores:</strong> Considera el segmento {insight.data.most_affordable_category.category} 
+                para obtener el mejor valor por tu dinero.
+              </p>
+            </div>
+          </div>
+        )
 
       default:
         return <pre className="text-sm bg-muted p-2 rounded">{JSON.stringify(insight.data, null, 2)}</pre>
