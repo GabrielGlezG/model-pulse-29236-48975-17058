@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Lightbulb, TrendingUp, DollarSign, BarChart3, RefreshCw, AlertTriangle } from "lucide-react"
+import { Lightbulb, TrendingUp, DollarSign, BarChart3, RefreshCw, AlertTriangle, Target, Award, Zap, Users, ShoppingCart, TrendingDown, Calendar } from "lucide-react"
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell } from 'recharts'
 
 interface Insight {
   insight_type: string
@@ -22,6 +23,35 @@ export default function Insights() {
       
       if (error) throw error
       return data.insights as Insight[]
+    }
+  })
+
+  // Fetch additional analytics for richer insights display
+  const { data: marketStats } = useQuery({
+    queryKey: ['market-stats'],
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke('get-analytics')
+      if (error) throw error
+      return data
+    }
+  })
+
+  // Fetch recent price trends
+  const { data: recentTrends } = useQuery({
+    queryKey: ['recent-trends'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('price_data')
+        .select(`
+          *,
+          products (brand, category, model, name)
+        `)
+        .gte('date', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
+        .order('date', { ascending: false })
+        .limit(100)
+      
+      if (error) throw error
+      return data
     }
   })
 
@@ -263,8 +293,150 @@ export default function Insights() {
         </Button>
       </div>
 
+      {/* Market Overview Cards */}
+      {marketStats && (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Modelos Analizados</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{marketStats.metrics?.total_models || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                {marketStats.metrics?.total_brands || 0} marcas diferentes
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Precio Promedio</CardTitle>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{formatPrice(marketStats.metrics?.avg_price || 0)}</div>
+              <p className="text-xs text-muted-foreground">
+                Mediana: {formatPrice(marketStats.metrics?.median_price || 0)}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Volatilidad</CardTitle>
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {marketStats.metrics?.variation_coefficient 
+                  ? `${marketStats.metrics.variation_coefficient.toFixed(1)}%`
+                  : 'N/A'
+                }
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Coeficiente de variación
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Actividad Reciente</CardTitle>
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{recentTrends?.length || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                Actualizaciones últimos 30 días
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Price Distribution Chart */}
+      {marketStats?.chart_data?.price_distribution && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="h-5 w-5" />
+              Distribución de Precios por Segmento
+            </CardTitle>
+            <CardDescription>
+              Cantidad de modelos en cada rango de precio del mercado
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={marketStats.chart_data.price_distribution}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="range" />
+                <YAxis />
+                <Tooltip />
+                <Area 
+                  type="monotone" 
+                  dataKey="count" 
+                  stroke="hsl(var(--primary))" 
+                  fill="hsl(var(--primary))" 
+                  fillOpacity={0.6}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Best Value Models Spotlight */}
+      {marketStats?.chart_data?.best_value_models && marketStats.chart_data.best_value_models.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Award className="h-5 w-5 text-green-500" />
+              Spotlight: Mejores Oportunidades del Mercado
+            </CardTitle>
+            <CardDescription>
+              Los modelos con mejor relación calidad-precio disponibles ahora
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {marketStats.chart_data.best_value_models.slice(0, 6).map((model: any, index: number) => (
+                <div key={index} className="p-4 border rounded-lg bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <h3 className="font-semibold text-green-900">{model.brand} {model.name}</h3>
+                      <Badge variant="outline" className="text-xs mt-1">{model.category}</Badge>
+                    </div>
+                    <Badge className="bg-green-100 text-green-800">
+                      -{model.value_rating}%
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-green-700">{formatPrice(model.price)}</span>
+                    <div className="text-right text-xs text-muted-foreground">
+                      vs mediana del mercado
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800">
+                💡 <strong>Tip de compra:</strong> Estos modelos están priceados por debajo de la mediana del mercado, 
+                representando excelentes oportunidades de inversión.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {insights && insights.length > 0 ? (
         <div className="space-y-4">
+          <div className="flex items-center gap-2 mb-4">
+            <Lightbulb className="h-5 w-5 text-amber-500" />
+            <h2 className="text-xl font-semibold">Insights Automáticos</h2>
+          </div>
           {insights
             .sort((a, b) => a.priority - b.priority)
             .map((insight, index) => (
