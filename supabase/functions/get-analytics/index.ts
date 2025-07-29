@@ -28,7 +28,21 @@ Deno.serve(async (req) => {
 
     console.log('Getting analytics with filters:', filters);
 
-    // Base query for latest prices
+    // Get latest scraping date for current metrics
+    const { data: latestScrapingDate, error: dateError } = await supabaseClient
+      .from('price_data')
+      .select('date')
+      .order('date', { ascending: false })
+      .limit(1);
+
+    if (dateError) {
+      console.error('Error getting latest date:', dateError);
+      throw dateError;
+    }
+
+    const currentDate = latestScrapingDate?.[0]?.date;
+    
+    // Base query for latest prices (most recent scraping)
     let latestPricesQuery = supabaseClient
       .from('price_data')
       .select(`
@@ -41,14 +55,27 @@ Deno.serve(async (req) => {
           name
         )
       `)
-      .order('date', { ascending: false });
+      .eq('date', currentDate);
 
     // Apply filters
     if (filters.dateFrom) {
-      latestPricesQuery = latestPricesQuery.gte('date', filters.dateFrom);
-    }
-    if (filters.dateTo) {
-      latestPricesQuery = latestPricesQuery.lte('date', filters.dateTo);
+      latestPricesQuery = supabaseClient
+        .from('price_data')
+        .select(`
+          *,
+          products (
+            id,
+            brand,
+            category,
+            model,
+            name
+          )
+        `)
+        .gte('date', filters.dateFrom);
+      
+      if (filters.dateTo) {
+        latestPricesQuery = latestPricesQuery.lte('date', filters.dateTo);
+      }
     }
 
     const { data: priceData, error: priceError } = await latestPricesQuery;
@@ -103,6 +130,7 @@ Deno.serve(async (req) => {
     const lowerQuartile = prices.length > 0 ? sortedPrices[Math.floor(sortedPrices.length * 0.25)] : 0;
     const upperQuartile = prices.length > 0 ? sortedPrices[Math.floor(sortedPrices.length * 0.75)] : 0;
     
+    // Calculate metrics based on current scraping date
     const metrics = {
       total_models: filteredData.length,
       total_brands: brands.length,
@@ -116,23 +144,53 @@ Deno.serve(async (req) => {
       variation_coefficient: variationCoeff,
       lower_quartile: lowerQuartile,
       upper_quartile: upperQuartile,
+      current_scraping_date: currentDate,
+      total_scraping_sessions: 0 // Will be updated below
     };
 
-    // Group data for comprehensive charts
-    const pricesByBrand = brands.map(brand => {
+    // Get total scraping sessions count
+    const { data: scrapingSessions, error: sessionsError } = await supabaseClient
+      .from('price_data')
+      .select('date')
+      .group('date');
+    
+    if (!sessionsError && scrapingSessions) {
+      metrics.total_scraping_sessions = scrapingSessions.length;
+    }
+
+    // Group data for comprehensive charts WITH TEMPORAL ANALYSIS
+    const pricesByBrand = await Promise.all(brands.map(async (brand) => {
       const brandPrices = filteredData
         .filter(item => item.products?.brand === brand)
         .map(item => parseFloat(item.price));
       const brandAvg = brandPrices.reduce((a, b) => a + b, 0) / brandPrices.length;
+      
+      // Get historical trend for this brand (last 2 scraping dates)
+      const { data: brandHistory } = await supabaseClient
+        .from('price_data')
+        .select(`
+          date, price,
+          products!inner (brand)
+        `)
+        .eq('products.brand', brand)
+        .order('date', { ascending: false })
+        .limit(100);
+      
+      // Calculate trend
+      const recentPrices = brandHistory?.map(h => parseFloat(h.price)) || [];
+      const trend = recentPrices.length > 1 ? 
+        ((recentPrices[0] - recentPrices[recentPrices.length - 1]) / recentPrices[recentPrices.length - 1] * 100) : 0;
+      
       return {
         brand,
         avg_price: brandAvg,
         min_price: Math.min(...brandPrices),
         max_price: Math.max(...brandPrices),
         count: brandPrices.length,
-        value_score: avgPrice > 0 ? ((avgPrice - brandAvg) / avgPrice * 100) : 0 // Negative = better value
+        value_score: avgPrice > 0 ? ((avgPrice - brandAvg) / avgPrice * 100) : 0,
+        price_trend: trend // Percentage change from first to last scraping
       };
-    }).sort((a, b) => b.avg_price - a.avg_price);
+    }));
 
     const pricesByCategory = categories.map(category => {
       const categoryPrices = filteredData

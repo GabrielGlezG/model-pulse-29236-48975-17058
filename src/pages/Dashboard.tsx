@@ -23,9 +23,11 @@ interface AnalyticsData {
     variation_coefficient: number
     lower_quartile: number
     upper_quartile: number
+    current_scraping_date?: string
+    total_scraping_sessions?: number
   }
   chart_data: {
-    prices_by_brand: Array<{brand: string, avg_price: number, min_price: number, max_price: number, count: number, value_score: number}>
+    prices_by_brand: Array<{brand: string, avg_price: number, min_price: number, max_price: number, count: number, value_score: number, price_trend?: number}>
     prices_by_category: Array<{category: string, avg_price: number, min_price: number, max_price: number, count: number}>
     models_by_category: Array<{category: string, count: number}>
     price_distribution: Array<{range: string, count: number}>
@@ -241,7 +243,7 @@ export default function Dashboard() {
       </Card>
 
       {/* Métricas principales */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Modelos</CardTitle>
@@ -296,6 +298,37 @@ export default function Dashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Última Actualización</CardTitle>
+            <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-lg font-bold">
+              {analytics.metrics.current_scraping_date ? 
+                new Date(analytics.metrics.current_scraping_date).toLocaleDateString() : 'N/A'}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {analytics.metrics.total_scraping_sessions || 0} sesiones total
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Datos Históricos</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {analytics.historical_data ? analytics.historical_data.length : 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {filters.model ? `Puntos para ${filters.model}` : 'Selecciona modelo'}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Q1 - Q3</CardTitle>
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -343,12 +376,20 @@ export default function Dashboard() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="brand" />
                 <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} />
-                <Tooltip formatter={(value: number) => [formatPrice(value), 'Precio Promedio']} />
+                <Tooltip 
+                  formatter={(value: number, name: string) => [
+                    name === 'avg_price' ? formatPrice(value) : `${value.toFixed(1)}%`,
+                    name === 'avg_price' ? 'Precio Promedio' : 'Tendencia'
+                  ]}
+                  labelFormatter={(label) => `Marca: ${label}`}
+                />
                 <Bar dataKey="avg_price">
                   {(analytics.chart_data?.prices_by_brand || []).map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Bar>
+                {/* Mostrar tendencia si está disponible */}
+                <Bar dataKey="price_trend" fill="rgba(255,0,0,0.3)" yAxisId="right" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
