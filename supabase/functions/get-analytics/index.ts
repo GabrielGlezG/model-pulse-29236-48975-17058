@@ -192,14 +192,18 @@ Deno.serve(async (req) => {
       const { data: historical, error: histError } = await supabaseClient
         .from('price_data')
         .select(`
-          *,
-          products (brand, model, name)
+          date,
+          price,
+          products!inner (brand, model, name)
         `)
         .eq('products.model', filters.model)
         .order('date', { ascending: true });
 
       if (!histError && historical) {
-        historicalData.push(...historical);
+        historicalData.push(...historical.map(item => ({
+          date: item.date,
+          price: parseFloat(item.price)
+        })));
       }
     }
 
@@ -225,10 +229,7 @@ Deno.serve(async (req) => {
             price: item.price
           }))
         },
-        historical_data: historicalData.map(item => ({
-          date: item.date,
-          price: parseFloat(item.price)
-        })),
+        historical_data: historicalData,
         applied_filters: {
           brand: filters.brand,
           category: filters.category,

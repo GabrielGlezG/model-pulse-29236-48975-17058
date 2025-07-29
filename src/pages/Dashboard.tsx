@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CalendarIcon, DollarSign, Package, TrendingUp, BarChart3, RefreshCw, Target, Award, AlertTriangle } from "lucide-react"
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, ScatterChart, Scatter, Legend } from 'recharts'
 import { useState } from "react"
 
 interface AnalyticsData {
@@ -44,7 +44,14 @@ interface AnalyticsData {
   generated_at: string
 }
 
-const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', 'hsl(var(--muted))']
+const COLORS = [
+  'hsl(var(--primary))', 
+  'hsl(var(--secondary))', 
+  'hsl(var(--accent))', 
+  'hsl(var(--muted))',
+  '#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#00ff88', '#ff0088', 
+  '#8800ff', '#ffaa00', '#00aaff', '#aa00ff', '#0088aa', '#aa8800'
+]
 
 export default function Dashboard() {
   const [filters, setFilters] = useState({
@@ -95,6 +102,27 @@ export default function Dashboard() {
       
       if (error) throw error
       return [...new Set(data.map(p => p.category))]
+    }
+  })
+
+  const { data: models } = useQuery({
+    queryKey: ['models', filters.brand, filters.category],
+    queryFn: async () => {
+      let query = supabase
+        .from('products')
+        .select('model, name, brand')
+        .order('model')
+      
+      if (filters.brand) {
+        query = query.eq('brand', filters.brand)
+      }
+      if (filters.category) {
+        query = query.eq('category', filters.category)
+      }
+      
+      const { data, error } = await query
+      if (error) throw error
+      return data.map(p => ({ model: p.model, name: p.name, brand: p.brand }))
     }
   })
 
@@ -157,7 +185,7 @@ export default function Dashboard() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
+          <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-6">
             <Select value={filters.brand || "all"} onValueChange={(value) => setFilters(f => ({ ...f, brand: value === "all" ? "" : value }))}>
               <SelectTrigger>
                 <SelectValue placeholder="Todas las marcas" />
@@ -178,6 +206,20 @@ export default function Dashboard() {
                 <SelectItem value="all">Todas las categorías</SelectItem>
                 {categories?.map(category => (
                   <SelectItem key={category} value={category}>{category}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={filters.model || "all"} onValueChange={(value) => setFilters(f => ({ ...f, model: value === "all" ? "" : value }))}>
+              <SelectTrigger>
+                <SelectValue placeholder="Todos los modelos" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos los modelos</SelectItem>
+                {models?.map(model => (
+                  <SelectItem key={`${model.brand}-${model.model}`} value={model.model}>
+                    {model.brand} {model.model}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -302,7 +344,11 @@ export default function Dashboard() {
                 <XAxis dataKey="brand" />
                 <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} />
                 <Tooltip formatter={(value: number) => [formatPrice(value), 'Precio Promedio']} />
-                <Bar dataKey="avg_price" fill="hsl(var(--primary))" />
+                <Bar dataKey="avg_price">
+                  {(analytics.chart_data?.prices_by_brand || []).map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -336,6 +382,42 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Histórico de Precios por Modelo */}
+      {analytics.historical_data && analytics.historical_data.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Evolución de Precios del Modelo Seleccionado</CardTitle>
+            <CardDescription>
+              Histórico de precios para el modelo {filters.model}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={analytics.historical_data}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis 
+                  dataKey="date" 
+                  tickFormatter={(value) => new Date(value).toLocaleDateString()}
+                />
+                <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} />
+                <Tooltip 
+                  formatter={(value: number) => [formatPrice(value), 'Precio']}
+                  labelFormatter={(value) => `Fecha: ${new Date(value).toLocaleDateString()}`}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="price" 
+                  stroke="hsl(var(--primary))" 
+                  strokeWidth={3}
+                  dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }}
+                  activeDot={{ r: 6, stroke: 'hsl(var(--primary))', strokeWidth: 2 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Análisis Comparativo por Categorías */}
       <div className="grid gap-6 md:grid-cols-2">
@@ -393,6 +475,67 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Bubble Chart - Precio vs Marca */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Análisis Precio vs Marca (Bubble Chart)</CardTitle>
+          <CardDescription>
+            Tamaño de burbuja proporcional al número de modelos de cada marca
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={400}>
+            <ScatterChart data={analytics.chart_data?.prices_by_brand || []}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis 
+                type="category" 
+                dataKey="brand" 
+                name="Marca"
+                tick={{ fontSize: 12 }}
+                interval={0}
+                angle={-45}
+                textAnchor="end"
+                height={100}
+              />
+              <YAxis 
+                type="number" 
+                dataKey="avg_price" 
+                name="Precio Promedio"
+                tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+              />
+              <Tooltip 
+                formatter={(value: number, name: string) => {
+                  if (name === 'avg_price') return [formatPrice(value), 'Precio Promedio']
+                  if (name === 'count') return [value, 'Número de Modelos']
+                  return [value, name]
+                }}
+                labelFormatter={(label) => `Marca: ${label}`}
+              />
+              <Scatter 
+                dataKey="avg_price" 
+                fill="hsl(var(--primary))"
+                opacity={0.7}
+              />
+              {(analytics.chart_data?.prices_by_brand || []).map((entry, index) => (
+                <Scatter 
+                  key={index}
+                  dataKey="avg_price"
+                  fill={COLORS[index % COLORS.length]}
+                  data={[{
+                    brand: entry.brand,
+                    avg_price: entry.avg_price,
+                    count: entry.count,
+                    // El tamaño de la burbuja basado en el número de modelos
+                    size: Math.max(entry.count * 50, 100)
+                  }]}
+                />
+              ))}
+              <Legend />
+            </ScatterChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
 
       {/* Modelos por Valor y Análisis de Precio */}
       <div className="grid gap-6 md:grid-cols-3">
