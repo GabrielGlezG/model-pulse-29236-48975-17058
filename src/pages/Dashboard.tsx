@@ -180,549 +180,579 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Filtros */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BarChart3 className="h-5 w-5" />
-            Filtros de Análisis
-          </CardTitle>
-          <CardDescription>
-            Aplica filtros para personalizar el análisis de datos
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-6">
-            <Select value={filters.brand || "all"} onValueChange={(value) => setFilters(f => ({ ...f, brand: value === "all" ? "" : value }))}>
-              <SelectTrigger>
-                <SelectValue placeholder="Todas las marcas" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas las marcas</SelectItem>
-                {brands?.map(brand => (
-                  <SelectItem key={brand} value={brand}>{brand}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={filters.category || "all"} onValueChange={(value) => setFilters(f => ({ ...f, category: value === "all" ? "" : value }))}>
-              <SelectTrigger>
-                <SelectValue placeholder="Todas las categorías" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas las categorías</SelectItem>
-                {categories?.map(category => (
-                  <SelectItem key={category} value={category}>{category}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={filters.model || "all"} onValueChange={(value) => setFilters(f => ({ ...f, model: value === "all" ? "" : value }))}>
-              <SelectTrigger>
-                <SelectValue placeholder="Todos los modelos" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos los modelos</SelectItem>
-                {models?.map(model => (
-                  <SelectItem key={`${model.brand}-${model.model}`} value={model.model}>
-                    {model.brand} {model.model}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Button 
-              onClick={() => refetch()} 
-              disabled={isRefetching}
-              className="w-full"
-            >
-              {isRefetching ? (
-                <RefreshCw className="h-4 w-4 animate-spin mr-2" />
-              ) : (
-                <RefreshCw className="h-4 w-4 mr-2" />
-              )}
-              Actualizar
-            </Button>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      {/* Header con gradiente */}
+      <div className="sticky top-0 z-10 bg-card/80 backdrop-blur-md border-b border-border/50">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold gradient-text">Dashboard de Análisis</h1>
+              <p className="text-muted-foreground mt-2">
+                Análisis inteligente de precios de vehículos
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="px-3 py-1 bg-primary/10 rounded-full text-sm text-primary border border-primary/20">
+                {analytics?.metrics.total_models || 0} modelos
+              </div>
+              <div className="px-3 py-1 bg-secondary/50 rounded-full text-sm">
+                {analytics?.metrics.total_brands || 0} marcas
+              </div>
+            </div>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Métricas principales */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-8">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Modelos</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{analytics.metrics.total_models}</div>
-            <p className="text-xs text-muted-foreground">
-              {analytics.metrics.total_brands} marcas
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Precio Promedio</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{formatPrice(analytics.metrics.avg_price)}</div>
-            <p className="text-xs text-muted-foreground">
-              CV: {analytics.metrics.variation_coefficient.toFixed(1)}%
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Precio Mediano</CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{formatPrice(analytics.metrics.median_price)}</div>
-            <p className="text-xs text-muted-foreground">
-              Valor central
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Rango de Precios</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{formatPrice(analytics.metrics.price_range)}</div>
-            <p className="text-xs text-muted-foreground">
-              {formatPrice(analytics.metrics.min_price)} - {formatPrice(analytics.metrics.max_price)}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Última Actualización</CardTitle>
-            <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-lg font-bold">
-              {analytics.metrics.current_scraping_date ? 
-                new Date(analytics.metrics.current_scraping_date).toLocaleDateString() : 'N/A'}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {analytics.metrics.total_scraping_sessions || 0} sesiones total
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Datos Históricos</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {analytics.historical_data ? analytics.historical_data.length : 0}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {filters.model ? `Puntos para ${filters.model}` : 'Selecciona modelo'}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Q1 - Q3</CardTitle>
-            <BarChart3 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-lg font-bold">
-              {formatPrice(analytics.metrics.lower_quartile)}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {formatPrice(analytics.metrics.upper_quartile)}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Variabilidad</CardTitle>
-            {analytics.metrics.variation_coefficient > 50 ? (
-              <AlertTriangle className="h-4 w-4 text-orange-500" />
-            ) : (
-              <Award className="h-4 w-4 text-green-500" />
-            )}
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {analytics.metrics.variation_coefficient > 50 ? 'Alta' : 
-               analytics.metrics.variation_coefficient > 25 ? 'Media' : 'Baja'}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {analytics.metrics.variation_coefficient.toFixed(1)}% coef.
-            </p>
-          </CardContent>
-        </Card>
+        </div>
       </div>
 
-      {/* Gráficos */}
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Precios Promedio por Marca</CardTitle>
-            <CardDescription>Comparación de precios entre marcas</CardDescription>
+      <div className="container mx-auto px-4 py-6 space-y-8">
+        {/* Filtros mejorados */}
+        <Card className="glass shadow-lg">
+          <CardHeader className="pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <BarChart3 className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-xl">Filtros de Análisis</CardTitle>
+                <CardDescription>
+                  Personaliza la vista de datos según tus necesidades
+                </CardDescription>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={analytics.chart_data?.prices_by_brand || []}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="brand" />
-                <YAxis 
-                  yAxisId="left"
-                  tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} 
-                />
-                <YAxis 
-                  yAxisId="right"
-                  orientation="right"
-                  tickFormatter={(value) => `${value.toFixed(0)}%`}
-                />
-                <Tooltip 
-                  formatter={(value: number, name: string) => [
-                    name === 'avg_price' ? formatPrice(value) : `${value.toFixed(1)}%`,
-                    name === 'avg_price' ? 'Precio Promedio' : 'Tendencia'
-                  ]}
-                  labelFormatter={(label) => `Marca: ${label}`}
-                />
-                <Bar dataKey="avg_price" yAxisId="left">
-                  {(analytics.chart_data?.prices_by_brand || []).map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
+              <Select value={filters.brand || "all"} onValueChange={(value) => setFilters(f => ({ ...f, brand: value === "all" ? "" : value }))}>
+                <SelectTrigger className="h-11">
+                  <SelectValue placeholder="Todas las marcas" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas las marcas</SelectItem>
+                  {brands?.map(brand => (
+                    <SelectItem key={brand} value={brand}>{brand}</SelectItem>
                   ))}
-                </Bar>
-                {/* Mostrar tendencia si está disponible */}
-                <Bar dataKey="price_trend" fill="rgba(255,0,0,0.3)" yAxisId="right" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+                </SelectContent>
+              </Select>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Modelos por Categoría</CardTitle>
-            <CardDescription>Distribución de modelos por tipo</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={analytics.chart_data?.models_by_category || []}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ category, percent }) => `${category} ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="count"
-                >
-                  {(analytics.chart_data?.models_by_category || []).map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              <Select value={filters.category || "all"} onValueChange={(value) => setFilters(f => ({ ...f, category: value === "all" ? "" : value }))}>
+                <SelectTrigger className="h-11">
+                  <SelectValue placeholder="Todas las categorías" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas las categorías</SelectItem>
+                  {categories?.map(category => (
+                    <SelectItem key={category} value={category}>{category}</SelectItem>
                   ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
+                </SelectContent>
+              </Select>
 
-      {/* Histórico de Precios por Modelo */}
-      {analytics.historical_data && analytics.historical_data.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Evolución de Precios del Modelo Seleccionado</CardTitle>
-            <CardDescription>
-              Histórico de precios para el modelo {filters.model}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={analytics.historical_data}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="date" 
-                  tickFormatter={(value) => new Date(value).toLocaleDateString()}
-                />
-                <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} />
-                <Tooltip 
-                  formatter={(value: number) => [formatPrice(value), 'Precio']}
-                  labelFormatter={(value) => `Fecha: ${new Date(value).toLocaleDateString()}`}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="price" 
-                  stroke="hsl(var(--primary))" 
-                  strokeWidth={3}
-                  dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }}
-                  activeDot={{ r: 6, stroke: 'hsl(var(--primary))', strokeWidth: 2 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Análisis Comparativo por Categorías */}
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Precios por Categoría</CardTitle>
-            <CardDescription>Comparación de rangos de precio por tipo de vehículo</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={analytics.chart_data?.prices_by_category || []}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="category" />
-                <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} />
-                <Tooltip 
-                  formatter={(value: number, name: string) => [
-                    formatPrice(value), 
-                    name === 'avg_price' ? 'Promedio' : 
-                    name === 'min_price' ? 'Mínimo' : 'Máximo'
-                  ]} 
-                />
-                <Bar dataKey="min_price" fill="hsl(var(--muted))" name="min_price" />
-                <Bar dataKey="avg_price" fill="hsl(var(--primary))" name="avg_price" />
-                <Bar dataKey="max_price" fill="hsl(var(--secondary))" name="max_price" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Distribución por Rango de Precio</CardTitle>
-            <CardDescription>Cantidad de modelos en cada segmento de mercado</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={analytics.chart_data?.price_distribution || []}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ range, percent }) => `${range} ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="count"
-                >
-                  {(analytics.chart_data?.price_distribution || []).map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              <Select value={filters.model || "all"} onValueChange={(value) => setFilters(f => ({ ...f, model: value === "all" ? "" : value }))}>
+                <SelectTrigger className="h-11">
+                  <SelectValue placeholder="Todos los modelos" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos los modelos</SelectItem>
+                  {models?.map(model => (
+                    <SelectItem key={`${model.brand}-${model.model}`} value={model.model}>
+                      {model.brand} {model.model}
+                    </SelectItem>
                   ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+                </SelectContent>
+              </Select>
+
+              <Button 
+                onClick={() => refetch()} 
+                disabled={isRefetching}
+                className="h-11 bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all duration-200"
+              >
+                {isRefetching ? (
+                  <RefreshCw className="h-4 w-4 animate-spin mr-2" />
+                ) : (
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                )}
+                Actualizar
+              </Button>
+            </div>
           </CardContent>
         </Card>
-      </div>
 
-      {/* Bubble Chart - Precio vs Marca */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Análisis Precio vs Marca (Bubble Chart)</CardTitle>
-          <CardDescription>
-            Tamaño de burbuja proporcional al número de modelos de cada marca
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={400}>
-            <ScatterChart data={analytics.chart_data?.prices_by_brand || []}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                type="category" 
-                dataKey="brand" 
-                name="Marca"
-                tick={{ fontSize: 12 }}
-                interval={0}
-                angle={-45}
-                textAnchor="end"
-                height={100}
-              />
-              <YAxis 
-                type="number" 
-                dataKey="avg_price" 
-                name="Precio Promedio"
-                tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-              />
-              <Tooltip 
-                formatter={(value: number, name: string) => {
-                  if (name === 'avg_price') return [formatPrice(value), 'Precio Promedio']
-                  if (name === 'count') return [value, 'Número de Modelos']
-                  return [value, name]
-                }}
-                labelFormatter={(label) => `Marca: ${label}`}
-              />
-              <Scatter 
-                dataKey="avg_price" 
-                fill="hsl(var(--primary))"
-                opacity={0.7}
-              />
-              {(analytics.chart_data?.prices_by_brand || []).map((entry, index) => (
-                <Scatter 
-                  key={index}
-                  dataKey="avg_price"
-                  fill={COLORS[index % COLORS.length]}
-                  data={[{
-                    brand: entry.brand,
-                    avg_price: entry.avg_price,
-                    count: entry.count,
-                    // El tamaño de la burbuja basado en el número de modelos
-                    size: Math.max(entry.count * 50, 100)
-                  }]}
-                />
-              ))}
-              <Legend />
-            </ScatterChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+        {/* Métricas principales con diseño tipo dashboard */}
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8">
+          <Card className="glass border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-semibold text-muted-foreground">Total Modelos</CardTitle>
+              <div className="w-8 h-8 rounded-lg bg-chart-1/20 flex items-center justify-center">
+                <Package className="h-4 w-4 text-chart-1" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">{analytics.metrics.total_models}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {analytics.metrics.total_brands} marcas
+              </p>
+            </CardContent>
+          </Card>
 
-      {/* Modelos por Valor y Análisis de Precio */}
-      <div className="grid gap-6 md:grid-cols-3">
-        <Card>
+          <Card className="glass border-chart-2/20 shadow-lg hover:shadow-xl transition-all duration-300">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-semibold text-muted-foreground">Precio Promedio</CardTitle>
+              <div className="w-8 h-8 rounded-lg bg-chart-2/20 flex items-center justify-center">
+                <DollarSign className="h-4 w-4 text-chart-2" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">{formatPrice(analytics.metrics.avg_price)}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                CV: {analytics.metrics.variation_coefficient.toFixed(1)}%
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="glass border-chart-3/20 shadow-lg hover:shadow-xl transition-all duration-300">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-semibold text-muted-foreground">Precio Mediano</CardTitle>
+              <div className="w-8 h-8 rounded-lg bg-chart-3/20 flex items-center justify-center">
+                <Target className="h-4 w-4 text-chart-3" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">{formatPrice(analytics.metrics.median_price)}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Valor central
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="glass border-chart-4/20 shadow-lg hover:shadow-xl transition-all duration-300">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-semibold text-muted-foreground">Rango de Precios</CardTitle>
+              <div className="w-8 h-8 rounded-lg bg-chart-4/20 flex items-center justify-center">
+                <TrendingUp className="h-4 w-4 text-chart-4" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-xl font-bold text-foreground">{formatPrice(analytics.metrics.price_range)}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {formatPrice(analytics.metrics.min_price)} - {formatPrice(analytics.metrics.max_price)}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="glass border-chart-5/20 shadow-lg hover:shadow-xl transition-all duration-300">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-semibold text-muted-foreground">Última Actualización</CardTitle>
+              <div className="w-8 h-8 rounded-lg bg-chart-5/20 flex items-center justify-center">
+                <CalendarIcon className="h-4 w-4 text-chart-5" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-lg font-bold text-foreground">
+                {analytics.metrics.current_scraping_date ? 
+                  new Date(analytics.metrics.current_scraping_date).toLocaleDateString() : 'N/A'}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {analytics.metrics.total_scraping_sessions || 0} sesiones
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="glass border-chart-6/20 shadow-lg hover:shadow-xl transition-all duration-300">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-semibold text-muted-foreground">Datos Históricos</CardTitle>
+              <div className="w-8 h-8 rounded-lg bg-chart-6/20 flex items-center justify-center">
+                <TrendingUp className="h-4 w-4 text-chart-6" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">
+                {analytics.historical_data ? analytics.historical_data.length : 0}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {filters.model ? `Puntos para ${filters.model}` : 'Selecciona modelo'}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="glass border-chart-7/20 shadow-lg hover:shadow-xl transition-all duration-300">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-semibold text-muted-foreground">Q1 - Q3</CardTitle>
+              <div className="w-8 h-8 rounded-lg bg-chart-7/20 flex items-center justify-center">
+                <BarChart3 className="h-4 w-4 text-chart-7" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-lg font-bold text-foreground">
+                {formatPrice(analytics.metrics.lower_quartile)}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {formatPrice(analytics.metrics.upper_quartile)}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="glass border-chart-8/20 shadow-lg hover:shadow-xl transition-all duration-300">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-semibold text-muted-foreground">Variabilidad</CardTitle>
+              <div className="w-8 h-8 rounded-lg bg-chart-8/20 flex items-center justify-center">
+                {analytics.metrics.variation_coefficient > 50 ? (
+                  <AlertTriangle className="h-4 w-4 text-chart-8" />
+                ) : (
+                  <Award className="h-4 w-4 text-chart-8" />
+                )}
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">
+                {analytics.metrics.variation_coefficient > 50 ? 'Alta' : 
+                 analytics.metrics.variation_coefficient > 25 ? 'Media' : 'Baja'}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {analytics.metrics.variation_coefficient.toFixed(1)}% coef.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Gráficos mejorados */}
+        <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
+          <Card className="glass shadow-lg border-chart-1/20">
+            <CardHeader>
+              <CardTitle className="text-xl">Precios Promedio por Marca</CardTitle>
+              <CardDescription>Comparación de precios entre marcas con tendencias</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={350}>
+                <BarChart data={analytics.chart_data?.prices_by_brand || []}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis 
+                    dataKey="brand" 
+                    stroke="hsl(var(--muted-foreground))"
+                    fontSize={12}
+                  />
+                  <YAxis 
+                    yAxisId="left"
+                    tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} 
+                    stroke="hsl(var(--muted-foreground))"
+                    fontSize={12}
+                  />
+                  <YAxis 
+                    yAxisId="right"
+                    orientation="right"
+                    tickFormatter={(value) => `${value.toFixed(0)}%`}
+                    stroke="hsl(var(--muted-foreground))"
+                    fontSize={12}
+                  />
+                  <Tooltip 
+                    formatter={(value: number, name: string) => [
+                      name === 'avg_price' ? formatPrice(value) : `${value.toFixed(1)}%`,
+                      name === 'avg_price' ? 'Precio Promedio' : 'Tendencia'
+                    ]}
+                    labelFormatter={(label) => `Marca: ${label}`}
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Bar dataKey="avg_price" yAxisId="left" radius={[4, 4, 0, 0]}>
+                    {(analytics.chart_data?.prices_by_brand || []).map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          <Card className="glass shadow-lg border-chart-2/20">
+            <CardHeader>
+              <CardTitle className="text-xl">Modelos por Categoría</CardTitle>
+              <CardDescription>Distribución de modelos por tipo de vehículo</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={350}>
+                <PieChart>
+                  <Pie
+                    data={analytics.chart_data?.models_by_category || []}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ category, percent }) => `${category} ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={120}
+                    fill="#8884d8"
+                    dataKey="count"
+                  >
+                    {(analytics.chart_data?.models_by_category || []).map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Histórico de Precios por Modelo */}
+        {analytics.historical_data && analytics.historical_data.length > 0 && (
+          <Card className="glass shadow-lg border-chart-3/20">
+            <CardHeader>
+              <CardTitle className="text-xl">Evolución de Precios del Modelo Seleccionado</CardTitle>
+              <CardDescription>
+                Histórico de precios para el modelo {filters.model}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart data={analytics.historical_data}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis 
+                    dataKey="date" 
+                    tickFormatter={(value) => new Date(value).toLocaleDateString()}
+                    stroke="hsl(var(--muted-foreground))"
+                    fontSize={12}
+                  />
+                  <YAxis 
+                    tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} 
+                    stroke="hsl(var(--muted-foreground))"
+                    fontSize={12}
+                  />
+                  <Tooltip 
+                    formatter={(value: number) => [formatPrice(value), 'Precio']}
+                    labelFormatter={(value) => `Fecha: ${new Date(value).toLocaleDateString()}`}
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="price" 
+                    stroke="hsl(var(--chart-1))" 
+                    strokeWidth={3}
+                    dot={{ fill: 'hsl(var(--chart-1))', strokeWidth: 2, r: 4 }}
+                    activeDot={{ r: 6, stroke: 'hsl(var(--chart-1))', strokeWidth: 2 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Análisis Comparativo por Categorías */}
+        <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
+          <Card className="glass shadow-lg border-chart-4/20">
+            <CardHeader>
+              <CardTitle className="text-xl">Precios por Categoría</CardTitle>
+              <CardDescription>Comparación de rangos de precio por tipo de vehículo</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={350}>
+                <BarChart data={analytics.chart_data?.prices_by_category || []}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis 
+                    dataKey="category" 
+                    stroke="hsl(var(--muted-foreground))"
+                    fontSize={12}
+                  />
+                  <YAxis 
+                    tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} 
+                    stroke="hsl(var(--muted-foreground))"
+                    fontSize={12}
+                  />
+                  <Tooltip 
+                    formatter={(value: number, name: string) => [
+                      formatPrice(value), 
+                      name === 'avg_price' ? 'Promedio' : 
+                      name === 'min_price' ? 'Mínimo' : 'Máximo'
+                    ]}
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Bar dataKey="min_price" fill="hsl(var(--chart-7))" name="min_price" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="avg_price" fill="hsl(var(--chart-1))" name="avg_price" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="max_price" fill="hsl(var(--chart-5))" name="max_price" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          <Card className="glass shadow-lg border-chart-6/20">
+            <CardHeader>
+              <CardTitle className="text-xl">Distribución por Rango de Precio</CardTitle>
+              <CardDescription>Cantidad de modelos en cada segmento de mercado</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={350}>
+                <PieChart>
+                  <Pie
+                    data={analytics.chart_data?.price_distribution || []}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ range, percent }) => `${range} ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={120}
+                    fill="#8884d8"
+                    dataKey="count"
+                  >
+                    {(analytics.chart_data?.price_distribution || []).map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Modelos destacados */}
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-3">
+          <Card className="glass shadow-lg border-green-500/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Award className="h-5 w-5 text-green-500" />
+                Mejores Oportunidades
+              </CardTitle>
+              <CardDescription>Modelos con mejor relación calidad-precio</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {(analytics.chart_data?.best_value_models || []).map((item, index) => (
+                  <div key={index} className="flex items-center justify-between border-b border-border/50 pb-3 last:border-0">
+                    <div>
+                      <p className="font-medium text-sm">{item.brand} {item.name}</p>
+                      <div className="flex gap-2 mt-1">
+                        <Badge variant="outline" className="text-xs">{item.category}</Badge>
+                        <Badge variant="secondary" className="text-xs text-green-600">-{item.value_rating}%</Badge>
+                      </div>
+                    </div>
+                    <p className="font-bold text-green-500 text-sm">{formatPrice(item.price)}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="glass shadow-lg border-chart-8/20">
+            <CardHeader>
+              <CardTitle className="text-lg">Top 5 Más Caros</CardTitle>
+              <CardDescription>Los modelos con precios más altos</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {(analytics.chart_data?.top_5_expensive || []).map((item, index) => (
+                  <div key={index} className="flex items-center justify-between border-b border-border/50 pb-3 last:border-0">
+                    <div>
+                      <p className="font-medium text-sm">{item.brand} {item.name}</p>
+                      <Badge variant="secondary" className="text-xs mt-1">#{index + 1}</Badge>
+                    </div>
+                    <p className="font-bold text-sm">{formatPrice(item.price)}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="glass shadow-lg border-chart-2/20">
+            <CardHeader>
+              <CardTitle className="text-lg">Top 5 Más Económicos</CardTitle>
+              <CardDescription>Los modelos con mejores precios</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {(analytics.chart_data?.bottom_5_cheap || []).map((item, index) => (
+                  <div key={index} className="flex items-center justify-between border-b border-border/50 pb-3 last:border-0">
+                    <div>
+                      <p className="font-medium text-sm">{item.brand} {item.name}</p>
+                      <Badge variant="outline" className="text-xs mt-1">#{index + 1}</Badge>
+                    </div>
+                    <p className="font-bold text-green-500 text-sm">{formatPrice(item.price)}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Análisis de Competitividad por Marca */}
+        <Card className="glass shadow-lg border-chart-9/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Award className="h-4 w-4 text-green-500" />
-              Mejores Oportunidades
-            </CardTitle>
-            <CardDescription>Modelos con mejor relación calidad-precio</CardDescription>
+            <CardTitle className="text-xl">Análisis de Competitividad por Marca</CardTitle>
+            <CardDescription>Comparación de precios, rangos y posicionamiento de valor</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {(analytics.chart_data?.best_value_models || []).map((item, index) => (
-                <div key={index} className="flex items-center justify-between border-b pb-2">
-                  <div>
-                    <p className="font-medium text-sm">{item.brand} {item.name}</p>
-                    <div className="flex gap-1 mt-1">
-                      <Badge variant="outline" className="text-xs">{item.category}</Badge>
-                      <Badge variant="secondary" className="text-xs">-{item.value_rating}%</Badge>
+            <div className="grid gap-4">
+              {(analytics.chart_data?.prices_by_brand || []).map((brand, index) => (
+                <div key={index} className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:border-primary/50 transition-colors">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3">
+                      <h4 className="font-semibold text-lg">{brand.brand}</h4>
+                      <Badge variant={brand.value_score < -10 ? "default" : brand.value_score > 10 ? "destructive" : "secondary"}>
+                        {brand.value_score < -10 ? "Buen Valor" : brand.value_score > 10 ? "Premium" : "Estándar"}
+                      </Badge>
+                    </div>
+                    <div className="flex gap-4 mt-2 text-sm text-muted-foreground">
+                      <span>Promedio: {formatPrice(brand.avg_price)}</span>
+                      <span>Rango: {formatPrice(brand.min_price)} - {formatPrice(brand.max_price)}</span>
+                      <span>{brand.count} modelos</span>
                     </div>
                   </div>
-                  <p className="font-bold text-green-600 text-sm">{formatPrice(item.price)}</p>
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-muted-foreground">Score de Valor</p>
+                    <p className={`text-xl font-bold ${
+                      brand.value_score < -10 ? 'text-green-500' : 
+                      brand.value_score > 10 ? 'text-red-500' : 'text-yellow-500'
+                    }`}>
+                      {brand.value_score > 0 ? '+' : ''}{brand.value_score.toFixed(1)}%
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Top 5 Más Caros</CardTitle>
-            <CardDescription>Los modelos con precios más altos</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {(analytics.chart_data?.top_5_expensive || []).map((item, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">{item.brand} {item.name}</p>
-                    <Badge variant="secondary">#{index + 1}</Badge>
-                  </div>
-                  <p className="font-bold">{formatPrice(item.price)}</p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Top 5 Más Económicos</CardTitle>
-            <CardDescription>Los modelos con mejores precios</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {(analytics.chart_data?.bottom_5_cheap || []).map((item, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">{item.brand} {item.name}</p>
-                    <Badge variant="outline">#{index + 1}</Badge>
-                  </div>
-                  <p className="font-bold text-green-600">{formatPrice(item.price)}</p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Análisis de Competitividad por Marca */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Análisis de Competitividad por Marca</CardTitle>
-          <CardDescription>Comparación de precios, rangos y posicionamiento de valor</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4">
-            {(analytics.chart_data?.prices_by_brand || []).map((brand, index) => (
-              <div key={index} className="flex items-center justify-between p-3 rounded-lg border">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3">
-                    <h4 className="font-semibold">{brand.brand}</h4>
-                    <Badge variant={brand.value_score < -10 ? "default" : brand.value_score > 10 ? "destructive" : "secondary"}>
-                      {brand.value_score < -10 ? "Buen Valor" : brand.value_score > 10 ? "Premium" : "Estándar"}
-                    </Badge>
-                  </div>
-                  <div className="flex gap-4 mt-2 text-sm text-muted-foreground">
-                    <span>Promedio: {formatPrice(brand.avg_price)}</span>
-                    <span>Rango: {formatPrice(brand.min_price)} - {formatPrice(brand.max_price)}</span>
-                    <span>{brand.count} modelos</span>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium">Score de Valor</p>
-                  <p className={`text-lg font-bold ${
-                    brand.value_score < -10 ? 'text-green-600' : 
-                    brand.value_score > 10 ? 'text-red-600' : 'text-yellow-600'
-                  }`}>
-                    {brand.value_score > 0 ? '+' : ''}{brand.value_score.toFixed(1)}%
-                  </p>
-                </div>
+        {/* Información de filtros aplicados */}
+        {analytics.applied_filters && Object.values(analytics.applied_filters).some(Boolean) && (
+          <Card className="glass shadow-lg border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <CalendarIcon className="h-5 w-5 text-primary" />
+                Filtros Aplicados
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-2 flex-wrap">
+                {analytics.applied_filters?.brand && (
+                  <Badge className="bg-chart-1/20 text-chart-1 border-chart-1/30">Marca: {analytics.applied_filters.brand}</Badge>
+                )}
+                {analytics.applied_filters?.category && (
+                  <Badge className="bg-chart-2/20 text-chart-2 border-chart-2/30">Categoría: {analytics.applied_filters.category}</Badge>
+                )}
+                {analytics.applied_filters?.model && (
+                  <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30">Modelo: {analytics.applied_filters.model}</Badge>
+                )}
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Información de filtros aplicados */}
-      {analytics.applied_filters && Object.values(analytics.applied_filters).some(Boolean) && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CalendarIcon className="h-4 w-4" />
-              Filtros Aplicados
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex gap-2 flex-wrap">
-              {analytics.applied_filters?.brand && (
-                <Badge>Marca: {analytics.applied_filters.brand}</Badge>
-              )}
-              {analytics.applied_filters?.category && (
-                <Badge>Categoría: {analytics.applied_filters.category}</Badge>
-              )}
-              {analytics.applied_filters?.model && (
-                <Badge>Modelo: {analytics.applied_filters.model}</Badge>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+            </CardContent>
+          </Card>
+        )}
+      </div>
     </div>
   )
 }
