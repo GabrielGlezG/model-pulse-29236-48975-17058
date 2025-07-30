@@ -47,12 +47,18 @@ interface AnalyticsData {
 }
 
 const COLORS = [
-  'hsl(var(--primary))', 
-  'hsl(var(--secondary))', 
-  'hsl(var(--accent))', 
-  'hsl(var(--muted))',
-  '#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#00ff88', '#ff0088', 
-  '#8800ff', '#ffaa00', '#00aaff', '#aa00ff', '#0088aa', '#aa8800'
+  'hsl(var(--chart-1))', 
+  'hsl(var(--chart-2))', 
+  'hsl(var(--chart-3))', 
+  'hsl(var(--chart-4))',
+  'hsl(var(--chart-5))', 
+  'hsl(var(--chart-6))', 
+  'hsl(var(--chart-7))', 
+  'hsl(var(--chart-8))',
+  'hsl(var(--chart-9))', 
+  'hsl(var(--chart-10))', 
+  'hsl(var(--chart-11))', 
+  'hsl(var(--chart-12))'
 ]
 
 export default function Dashboard() {

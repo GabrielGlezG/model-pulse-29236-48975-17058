@@ -17,13 +17,16 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const url = new URL(req.url);
+    // Parse request body to get filters
+    const requestBody = await req.json().catch(() => ({}));
+    const params = new URLSearchParams(requestBody.params || '');
+    
     const filters = {
-      brand: url.searchParams.get('brand'),
-      category: url.searchParams.get('category'),
-      model: url.searchParams.get('model'),
-      dateFrom: url.searchParams.get('dateFrom'),
-      dateTo: url.searchParams.get('dateTo'),
+      brand: params.get('brand'),
+      category: params.get('category'),
+      model: params.get('model'),
+      dateFrom: params.get('date_from'),
+      dateTo: params.get('date_to'),
     };
 
     console.log('Getting analytics with filters:', filters);
