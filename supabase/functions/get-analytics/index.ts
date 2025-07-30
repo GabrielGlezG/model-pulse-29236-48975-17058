@@ -148,14 +148,20 @@ Deno.serve(async (req) => {
       total_scraping_sessions: 0 // Will be updated below
     };
 
-    // Get total scraping sessions count
+    // Get total scraping sessions count (distinct dates)
     const { data: scrapingSessions, error: sessionsError } = await supabaseClient
-      .from('price_data')
-      .select('date')
-      .group('date');
+      .rpc('get_distinct_scraping_dates');
     
     if (!sessionsError && scrapingSessions) {
       metrics.total_scraping_sessions = scrapingSessions.length;
+    } else {
+      // Fallback: count distinct dates manually
+      const { data: allDates } = await supabaseClient
+        .from('price_data')
+        .select('date');
+      
+      const uniqueDates = [...new Set(allDates?.map(d => d.date.split('T')[0]))];
+      metrics.total_scraping_sessions = uniqueDates.length;
     }
 
     // Group data for comprehensive charts WITH TEMPORAL ANALYSIS
