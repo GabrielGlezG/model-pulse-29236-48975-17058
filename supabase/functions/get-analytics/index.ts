@@ -28,135 +28,72 @@ Deno.serve(async (req) => {
 
     console.log('Getting analytics with filters:', filters);
 
-    // Get latest scraping date for reference
-    const { data: latestScrapingDate, error: dateError } = await supabaseClient
+    // Get all price data with products
+    const { data: allPriceData, error: priceError } = await supabaseClient
       .from('price_data')
-      .select('date')
-      .order('date', { ascending: false })
-      .limit(1);
-
-    if (dateError) {
-      console.error('Error getting latest date:', dateError);
-      throw dateError;
-    }
-
-    const currentDate = latestScrapingDate?.[0]?.date;
-    
-    // Get all products with their latest prices (using window function approach)
-    let query = `
-      WITH latest_prices AS (
-        SELECT DISTINCT ON (product_id) 
-          price_data.*,
-          products.id as product_id,
-          products.brand,
-          products.category,
-          products.model,
-          products.name
-        FROM price_data
-        JOIN products ON price_data.product_id = products.id
-        ORDER BY product_id, date DESC
-      )
-      SELECT * FROM latest_prices
-    `;
-
-    // Apply filters to the base query
-    const conditions = [];
-    if (filters.brand) {
-      conditions.push(`brand ILIKE '%${filters.brand}%'`);
-    }
-    if (filters.category) {
-      conditions.push(`category ILIKE '%${filters.category}%'`);
-    }
-    if (filters.model) {
-      conditions.push(`model ILIKE '%${filters.model}%'`);
-    }
-    if (filters.dateFrom) {
-      conditions.push(`date >= '${filters.dateFrom}'`);
-    }
-    if (filters.dateTo) {
-      conditions.push(`date <= '${filters.dateTo}'`);
-    }
-
-    if (conditions.length > 0) {
-      query += ` WHERE ${conditions.join(' AND ')}`;
-    }
-
-    const { data: priceData, error: priceError } = await supabaseClient
-      .rpc('execute_query', { query_text: query });
+      .select(`
+        *,
+        products (
+          id,
+          brand,
+          category,
+          model,
+          name
+        )
+      `)
+      .order('date', { ascending: false });
 
     if (priceError) {
       console.error('Error fetching price data:', priceError);
-      // Fallback to simpler approach
-      const { data: fallbackData, error: fallbackError } = await supabaseClient
-        .from('price_data')
-        .select(`
-          *,
-          products (
-            id,
-            brand,
-            category,
-            model,
-            name
-          )
-        `)
-        .order('date', { ascending: false });
-
-      if (fallbackError) {
-        throw fallbackError;
-      }
-
-      // Group by product and get latest price for each
-      const latestPricesByProduct = new Map();
-      fallbackData?.forEach(item => {
-        const productId = item.products?.id;
-        if (productId && (!latestPricesByProduct.has(productId) || 
-            new Date(item.date) > new Date(latestPricesByProduct.get(productId).date))) {
-          latestPricesByProduct.set(productId, {
-            ...item,
-            products: item.products
-          });
-        }
-      });
-
-      const processedData = Array.from(latestPricesByProduct.values());
-      
-      // Apply filters manually
-      let filteredData = processedData;
-      if (filters.brand) {
-        filteredData = filteredData.filter(item => 
-          item.products?.brand?.toLowerCase().includes(filters.brand.toLowerCase())
-        );
-      }
-      if (filters.category) {
-        filteredData = filteredData.filter(item => 
-          item.products?.category?.toLowerCase().includes(filters.category.toLowerCase())
-        );
-      }
-      if (filters.model) {
-        filteredData = filteredData.filter(item => 
-          item.products?.model?.toLowerCase().includes(filters.model.toLowerCase())
-        );
-      }
-      if (filters.dateFrom) {
-        filteredData = filteredData.filter(item => 
-          new Date(item.date) >= new Date(filters.dateFrom)
-        );
-      }
-      if (filters.dateTo) {
-        filteredData = filteredData.filter(item => 
-          new Date(item.date) <= new Date(filters.dateTo)
-        );
-      }
-
-      // Transform to match expected format
-      filteredData = filteredData.map(item => ({
-        ...item,
-        products: item.products
-      }));
-    } else {
-      // Use the query result
-      filteredData = priceData || [];
+      throw priceError;
     }
+
+    console.log('Total price records fetched:', allPriceData?.length || 0);
+
+    // Group by product and get latest price for each
+    const latestPricesByProduct = new Map();
+    allPriceData?.forEach(item => {
+      const productId = item.products?.id;
+      if (productId && (!latestPricesByProduct.has(productId) || 
+          new Date(item.date) > new Date(latestPricesByProduct.get(productId).date))) {
+        latestPricesByProduct.set(productId, {
+          ...item,
+          products: item.products
+        });
+      }
+    });
+
+    let filteredData = Array.from(latestPricesByProduct.values());
+    console.log('Latest prices by product:', filteredData.length);
+    
+    // Apply filters manually
+    if (filters.brand) {
+      filteredData = filteredData.filter(item => 
+        item.products?.brand?.toLowerCase().includes(filters.brand.toLowerCase())
+      );
+    }
+    if (filters.category) {
+      filteredData = filteredData.filter(item => 
+        item.products?.category?.toLowerCase().includes(filters.category.toLowerCase())
+      );
+    }
+    if (filters.model) {
+      filteredData = filteredData.filter(item => 
+        item.products?.model?.toLowerCase().includes(filters.model.toLowerCase())
+      );
+    }
+    if (filters.dateFrom) {
+      filteredData = filteredData.filter(item => 
+        new Date(item.date) >= new Date(filters.dateFrom)
+      );
+    }
+    if (filters.dateTo) {
+      filteredData = filteredData.filter(item => 
+        new Date(item.date) <= new Date(filters.dateTo)
+      );
+    }
+
+    console.log('Filtered data count:', filteredData.length);
 
     // Calculate comprehensive metrics
     const prices = filteredData.map(item => parseFloat(item.price));
@@ -199,7 +136,7 @@ Deno.serve(async (req) => {
       variation_coefficient: variationCoeff,
       lower_quartile: lowerQuartile,
       upper_quartile: upperQuartile,
-      current_scraping_date: currentDate,
+      current_scraping_date: filteredData.length > 0 ? filteredData[0].date : null,
       total_scraping_sessions: 0 // Will be updated below
     };
 
