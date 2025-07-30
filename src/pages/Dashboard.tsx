@@ -375,7 +375,15 @@ export default function Dashboard() {
               <BarChart data={analytics.chart_data?.prices_by_brand || []}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="brand" />
-                <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} />
+                <YAxis 
+                  yAxisId="left"
+                  tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} 
+                />
+                <YAxis 
+                  yAxisId="right"
+                  orientation="right"
+                  tickFormatter={(value) => `${value.toFixed(0)}%`}
+                />
                 <Tooltip 
                   formatter={(value: number, name: string) => [
                     name === 'avg_price' ? formatPrice(value) : `${value.toFixed(1)}%`,
@@ -383,7 +391,7 @@ export default function Dashboard() {
                   ]}
                   labelFormatter={(label) => `Marca: ${label}`}
                 />
-                <Bar dataKey="avg_price">
+                <Bar dataKey="avg_price" yAxisId="left">
                   {(analytics.chart_data?.prices_by_brand || []).map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
