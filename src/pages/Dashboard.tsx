@@ -1,50 +1,16 @@
-import { useQuery } from "@tanstack/react-query"
-import { supabase } from "@/integrations/supabase/client"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { PaginationControls } from "@/components/ui/pagination-controls"
 import { CalendarIcon, DollarSign, Package, TrendingUp, BarChart3, RefreshCw, Target, Award, AlertTriangle } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, ScatterChart, Scatter, Legend } from 'recharts'
 import { useState } from "react"
+import { useAnalytics } from "@/hooks/useAnalytics"
+import { useBrands, useCategories, useModels } from "@/hooks/useProducts"
+import { AnalyticsData } from "@/types/api"
 
-interface AnalyticsData {
-  metrics: {
-    total_models: number
-    total_brands: number
-    total_categories: number
-    avg_price: number
-    median_price: number
-    min_price: number
-    max_price: number
-    price_std_dev: number
-    price_range: number
-    variation_coefficient: number
-    lower_quartile: number
-    upper_quartile: number
-    current_scraping_date?: string
-    total_scraping_sessions?: number
-  }
-  chart_data: {
-    prices_by_brand: Array<{brand: string, avg_price: number, min_price: number, max_price: number, count: number, value_score: number, price_trend?: number}>
-    prices_by_category: Array<{category: string, avg_price: number, min_price: number, max_price: number, count: number}>
-    models_by_category: Array<{category: string, count: number}>
-    price_distribution: Array<{range: string, count: number}>
-    best_value_models: Array<{brand: string, name: string, category: string, price: number, value_rating: string}>
-    top_5_expensive: Array<{name: string, brand: string, price: number}>
-    bottom_5_cheap: Array<{name: string, brand: string, price: number}>
-  }
-  historical_data?: Array<{date: string, price: number}>
-  applied_filters: {
-    brand?: string
-    category?: string
-    model?: string
-    date_from?: string
-    date_to?: string
-  }
-  generated_at: string
-}
 
 const COLORS = [
   'hsl(var(--chart-1))', 
@@ -69,70 +35,13 @@ export default function Dashboard() {
     date_from: '',
     date_to: ''
   })
+  const [brandPage, setBrandPage] = useState(1)
+  const [brandPageSize, setBrandPageSize] = useState(10)
 
-  const { data: analytics, isLoading, refetch, isRefetching } = useQuery({
-    queryKey: ['analytics', filters],
-    queryFn: async () => {
-      const params = new URLSearchParams()
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value) params.append(key, value)
-      })
-      
-      const { data, error } = await supabase.functions.invoke('get-analytics', {
-        body: { params: params.toString() }
-      })
-      
-      if (error) throw error
-      return data as AnalyticsData
-    }
-  })
-
-  const { data: brands } = useQuery({
-    queryKey: ['brands'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('products')
-        .select('brand')
-        .order('brand')
-      
-      if (error) throw error
-      return [...new Set(data.map(p => p.brand))]
-    }
-  })
-
-  const { data: categories } = useQuery({
-    queryKey: ['categories'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('products')
-        .select('category')
-        .order('category')
-      
-      if (error) throw error
-      return [...new Set(data.map(p => p.category))]
-    }
-  })
-
-  const { data: models } = useQuery({
-    queryKey: ['models', filters.brand, filters.category],
-    queryFn: async () => {
-      let query = supabase
-        .from('products')
-        .select('model, name, brand')
-        .order('model')
-      
-      if (filters.brand) {
-        query = query.eq('brand', filters.brand)
-      }
-      if (filters.category) {
-        query = query.eq('category', filters.category)
-      }
-      
-      const { data, error } = await query
-      if (error) throw error
-      return data.map(p => ({ model: p.model, name: p.name, brand: p.brand }))
-    }
-  })
+  const { data: analytics, isLoading, refetch, isRefetching } = useAnalytics(filters)
+  const { data: brands } = useBrands()
+  const { data: categories } = useCategories()
+  const { data: models } = useModels(filters.brand, filters.category)
 
   if (isLoading) {
     return (

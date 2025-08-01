@@ -1,6 +1,6 @@
 import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { supabase } from "@/integrations/supabase/client"
+import { useProductsForComparison } from "@/hooks/useProducts"
+import type { ProductWithPricing } from "@/services/productsService"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -8,21 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { X, Plus, TrendingUp, DollarSign, Award, Zap, Scale } from "lucide-react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend } from 'recharts'
 
-interface Product {
-  id: string
-  brand: string
-  category: string
-  model: string
-  name: string
-  latest_price?: number
-  min_price?: number
-  max_price?: number
-  avg_price?: number
-  price_history?: Array<{date: string, price: number}>
-}
-
 interface ComparisonData {
-  product: Product
+  product: ProductWithPricing
   value_score: number
   stability_score: number
   recommendation_score: number
@@ -36,37 +23,7 @@ export default function Compare() {
     maxPrice: ''
   })
 
-  // Fetch available products for selection
-  const { data: products } = useQuery({
-    queryKey: ['products-for-comparison'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('products')
-        .select(`
-          *,
-          price_data (price, date)
-        `)
-        .order('brand')
-      
-      if (error) throw error
-      
-      return data?.map(product => {
-        const prices = product.price_data?.map(p => p.price) || []
-        const sortedHistory = product.price_data?.sort((a, b) => 
-          new Date(a.date).getTime() - new Date(b.date).getTime()
-        ) || []
-        
-        return {
-          ...product,
-          latest_price: prices.length > 0 ? prices[prices.length - 1] : 0,
-          min_price: prices.length > 0 ? Math.min(...prices) : 0,
-          max_price: prices.length > 0 ? Math.max(...prices) : 0,
-          avg_price: prices.length > 0 ? prices.reduce((a, b) => a + b, 0) / prices.length : 0,
-          price_history: sortedHistory
-        }
-      }) || []
-    }
-  })
+  const { data: products } = useProductsForComparison()
 
   // Get brands and categories for filters
   const brands = [...new Set(products?.map(p => p.brand))].filter(Boolean)
@@ -83,22 +40,22 @@ export default function Compare() {
   // Get comparison data for selected products
   const getComparisonData = (productIds: string[]): ComparisonData[] => {
     const selectedData = products?.filter(p => productIds.includes(p.id)) || []
-    const avgMarketPrice = products?.reduce((sum, p) => sum + (p.latest_price || 0), 0) / (products?.length || 1)
+    const avgMarketPrice = products?.reduce((sum, p) => sum + p.latest_price, 0) / (products?.length || 1)
     
     return selectedData.map(product => {
-      const prices = product.price_data?.map(p => p.price) || []
+      const prices = product.price_history?.map(p => p.price) || []
       const priceVariation = prices.length > 1 ? 
-        Math.sqrt(prices.reduce((acc, price) => acc + Math.pow(price - (product.avg_price || 0), 2), 0) / prices.length) : 0
+        Math.sqrt(prices.reduce((acc, price) => acc + Math.pow(price - product.avg_price, 2), 0) / prices.length) : 0
       
       const valueScore = avgMarketPrice > 0 ? 
-        Math.max(0, Math.min(100, ((avgMarketPrice - (product.latest_price || 0)) / avgMarketPrice * 100) + 50)) : 50
+        Math.max(0, Math.min(100, ((avgMarketPrice - product.latest_price) / avgMarketPrice * 100) + 50)) : 50
       
       const stabilityScore = product.avg_price > 0 ? 
         Math.max(0, 100 - (priceVariation / product.avg_price * 100)) : 0
       
       const recommendationScore = (valueScore * 0.4) + (stabilityScore * 0.3) + 
         (product.category === 'Sedán' ? 15 : product.category === 'SUV' ? 10 : 5) + 
-        (product.latest_price && product.latest_price < avgMarketPrice ? 10 : 0)
+        (product.latest_price < avgMarketPrice ? 10 : 0)
       
       return {
         product,
@@ -257,7 +214,7 @@ export default function Compare() {
                     <p className="font-medium">{product.brand} {product.model}</p>
                     <p className="text-sm text-muted-foreground">{product.category}</p>
                     <p className="text-sm font-semibold text-green-600">
-                      {formatPrice(product.latest_price || 0)}
+                      {formatPrice(product.latest_price)}
                     </p>
                   </div>
                   {selectedProducts.includes(product.id) ? (
