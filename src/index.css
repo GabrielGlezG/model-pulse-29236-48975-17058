@@ -8,109 +8,111 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
+    /* Professional dark corporate palette */
+    --background: 222 16% 7%;          /* Rich dark blue-gray */
+    --foreground: 210 20% 92%;         /* Clean white-blue */
 
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
+    --card: 223 20% 9%;                /* Slightly lighter than background */
+    --card-foreground: 210 20% 92%;
 
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 223 20% 9%;
+    --popover-foreground: 210 20% 92%;
 
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
+    --primary: 217 91% 60%;            /* Professional bright blue */
+    --primary-foreground: 210 40% 5%;
 
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 217 32% 17%;          /* Deep blue-gray */
+    --secondary-foreground: 210 20% 92%;
 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 215 25% 15%;              /* Muted blue-gray */
+    --muted-foreground: 217 10% 60%;
 
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 142 76% 36%;             /* Professional teal */
+    --accent-foreground: 210 20% 92%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 210 20% 92%;
 
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 217 91% 60%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 222 20% 5%;
+    --sidebar-foreground: 210 20% 88%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 210 40% 5%;
+    --sidebar-accent: 217 32% 17%;
+    --sidebar-accent-foreground: 210 20% 88%;
+    --sidebar-border: 217 32% 17%;
+    --sidebar-ring: 217 91% 60%;
 
-    /* Professional chart colors - High contrast and distinguishable */
-    --chart-1: 217 91% 60%;   /* Blue */
-    --chart-2: 142 76% 36%;   /* Green */
-    --chart-3: 24 70% 50%;    /* Orange */
-    --chart-4: 269 97% 85%;   /* Purple */
-    --chart-5: 0 84% 60%;     /* Red */
-    --chart-6: 43 89% 38%;    /* Yellow */
-    --chart-7: 197 37% 24%;   /* Teal */
-    --chart-8: 280 100% 70%;  /* Magenta */
-    --chart-9: 120 100% 25%;  /* Dark Green */
-    --chart-10: 38 92% 50%;   /* Amber */
+    /* Professional chart colors - High contrast and corporate */
+    --chart-1: 217 91% 60%;   /* Corporate Blue */
+    --chart-2: 142 76% 36%;   /* Professional Teal */
+    --chart-3: 32 95% 44%;    /* Corporate Orange */
+    --chart-4: 271 81% 56%;   /* Professional Purple */
+    --chart-5: 348 83% 47%;   /* Corporate Red */
+    --chart-6: 47 96% 48%;    /* Corporate Yellow */
+    --chart-7: 173 58% 39%;   /* Dark Teal */
+    --chart-8: 338 77% 52%;   /* Magenta */
+    --chart-9: 84 81% 44%;    /* Lime Green */
+    --chart-10: 24 70% 50%;   /* Amber */
     --chart-11: 262 83% 58%;  /* Violet */
-    --chart-12: 173 58% 39%;  /* Cyan */
+    --chart-12: 199 89% 48%;  /* Sky Blue */
 
-    /* Gradients for professional look */
+    /* Professional gradients */
     --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(142 76% 36%));
-    --gradient-secondary: linear-gradient(135deg, hsl(240 3.7% 15.9%), hsl(240 5.9% 10%));
-    --gradient-accent: linear-gradient(135deg, hsl(24 70% 50%), hsl(269 97% 85%));
+    --gradient-secondary: linear-gradient(135deg, hsl(223 20% 9%), hsl(222 20% 5%));
+    --gradient-accent: linear-gradient(135deg, hsl(32 95% 44%), hsl(271 81% 56%));
     
-    /* Professional shadows */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    /* Professional shadows with blue tint */
+    --shadow-sm: 0 1px 2px 0 hsl(217 91% 60% / 0.1);
+    --shadow-md: 0 4px 6px -1px hsl(217 91% 60% / 0.15), 0 2px 4px -2px hsl(217 91% 60% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(217 91% 60% / 0.2), 0 4px 6px -4px hsl(217 91% 60% / 0.1);
+    --shadow-xl: 0 20px 25px -5px hsl(217 91% 60% / 0.25), 0 8px 10px -6px hsl(217 91% 60% / 0.1);
   }
 
   .dark {
-    /* Keep the same values since we're making dark mode default */
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Same professional palette for consistent dark mode */
+    --background: 222 16% 7%;
+    --foreground: 210 20% 92%;
+    --card: 223 20% 9%;
+    --card-foreground: 210 20% 92%;
+    --popover: 223 20% 9%;
+    --popover-foreground: 210 20% 92%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 210 40% 5%;
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 210 20% 92%;
+    --muted: 215 25% 15%;
+    --muted-foreground: 217 10% 60%;
+    --accent: 142 76% 36%;
+    --accent-foreground: 210 20% 92%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 210 20% 92%;
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 217 91% 60%;
+    --sidebar-background: 222 20% 5%;
+    --sidebar-foreground: 210 20% 88%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 210 40% 5%;
+    --sidebar-accent: 217 32% 17%;
+    --sidebar-accent-foreground: 210 20% 88%;
+    --sidebar-border: 217 32% 17%;
+    --sidebar-ring: 217 91% 60%;
   }
 }
 
 /* Professional styling utilities */
 @layer utilities {
   .glass {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.2);
   }
   
   .gradient-bg {
@@ -125,7 +127,7 @@ All colors MUST be HSL.
   }
   
   .shadow-glow {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+    box-shadow: 0 0 30px hsl(var(--primary) / 0.4);
   }
   
   .border-gradient {
