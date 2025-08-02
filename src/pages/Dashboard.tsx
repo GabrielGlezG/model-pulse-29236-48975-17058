@@ -89,22 +89,22 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header con gradiente */}
-      <div className="sticky top-0 z-10 bg-card/80 backdrop-blur-md border-b border-border/50">
+      <div className="sticky top-0 z-10 bg-card/90 backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold gradient-text">Dashboard de Análisis</h1>
+              <h1 className="text-3xl font-bold text-foreground">Dashboard de Análisis</h1>
               <p className="text-muted-foreground mt-2">
                 Análisis inteligente de precios de vehículos
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <div className="px-3 py-1 bg-primary/10 rounded-full text-sm text-primary border border-primary/20">
+              <div className="px-3 py-1 bg-primary/20 rounded-full text-sm text-primary border border-primary/30">
                 {analytics?.metrics.total_models || 0} modelos
               </div>
-              <div className="px-3 py-1 bg-secondary/50 rounded-full text-sm">
+              <div className="px-3 py-1 bg-secondary/80 rounded-full text-sm text-secondary-foreground">
                 {analytics?.metrics.total_brands || 0} marcas
               </div>
             </div>

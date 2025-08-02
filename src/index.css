@@ -8,111 +8,111 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Ultra Dark Professional Palette */
-    --background: 222 20% 3%;          /* Deeper dark */
-    --foreground: 210 25% 95%;         /* High contrast white */
+    /* EXTREME DARK MODE - Complete Black Theme */
+    --background: 0 0% 2%;             /* Almost pure black */
+    --foreground: 0 0% 98%;            /* Almost pure white */
 
-    --card: 222 25% 5%;                /* Dark card background */
-    --card-foreground: 210 25% 95%;
+    --card: 0 0% 4%;                   /* Very dark cards */
+    --card-foreground: 0 0% 98%;       /* White text on cards */
 
-    --popover: 222 25% 5%;
-    --popover-foreground: 210 25% 95%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 217 91% 65%;            /* Brighter blue accent */
-    --primary-foreground: 222 20% 3%;
+    --primary: 217 100% 70%;           /* Bright electric blue */
+    --primary-foreground: 0 0% 2%;
 
-    --secondary: 217 25% 15%;          /* Lighter dark blue-gray */
-    --secondary-foreground: 210 25% 95%;
+    --secondary: 0 0% 8%;              /* Dark secondary */
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 215 20% 10%;              /* Lighter muted background */
-    --muted-foreground: 217 15% 85%;   /* Much brighter muted text */
+    --muted: 0 0% 6%;                  /* Dark muted background */
+    --muted-foreground: 0 0% 85%;      /* Light gray text */
 
-    --accent: 142 76% 45%;             /* Brighter teal accent */
-    --accent-foreground: 222 20% 3%;
+    --accent: 142 100% 60%;            /* Bright cyan accent */
+    --accent-foreground: 0 0% 2%;
 
-    --destructive: 0 62% 55%;
-    --destructive-foreground: 210 25% 95%;
+    --destructive: 0 100% 60%;         /* Bright red */
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 217 25% 18%;             /* More visible borders */
-    --input: 217 25% 12%;              /* Lighter input background */
-    --ring: 217 91% 65%;
+    --border: 0 0% 15%;                /* Visible borders */
+    --input: 0 0% 8%;                  /* Dark input backgrounds */
+    --ring: 217 100% 70%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 222 25% 2%;
-    --sidebar-foreground: 210 25% 95%;
-    --sidebar-primary: 217 91% 65%;
-    --sidebar-primary-foreground: 222 20% 3%;
-    --sidebar-accent: 217 25% 12%;
-    --sidebar-accent-foreground: 210 25% 95%;
-    --sidebar-border: 217 25% 15%;
-    --sidebar-ring: 217 91% 65%;
+    --sidebar-background: 0 0% 1%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 217 100% 70%;
+    --sidebar-primary-foreground: 0 0% 2%;
+    --sidebar-accent: 0 0% 6%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 217 100% 70%;
 
-    /* Professional chart colors - High contrast and corporate */
-    --chart-1: 217 91% 60%;   /* Corporate Blue */
-    --chart-2: 142 76% 36%;   /* Professional Teal */
-    --chart-3: 32 95% 44%;    /* Corporate Orange */
-    --chart-4: 271 81% 56%;   /* Professional Purple */
-    --chart-5: 348 83% 47%;   /* Corporate Red */
-    --chart-6: 47 96% 48%;    /* Corporate Yellow */
-    --chart-7: 173 58% 39%;   /* Dark Teal */
-    --chart-8: 338 77% 52%;   /* Magenta */
-    --chart-9: 84 81% 44%;    /* Lime Green */
-    --chart-10: 24 70% 50%;   /* Amber */
-    --chart-11: 262 83% 58%;  /* Violet */
-    --chart-12: 199 89% 48%;  /* Sky Blue */
+    /* High contrast chart colors */
+    --chart-1: 217 100% 70%;   /* Electric Blue */
+    --chart-2: 142 100% 60%;   /* Bright Cyan */
+    --chart-3: 32 100% 60%;    /* Bright Orange */
+    --chart-4: 271 100% 70%;   /* Bright Purple */
+    --chart-5: 348 100% 60%;   /* Bright Red */
+    --chart-6: 47 100% 60%;    /* Bright Yellow */
+    --chart-7: 173 100% 50%;   /* Bright Teal */
+    --chart-8: 338 100% 65%;   /* Bright Magenta */
+    --chart-9: 84 100% 55%;    /* Bright Lime */
+    --chart-10: 24 100% 60%;   /* Bright Amber */
+    --chart-11: 262 100% 70%;  /* Bright Violet */
+    --chart-12: 199 100% 60%;  /* Bright Sky */
 
-    /* Professional gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(142 76% 36%));
-    --gradient-secondary: linear-gradient(135deg, hsl(223 20% 9%), hsl(222 20% 5%));
-    --gradient-accent: linear-gradient(135deg, hsl(32 95% 44%), hsl(271 81% 56%));
+    /* High contrast gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(217 100% 70%), hsl(142 100% 60%));
+    --gradient-secondary: linear-gradient(135deg, hsl(0 0% 8%), hsl(0 0% 2%));
+    --gradient-accent: linear-gradient(135deg, hsl(32 100% 60%), hsl(271 100% 70%));
     
-    /* Professional shadows with blue tint */
-    --shadow-sm: 0 1px 2px 0 hsl(217 91% 60% / 0.1);
-    --shadow-md: 0 4px 6px -1px hsl(217 91% 60% / 0.15), 0 2px 4px -2px hsl(217 91% 60% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(217 91% 60% / 0.2), 0 4px 6px -4px hsl(217 91% 60% / 0.1);
-    --shadow-xl: 0 20px 25px -5px hsl(217 91% 60% / 0.25), 0 8px 10px -6px hsl(217 91% 60% / 0.1);
+    /* High contrast shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(217 100% 70% / 0.3);
+    --shadow-md: 0 4px 6px -1px hsl(217 100% 70% / 0.4), 0 2px 4px -2px hsl(217 100% 70% / 0.3);
+    --shadow-lg: 0 10px 15px -3px hsl(217 100% 70% / 0.5), 0 4px 6px -4px hsl(217 100% 70% / 0.3);
+    --shadow-xl: 0 20px 25px -5px hsl(217 100% 70% / 0.6), 0 8px 10px -6px hsl(217 100% 70% / 0.3);
   }
 
   .dark {
-    /* Inherit ultra dark theme */
-    --background: 222 20% 4%;
-    --foreground: 210 25% 98%;
-    --card: 222 25% 6%;
-    --card-foreground: 210 25% 98%;
-    --popover: 222 25% 6%;
-    --popover-foreground: 210 25% 98%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 222 20% 4%;
-    --secondary: 217 25% 12%;
-    --secondary-foreground: 210 25% 98%;
-    --muted: 215 20% 8%;
-    --muted-foreground: 217 15% 75%;
-    --accent: 142 76% 36%;
-    --accent-foreground: 222 20% 4%;
-    --destructive: 0 62% 50%;
-    --destructive-foreground: 210 25% 98%;
-    --border: 217 25% 12%;
-    --input: 217 25% 8%;
-    --ring: 217 91% 60%;
-    --sidebar-background: 222 25% 3%;
-    --sidebar-foreground: 210 25% 98%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 222 20% 4%;
-    --sidebar-accent: 217 25% 8%;
-    --sidebar-accent-foreground: 210 25% 98%;
-    --sidebar-border: 217 25% 8%;
-    --sidebar-ring: 217 91% 60%;
+    /* Same extreme dark theme */
+    --background: 0 0% 2%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 217 100% 70%;
+    --primary-foreground: 0 0% 2%;
+    --secondary: 0 0% 8%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 6%;
+    --muted-foreground: 0 0% 85%;
+    --accent: 142 100% 60%;
+    --accent-foreground: 0 0% 2%;
+    --destructive: 0 100% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 15%;
+    --input: 0 0% 8%;
+    --ring: 217 100% 70%;
+    --sidebar-background: 0 0% 1%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 217 100% 70%;
+    --sidebar-primary-foreground: 0 0% 2%;
+    --sidebar-accent: 0 0% 6%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 217 100% 70%;
   }
 }
 
-/* Professional styling utilities */
+/* Extreme dark mode utilities */
 @layer utilities {
   .glass {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
   }
   
   .gradient-bg {
@@ -127,11 +127,20 @@ All colors MUST be HSL.
   }
   
   .shadow-glow {
-    box-shadow: 0 0 30px hsl(var(--primary) / 0.4);
+    box-shadow: 0 0 40px hsl(var(--primary) / 0.6);
   }
   
   .border-gradient {
-    border: 1px solid;
+    border: 2px solid;
     border-image: var(--gradient-primary) 1;
+  }
+  
+  /* Force white text on everything */
+  .text-force-white {
+    color: hsl(0 0% 98%) !important;
+  }
+  
+  .text-force-muted {
+    color: hsl(0 0% 85%) !important;
   }
 }
