@@ -607,11 +607,13 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-4">
-              {(analytics.chart_data?.prices_by_brand || []).map((brand, index) => (
+              {(analytics.chart_data?.prices_by_brand || [])
+                .slice((brandPage - 1) * brandPageSize, brandPage * brandPageSize)
+                .map((brand, index) => (
                 <div key={index} className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:border-primary/50 transition-colors">
                   <div className="flex-1">
                     <div className="flex items-center gap-3">
-                      <h4 className="font-semibold text-lg">{brand.brand}</h4>
+                      <h4 className="font-semibold text-lg text-foreground">{brand.brand}</h4>
                       <Badge variant={brand.value_score < -10 ? "default" : brand.value_score > 10 ? "destructive" : "secondary"}>
                         {brand.value_score < -10 ? "Buen Valor" : brand.value_score > 10 ? "Premium" : "Estándar"}
                       </Badge>
@@ -634,6 +636,18 @@ export default function Dashboard() {
                 </div>
               ))}
             </div>
+            
+            {analytics.chart_data?.prices_by_brand && analytics.chart_data.prices_by_brand.length > brandPageSize && (
+              <PaginationControls
+                currentPage={brandPage}
+                totalPages={Math.ceil(analytics.chart_data.prices_by_brand.length / brandPageSize)}
+                pageSize={brandPageSize}
+                total={analytics.chart_data.prices_by_brand.length}
+                onPageChange={setBrandPage}
+                onPageSizeChange={setBrandPageSize}
+                isLoading={isLoading}
+              />
+            )}
           </CardContent>
         </Card>
 

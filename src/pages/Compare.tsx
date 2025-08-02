@@ -78,15 +78,15 @@ export default function Compare() {
   }
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-600'
-    if (score >= 60) return 'text-yellow-600'
-    return 'text-red-600'
+    if (score >= 80) return 'text-green-400'
+    if (score >= 60) return 'text-yellow-400'
+    return 'text-red-400'
   }
 
   const getScoreBadge = (score: number) => {
-    if (score >= 80) return <Badge className="bg-green-100 text-green-800">Excelente</Badge>
-    if (score >= 60) return <Badge className="bg-yellow-100 text-yellow-800">Bueno</Badge>
-    return <Badge className="bg-red-100 text-red-800">Regular</Badge>
+    if (score >= 80) return <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Excelente</Badge>
+    if (score >= 60) return <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">Bueno</Badge>
+    return <Badge className="bg-red-500/20 text-red-400 border-red-500/30">Regular</Badge>
   }
 
   const addProduct = (productId: string) => {
@@ -212,10 +212,10 @@ export default function Compare() {
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <p className="font-medium">{product.brand} {product.model}</p>
-                    <p className="text-sm text-muted-foreground">{product.category}</p>
-                    <p className="text-sm font-semibold text-green-600">
-                      {formatPrice(product.latest_price)}
-                    </p>
+                     <p className="text-sm text-muted-foreground">{product.category}</p>
+                     <p className="text-sm font-semibold text-green-400">
+                       {formatPrice(product.latest_price)}
+                     </p>
                   </div>
                   {selectedProducts.includes(product.id) ? (
                     <X className="h-4 w-4 text-red-500" />
@@ -227,14 +227,14 @@ export default function Compare() {
             ))}
           </div>
 
-          {selectedProducts.length > 0 && (
-            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-800">
-                <strong>{selectedProducts.length}/4 modelos seleccionados</strong> - 
-                {selectedProducts.length < 4 ? ' Puedes agregar más modelos' : ' Máximo alcanzado'}
-              </p>
-            </div>
-          )}
+           {selectedProducts.length > 0 && (
+             <div className="mt-4 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+               <p className="text-sm text-foreground">
+                 <strong>{selectedProducts.length}/4 modelos seleccionados</strong> - 
+                 {selectedProducts.length < 4 ? ' Puedes agregar más modelos' : ' Máximo alcanzado'}
+               </p>
+             </div>
+           )}
         </CardContent>
       </Card>
 
@@ -267,11 +267,11 @@ export default function Compare() {
                     <tr className="border-b">
                       <td className="p-3 font-medium">Precio Actual</td>
                       {comparisonData.map((item, index) => (
-                        <td key={index} className="p-3 text-center">
-                          <span className="text-lg font-bold text-green-600">
-                            {formatPrice(item.product.latest_price || 0)}
-                          </span>
-                        </td>
+                         <td key={index} className="p-3 text-center">
+                           <span className="text-lg font-bold text-green-400">
+                             {formatPrice(item.product.latest_price || 0)}
+                           </span>
+                         </td>
                       ))}
                     </tr>
                     <tr className="border-b">

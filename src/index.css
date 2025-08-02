@@ -9,44 +9,44 @@ All colors MUST be HSL.
 @layer base {
   :root {
     /* Ultra Dark Professional Palette */
-    --background: 222 20% 4%;          /* Deep dark */
-    --foreground: 210 25% 98%;         /* Near white */
+    --background: 222 20% 3%;          /* Deeper dark */
+    --foreground: 210 25% 95%;         /* High contrast white */
 
-    --card: 222 25% 6%;                /* Slightly lighter dark */
-    --card-foreground: 210 25% 98%;
+    --card: 222 25% 5%;                /* Dark card background */
+    --card-foreground: 210 25% 95%;
 
-    --popover: 222 25% 6%;
-    --popover-foreground: 210 25% 98%;
+    --popover: 222 25% 5%;
+    --popover-foreground: 210 25% 95%;
 
-    --primary: 217 91% 60%;            /* Bright blue accent */
-    --primary-foreground: 222 20% 4%;
+    --primary: 217 91% 65%;            /* Brighter blue accent */
+    --primary-foreground: 222 20% 3%;
 
-    --secondary: 217 25% 12%;          /* Very dark blue-gray */
-    --secondary-foreground: 210 25% 98%;
+    --secondary: 217 25% 15%;          /* Lighter dark blue-gray */
+    --secondary-foreground: 210 25% 95%;
 
-    --muted: 215 20% 8%;               /* Dark muted */
-    --muted-foreground: 217 15% 75%;
+    --muted: 215 20% 10%;              /* Lighter muted background */
+    --muted-foreground: 217 15% 85%;   /* Much brighter muted text */
 
-    --accent: 142 76% 36%;             /* Teal accent */
-    --accent-foreground: 222 20% 4%;
+    --accent: 142 76% 45%;             /* Brighter teal accent */
+    --accent-foreground: 222 20% 3%;
 
-    --destructive: 0 62% 50%;
-    --destructive-foreground: 210 25% 98%;
+    --destructive: 0 62% 55%;
+    --destructive-foreground: 210 25% 95%;
 
-    --border: 217 25% 12%;
-    --input: 217 25% 8%;
-    --ring: 217 91% 60%;
+    --border: 217 25% 18%;             /* More visible borders */
+    --input: 217 25% 12%;              /* Lighter input background */
+    --ring: 217 91% 65%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 222 25% 3%;
-    --sidebar-foreground: 210 25% 98%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 222 20% 4%;
-    --sidebar-accent: 217 25% 8%;
-    --sidebar-accent-foreground: 210 25% 98%;
-    --sidebar-border: 217 25% 8%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-background: 222 25% 2%;
+    --sidebar-foreground: 210 25% 95%;
+    --sidebar-primary: 217 91% 65%;
+    --sidebar-primary-foreground: 222 20% 3%;
+    --sidebar-accent: 217 25% 12%;
+    --sidebar-accent-foreground: 210 25% 95%;
+    --sidebar-border: 217 25% 15%;
+    --sidebar-ring: 217 91% 65%;
 
     /* Professional chart colors - High contrast and corporate */
     --chart-1: 217 91% 60%;   /* Corporate Blue */
