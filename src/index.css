@@ -8,139 +8,142 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* EXTREME DARK MODE - Complete Black Theme */
-    --background: 0 0% 2%;             /* Almost pure black */
-    --foreground: 0 0% 98%;            /* Almost pure white */
+    /* EXTREME DARK MODE - Pure Black Theme */
+    --background: 0 0% 1%;             /* Pure black background */
+    --foreground: 0 0% 100%;           /* Pure white text */
 
-    --card: 0 0% 4%;                   /* Very dark cards */
-    --card-foreground: 0 0% 98%;       /* White text on cards */
+    --card: 0 0% 3%;                   /* Very dark cards */
+    --card-foreground: 0 0% 100%;      /* White text on cards */
 
-    --popover: 0 0% 4%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 3%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 217 100% 70%;           /* Bright electric blue */
-    --primary-foreground: 0 0% 2%;
+    --primary: 217 100% 75%;           /* Very bright blue */
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 0 0% 8%;              /* Dark secondary */
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 0 0% 10%;             /* Dark secondary */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 6%;                  /* Dark muted background */
-    --muted-foreground: 0 0% 85%;      /* Light gray text */
+    --muted: 0 0% 5%;                  /* Dark muted background */
+    --muted-foreground: 0 0% 90%;      /* Very light gray text */
 
-    --accent: 142 100% 60%;            /* Bright cyan accent */
-    --accent-foreground: 0 0% 2%;
+    --accent: 142 100% 65%;            /* Very bright cyan */
+    --accent-foreground: 0 0% 0%;
 
-    --destructive: 0 100% 60%;         /* Bright red */
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 100% 65%;         /* Very bright red */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 15%;                /* Visible borders */
+    --border: 0 0% 20%;                /* Visible borders */
     --input: 0 0% 8%;                  /* Dark input backgrounds */
-    --ring: 217 100% 70%;
+    --ring: 217 100% 75%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 1%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 217 100% 70%;
-    --sidebar-primary-foreground: 0 0% 2%;
-    --sidebar-accent: 0 0% 6%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 0 0% 15%;
-    --sidebar-ring: 217 100% 70%;
+    --sidebar-background: 0 0% 0%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 217 100% 75%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 5%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 217 100% 75%;
 
-    /* High contrast chart colors */
-    --chart-1: 217 100% 70%;   /* Electric Blue */
-    --chart-2: 142 100% 60%;   /* Bright Cyan */
-    --chart-3: 32 100% 60%;    /* Bright Orange */
-    --chart-4: 271 100% 70%;   /* Bright Purple */
-    --chart-5: 348 100% 60%;   /* Bright Red */
-    --chart-6: 47 100% 60%;    /* Bright Yellow */
-    --chart-7: 173 100% 50%;   /* Bright Teal */
-    --chart-8: 338 100% 65%;   /* Bright Magenta */
-    --chart-9: 84 100% 55%;    /* Bright Lime */
-    --chart-10: 24 100% 60%;   /* Bright Amber */
-    --chart-11: 262 100% 70%;  /* Bright Violet */
-    --chart-12: 199 100% 60%;  /* Bright Sky */
+    /* Ultra high contrast chart colors */
+    --chart-1: 217 100% 75%;   /* Electric Blue */
+    --chart-2: 142 100% 65%;   /* Bright Cyan */
+    --chart-3: 32 100% 65%;    /* Bright Orange */
+    --chart-4: 271 100% 75%;   /* Bright Purple */
+    --chart-5: 0 100% 65%;     /* Bright Red */
+    --chart-6: 47 100% 65%;    /* Bright Yellow */
+    --chart-7: 173 100% 55%;   /* Bright Teal */
+    --chart-8: 338 100% 70%;   /* Bright Magenta */
+    --chart-9: 84 100% 60%;    /* Bright Lime */
+    --chart-10: 24 100% 65%;   /* Bright Amber */
+    --chart-11: 262 100% 75%;  /* Bright Violet */
+    --chart-12: 199 100% 65%;  /* Bright Sky */
 
-    /* High contrast gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(217 100% 70%), hsl(142 100% 60%));
-    --gradient-secondary: linear-gradient(135deg, hsl(0 0% 8%), hsl(0 0% 2%));
-    --gradient-accent: linear-gradient(135deg, hsl(32 100% 60%), hsl(271 100% 70%));
+    /* No gradients - solid colors only */
+    --gradient-primary: hsl(217 100% 75%);
+    --gradient-secondary: hsl(0 0% 3%);
+    --gradient-accent: hsl(32 100% 65%);
     
     /* High contrast shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(217 100% 70% / 0.3);
-    --shadow-md: 0 4px 6px -1px hsl(217 100% 70% / 0.4), 0 2px 4px -2px hsl(217 100% 70% / 0.3);
-    --shadow-lg: 0 10px 15px -3px hsl(217 100% 70% / 0.5), 0 4px 6px -4px hsl(217 100% 70% / 0.3);
-    --shadow-xl: 0 20px 25px -5px hsl(217 100% 70% / 0.6), 0 8px 10px -6px hsl(217 100% 70% / 0.3);
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.8);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.9), 0 2px 4px -2px hsl(0 0% 0% / 0.8);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 1), 0 4px 6px -4px hsl(0 0% 0% / 0.9);
+    --shadow-xl: 0 20px 25px -5px hsl(0 0% 0% / 1), 0 8px 10px -6px hsl(0 0% 0% / 0.9);
   }
 
   .dark {
     /* Same extreme dark theme */
-    --background: 0 0% 2%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 4%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 4%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 217 100% 70%;
-    --primary-foreground: 0 0% 2%;
-    --secondary: 0 0% 8%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 6%;
-    --muted-foreground: 0 0% 85%;
-    --accent: 142 100% 60%;
-    --accent-foreground: 0 0% 2%;
-    --destructive: 0 100% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 15%;
+    --background: 0 0% 1%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 3%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 3%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 217 100% 75%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 5%;
+    --muted-foreground: 0 0% 90%;
+    --accent: 142 100% 65%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 100% 65%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 20%;
     --input: 0 0% 8%;
-    --ring: 217 100% 70%;
-    --sidebar-background: 0 0% 1%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 217 100% 70%;
-    --sidebar-primary-foreground: 0 0% 2%;
-    --sidebar-accent: 0 0% 6%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 0 0% 15%;
-    --sidebar-ring: 217 100% 70%;
+    --ring: 217 100% 75%;
+    --sidebar-background: 0 0% 0%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 217 100% 75%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 5%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 217 100% 75%;
   }
 }
 
-/* Extreme dark mode utilities */
+/* Pure dark mode utilities - NO GRADIENTS */
 @layer utilities {
   .glass {
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.01);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.9);
   }
   
   .gradient-bg {
-    background: var(--gradient-primary);
+    background: hsl(var(--primary));
   }
   
   .gradient-text {
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: hsl(var(--primary));
   }
   
   .shadow-glow {
-    box-shadow: 0 0 40px hsl(var(--primary) / 0.6);
+    box-shadow: 0 0 40px hsl(var(--primary) / 0.8);
   }
   
   .border-gradient {
-    border: 2px solid;
-    border-image: var(--gradient-primary) 1;
+    border: 2px solid hsl(var(--primary));
   }
   
-  /* Force white text on everything */
+  /* Force consistent colors */
   .text-force-white {
-    color: hsl(0 0% 98%) !important;
+    color: hsl(0 0% 100%) !important;
   }
   
   .text-force-muted {
-    color: hsl(0 0% 85%) !important;
+    color: hsl(0 0% 90%) !important;
+  }
+  
+  /* Responsive utilities */
+  .responsive-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
 }

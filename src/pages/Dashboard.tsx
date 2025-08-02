@@ -129,7 +129,7 @@ export default function Dashboard() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
+            <div className="responsive-grid lg:grid-cols-3 xl:grid-cols-4">
               <Select value={filters.brand || "all"} onValueChange={(value) => setFilters(f => ({ ...f, brand: value === "all" ? "" : value }))}>
                 <SelectTrigger className="h-11">
                   <SelectValue placeholder="Todas las marcas" />
@@ -185,12 +185,12 @@ export default function Dashboard() {
         </Card>
 
         {/* Métricas principales con diseño tipo dashboard */}
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8">
-          <Card className="glass border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300">
+        <div className="responsive-grid lg:grid-cols-4 xl:grid-cols-4">
+          <Card className="glass border-primary/30 shadow-lg hover:shadow-xl transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-muted-foreground">Total Modelos</CardTitle>
-              <div className="w-8 h-8 rounded-lg bg-chart-1/20 flex items-center justify-center">
-                <Package className="h-4 w-4 text-chart-1" />
+              <CardTitle className="text-sm font-semibold text-foreground">Total Modelos</CardTitle>
+              <div className="w-8 h-8 rounded-lg bg-chart-1/30 flex items-center justify-center">
+                <Package className="h-4 w-4" style={{ color: 'hsl(var(--chart-1))' }} />
               </div>
             </CardHeader>
             <CardContent>
@@ -201,11 +201,11 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="glass border-chart-2/20 shadow-lg hover:shadow-xl transition-all duration-300">
+          <Card className="glass border-chart-2/30 shadow-lg hover:shadow-xl transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-muted-foreground">Precio Promedio</CardTitle>
-              <div className="w-8 h-8 rounded-lg bg-chart-2/20 flex items-center justify-center">
-                <DollarSign className="h-4 w-4 text-chart-2" />
+              <CardTitle className="text-sm font-semibold text-foreground">Precio Promedio</CardTitle>
+              <div className="w-8 h-8 rounded-lg bg-chart-2/30 flex items-center justify-center">
+                <DollarSign className="h-4 w-4" style={{ color: 'hsl(var(--chart-2))' }} />
               </div>
             </CardHeader>
             <CardContent>
@@ -216,11 +216,11 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="glass border-chart-3/20 shadow-lg hover:shadow-xl transition-all duration-300">
+          <Card className="glass border-chart-3/30 shadow-lg hover:shadow-xl transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-muted-foreground">Precio Mediano</CardTitle>
-              <div className="w-8 h-8 rounded-lg bg-chart-3/20 flex items-center justify-center">
-                <Target className="h-4 w-4 text-chart-3" />
+              <CardTitle className="text-sm font-semibold text-foreground">Precio Mediano</CardTitle>
+              <div className="w-8 h-8 rounded-lg bg-chart-3/30 flex items-center justify-center">
+                <Target className="h-4 w-4" style={{ color: 'hsl(var(--chart-3))' }} />
               </div>
             </CardHeader>
             <CardContent>
@@ -231,11 +231,11 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="glass border-chart-4/20 shadow-lg hover:shadow-xl transition-all duration-300">
+          <Card className="glass border-chart-4/30 shadow-lg hover:shadow-xl transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-muted-foreground">Rango de Precios</CardTitle>
-              <div className="w-8 h-8 rounded-lg bg-chart-4/20 flex items-center justify-center">
-                <TrendingUp className="h-4 w-4 text-chart-4" />
+              <CardTitle className="text-sm font-semibold text-foreground">Rango de Precios</CardTitle>
+              <div className="w-8 h-8 rounded-lg bg-chart-4/30 flex items-center justify-center">
+                <TrendingUp className="h-4 w-4" style={{ color: 'hsl(var(--chart-4))' }} />
               </div>
             </CardHeader>
             <CardContent>
@@ -246,11 +246,11 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="glass border-chart-5/20 shadow-lg hover:shadow-xl transition-all duration-300">
+          <Card className="glass border-chart-5/30 shadow-lg hover:shadow-xl transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-muted-foreground">Última Actualización</CardTitle>
-              <div className="w-8 h-8 rounded-lg bg-chart-5/20 flex items-center justify-center">
-                <CalendarIcon className="h-4 w-4 text-chart-5" />
+              <CardTitle className="text-sm font-semibold text-foreground">Última Actualización</CardTitle>
+              <div className="w-8 h-8 rounded-lg bg-chart-5/30 flex items-center justify-center">
+                <CalendarIcon className="h-4 w-4" style={{ color: 'hsl(var(--chart-5))' }} />
               </div>
             </CardHeader>
             <CardContent>
@@ -264,11 +264,11 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="glass border-chart-6/20 shadow-lg hover:shadow-xl transition-all duration-300">
+          <Card className="glass border-chart-6/30 shadow-lg hover:shadow-xl transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-muted-foreground">Datos Históricos</CardTitle>
-              <div className="w-8 h-8 rounded-lg bg-chart-6/20 flex items-center justify-center">
-                <TrendingUp className="h-4 w-4 text-chart-6" />
+              <CardTitle className="text-sm font-semibold text-foreground">Datos Históricos</CardTitle>
+              <div className="w-8 h-8 rounded-lg bg-chart-6/30 flex items-center justify-center">
+                <TrendingUp className="h-4 w-4" style={{ color: 'hsl(var(--chart-6))' }} />
               </div>
             </CardHeader>
             <CardContent>
@@ -281,11 +281,11 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="glass border-chart-7/20 shadow-lg hover:shadow-xl transition-all duration-300">
+          <Card className="glass border-chart-7/30 shadow-lg hover:shadow-xl transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-muted-foreground">Q1 - Q3</CardTitle>
-              <div className="w-8 h-8 rounded-lg bg-chart-7/20 flex items-center justify-center">
-                <BarChart3 className="h-4 w-4 text-chart-7" />
+              <CardTitle className="text-sm font-semibold text-foreground">Q1 - Q3</CardTitle>
+              <div className="w-8 h-8 rounded-lg bg-chart-7/30 flex items-center justify-center">
+                <BarChart3 className="h-4 w-4" style={{ color: 'hsl(var(--chart-7))' }} />
               </div>
             </CardHeader>
             <CardContent>
@@ -298,14 +298,14 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="glass border-chart-8/20 shadow-lg hover:shadow-xl transition-all duration-300">
+          <Card className="glass border-chart-8/30 shadow-lg hover:shadow-xl transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-muted-foreground">Variabilidad</CardTitle>
-              <div className="w-8 h-8 rounded-lg bg-chart-8/20 flex items-center justify-center">
+              <CardTitle className="text-sm font-semibold text-foreground">Variabilidad</CardTitle>
+              <div className="w-8 h-8 rounded-lg bg-chart-8/30 flex items-center justify-center">
                 {analytics.metrics.variation_coefficient > 50 ? (
-                  <AlertTriangle className="h-4 w-4 text-chart-8" />
+                  <AlertTriangle className="h-4 w-4" style={{ color: 'hsl(var(--chart-8))' }} />
                 ) : (
-                  <Award className="h-4 w-4 text-chart-8" />
+                  <Award className="h-4 w-4" style={{ color: 'hsl(var(--chart-8))' }} />
                 )}
               </div>
             </CardHeader>
@@ -508,8 +508,9 @@ export default function Dashboard() {
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ range, percent }) => `${range} ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={120}
+                    label={false}
+                    outerRadius={100}
+                    innerRadius={40}
                     fill="#8884d8"
                     dataKey="count"
                   >
@@ -518,11 +519,22 @@ export default function Dashboard() {
                     ))}
                   </Pie>
                   <Tooltip 
+                    formatter={(value: number, name: string, props: any) => [
+                      `${value} modelos`, 
+                      `${props.payload.range} (${((value / (analytics.chart_data?.price_distribution?.reduce((sum, item) => sum + item.count, 0) || 1)) * 100).toFixed(1)}%)`
+                    ]}
                     contentStyle={{
                       backgroundColor: 'hsl(var(--card))',
                       border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px'
+                      borderRadius: '8px',
+                      color: 'hsl(var(--foreground))'
                     }}
+                  />
+                  <Legend 
+                    formatter={(value: any, entry: any) => {
+                      return `${entry.payload?.range || 'N/A'}: ${entry.payload?.count || 0} modelos`
+                    }}
+                    wrapperStyle={{ paddingTop: '20px', fontSize: '12px', color: 'hsl(var(--foreground))' }}
                   />
                 </PieChart>
               </ResponsiveContainer>
