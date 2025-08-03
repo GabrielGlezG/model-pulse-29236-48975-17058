@@ -90,22 +90,36 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Header */}
-      <div className="sticky top-0 z-10 bg-card border-b border-border">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground">Dashboard de Análisis</h1>
-              <p className="text-muted-foreground mt-2">
-                Análisis inteligente de precios de vehículos
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="px-3 py-1 bg-primary/20 rounded-full text-sm text-primary border border-primary/30">
-                {analytics?.metrics.total_models || 0} modelos
+      {/* Header Heroico */}
+      <div className="relative bg-gradient-to-br from-primary/5 via-background to-accent/5 border-b border-border overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        <div className="container mx-auto px-4 py-12 relative">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 animate-fade-in">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center shadow-lg">
+                  <BarChart3 className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+                    Dashboard Ejecutivo
+                  </h1>
+                  <p className="text-muted-foreground text-lg">
+                    Inteligencia de mercado automotriz en tiempo real
+                  </p>
+                </div>
               </div>
-              <div className="px-3 py-1 bg-secondary/80 rounded-full text-sm text-secondary-foreground">
-                {analytics?.metrics.total_brands || 0} marcas
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="px-4 py-2 bg-primary/20 rounded-xl text-sm text-primary border border-primary/30 shadow-sm hover-scale">
+                <span className="font-bold">{analytics?.metrics.total_models || 0}</span> modelos
+              </div>
+              <div className="px-4 py-2 bg-accent/20 rounded-xl text-sm text-accent border border-accent/30 shadow-sm hover-scale">
+                <span className="font-bold">{analytics?.metrics.total_brands || 0}</span> marcas
+              </div>
+              <div className="px-4 py-2 bg-card rounded-xl text-sm border shadow-sm hover-scale">
+                <span className="font-medium">{formatPrice(analytics?.metrics.avg_price || 0)}</span>
+                <span className="text-muted-foreground ml-1">promedio</span>
               </div>
             </div>
           </div>
@@ -113,212 +127,271 @@ export default function Dashboard() {
       </div>
 
       <div className="container mx-auto px-4 py-6 space-y-8">
-        {/* Filtros mejorados */}
-        <Card className="glass shadow-lg">
-          <CardHeader className="pb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                <BarChart3 className="h-5 w-5 text-primary" />
+        {/* Panel de Control Inteligente */}
+        <Card className="glass shadow-xl border-primary/20 hover:shadow-2xl transition-all duration-300 animate-fade-in">
+          <CardHeader className="pb-6 bg-gradient-to-r from-primary/5 to-accent/5 rounded-t-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center shadow-lg">
+                  <Target className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <CardTitle className="text-2xl font-bold">Panel de Control</CardTitle>
+                  <CardDescription className="text-base">
+                    Configura tus filtros para obtener insights precisos
+                  </CardDescription>
+                </div>
               </div>
-              <div>
-                <CardTitle className="text-xl">Filtros de Análisis</CardTitle>
-                <CardDescription>
-                  Personaliza la vista de datos según tus necesidades
-                </CardDescription>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="animate-pulse">
+                  {isRefetching ? "Actualizando..." : "En línea"}
+                </Badge>
               </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="responsive-grid lg:grid-cols-3 xl:grid-cols-4">
-              <Select value={filters.brand || "all"} onValueChange={(value) => setFilters(f => ({ ...f, brand: value === "all" ? "" : value }))}>
-                <SelectTrigger className="h-11">
-                  <SelectValue placeholder="Todas las marcas" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todas las marcas</SelectItem>
-                  {brands?.map(brand => (
-                    <SelectItem key={brand} value={brand}>{brand}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+          <CardContent className="pt-6">
+            <div className="grid gap-6 lg:grid-cols-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Marca</label>
+                <Select value={filters.brand || "all"} onValueChange={(value) => setFilters(f => ({ ...f, brand: value === "all" ? "" : value }))}>
+                  <SelectTrigger className="h-12 hover-scale transition-all duration-200">
+                    <SelectValue placeholder="Todas las marcas" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todas las marcas</SelectItem>
+                    {brands?.map(brand => (
+                      <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-              <Select value={filters.category || "all"} onValueChange={(value) => setFilters(f => ({ ...f, category: value === "all" ? "" : value }))}>
-                <SelectTrigger className="h-11">
-                  <SelectValue placeholder="Todas las categorías" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todas las categorías</SelectItem>
-                  {categories?.map(category => (
-                    <SelectItem key={category} value={category}>{category}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Categoría</label>
+                <Select value={filters.category || "all"} onValueChange={(value) => setFilters(f => ({ ...f, category: value === "all" ? "" : value }))}>
+                  <SelectTrigger className="h-12 hover-scale transition-all duration-200">
+                    <SelectValue placeholder="Todas las categorías" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todas las categorías</SelectItem>
+                    {categories?.map(category => (
+                      <SelectItem key={category} value={category}>{category}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-              <Select value={filters.model || "all"} onValueChange={(value) => setFilters(f => ({ ...f, model: value === "all" ? "" : value }))}>
-                <SelectTrigger className="h-11">
-                  <SelectValue placeholder="Todos los modelos" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos los modelos</SelectItem>
-                  {models?.map(model => (
-                    <SelectItem key={`${model.brand}-${model.model}`} value={model.model}>
-                      {model.brand} {model.model}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Modelo</label>
+                <Select value={filters.model || "all"} onValueChange={(value) => setFilters(f => ({ ...f, model: value === "all" ? "" : value }))}>
+                  <SelectTrigger className="h-12 hover-scale transition-all duration-200">
+                    <SelectValue placeholder="Todos los modelos" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos los modelos</SelectItem>
+                    {models?.map(model => (
+                      <SelectItem key={`${model.brand}-${model.model}`} value={model.model}>
+                        {model.brand} {model.model}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-              <Button 
-                onClick={() => refetch()} 
-                disabled={isRefetching}
-                className="h-11 bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all duration-200"
-              >
-                {isRefetching ? (
-                  <RefreshCw className="h-4 w-4 animate-spin mr-2" />
-                ) : (
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                )}
-                Actualizar
-              </Button>
+              <div className="flex flex-col justify-end">
+                <Button 
+                  onClick={() => refetch()} 
+                  disabled={isRefetching}
+                  size="lg"
+                  className="h-12 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-300 hover-scale"
+                >
+                  {isRefetching ? (
+                    <>
+                      <RefreshCw className="h-5 w-5 animate-spin mr-2" />
+                      Actualizando...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="h-5 w-5 mr-2" />
+                      Actualizar Datos
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Métricas principales con diseño tipo dashboard */}
-        <div className="responsive-grid lg:grid-cols-4 xl:grid-cols-4">
-          <Card className="glass border-primary/30 shadow-lg hover:shadow-xl transition-all duration-300">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-foreground">Total Modelos</CardTitle>
-              <div className="w-8 h-8 rounded-lg bg-chart-1/30 flex items-center justify-center">
-                <Package className="h-4 w-4" style={{ color: 'hsl(var(--chart-1))' }} />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">{analytics.metrics.total_models}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {analytics.metrics.total_brands} marcas
-              </p>
-            </CardContent>
-          </Card>
+        {/* Métricas Ejecutivas */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-3 animate-fade-in">
+            <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+              <BarChart3 className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold">Métricas Clave</h2>
+              <p className="text-muted-foreground">Resumen ejecutivo del mercado</p>
+            </div>
+          </div>
 
-          <Card className="glass border-chart-2/30 shadow-lg hover:shadow-xl transition-all duration-300">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-foreground">Precio Promedio</CardTitle>
-              <div className="w-8 h-8 rounded-lg bg-chart-2/30 flex items-center justify-center">
-                <DollarSign className="h-4 w-4" style={{ color: 'hsl(var(--chart-2))' }} />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">{formatPrice(analytics.metrics.avg_price)}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                CV: {analytics.metrics.variation_coefficient.toFixed(1)}%
-              </p>
-            </CardContent>
-          </Card>
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+            {/* Métricas principales */}
+            <Card className="glass border-chart-1/30 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 animate-fade-in group">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Total Modelos</CardTitle>
+                  <div className="w-10 h-10 rounded-xl bg-chart-1/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <Package className="h-5 w-5" style={{ color: 'hsl(var(--chart-1))' }} />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="text-3xl font-bold text-foreground mb-2">{analytics.metrics.total_models}</div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-xs">
+                    {analytics.metrics.total_brands} marcas
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
 
-          <Card className="glass border-chart-3/30 shadow-lg hover:shadow-xl transition-all duration-300">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-foreground">Precio Mediano</CardTitle>
-              <div className="w-8 h-8 rounded-lg bg-chart-3/30 flex items-center justify-center">
-                <Target className="h-4 w-4" style={{ color: 'hsl(var(--chart-3))' }} />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">{formatPrice(analytics.metrics.median_price)}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                Valor central
-              </p>
-            </CardContent>
-          </Card>
+            <Card className="glass border-chart-2/30 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 animate-fade-in group" style={{ animationDelay: '100ms' }}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Precio Promedio</CardTitle>
+                  <div className="w-10 h-10 rounded-xl bg-chart-2/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <DollarSign className="h-5 w-5" style={{ color: 'hsl(var(--chart-2))' }} />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="text-3xl font-bold text-foreground mb-2">{formatPrice(analytics.metrics.avg_price)}</div>
+                <div className="flex items-center gap-2">
+                  <Badge variant={analytics.metrics.variation_coefficient > 30 ? "destructive" : "default"} className="text-xs">
+                    CV: {analytics.metrics.variation_coefficient.toFixed(1)}%
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
 
-          <Card className="glass border-chart-4/30 shadow-lg hover:shadow-xl transition-all duration-300">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-foreground">Rango de Precios</CardTitle>
-              <div className="w-8 h-8 rounded-lg bg-chart-4/30 flex items-center justify-center">
-                <TrendingUp className="h-4 w-4" style={{ color: 'hsl(var(--chart-4))' }} />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-xl font-bold text-foreground">{formatPrice(analytics.metrics.price_range)}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {formatPrice(analytics.metrics.min_price)} - {formatPrice(analytics.metrics.max_price)}
-              </p>
-            </CardContent>
-          </Card>
+            <Card className="glass border-chart-3/30 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 animate-fade-in group" style={{ animationDelay: '200ms' }}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Precio Mediano</CardTitle>
+                  <div className="w-10 h-10 rounded-xl bg-chart-3/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <Target className="h-5 w-5" style={{ color: 'hsl(var(--chart-3))' }} />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="text-3xl font-bold text-foreground mb-2">{formatPrice(analytics.metrics.median_price)}</div>
+                <p className="text-xs text-muted-foreground">Valor central del mercado</p>
+              </CardContent>
+            </Card>
 
-          <Card className="glass border-chart-5/30 shadow-lg hover:shadow-xl transition-all duration-300">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-foreground">Última Actualización</CardTitle>
-              <div className="w-8 h-8 rounded-lg bg-chart-5/30 flex items-center justify-center">
-                <CalendarIcon className="h-4 w-4" style={{ color: 'hsl(var(--chart-5))' }} />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-lg font-bold text-foreground">
-                {analytics.metrics.current_scraping_date ? 
-                  new Date(analytics.metrics.current_scraping_date).toLocaleDateString() : 'N/A'}
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {analytics.metrics.total_scraping_sessions || 0} sesiones
-              </p>
-            </CardContent>
-          </Card>
+            <Card className="glass border-chart-4/30 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 animate-fade-in group" style={{ animationDelay: '300ms' }}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Rango de Precios</CardTitle>
+                  <div className="w-10 h-10 rounded-xl bg-chart-4/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <TrendingUp className="h-5 w-5" style={{ color: 'hsl(var(--chart-4))' }} />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="text-2xl font-bold text-foreground mb-2">{formatPrice(analytics.metrics.price_range)}</div>
+                <div className="space-y-1">
+                  <p className="text-xs text-muted-foreground">Min: {formatPrice(analytics.metrics.min_price)}</p>
+                  <p className="text-xs text-muted-foreground">Max: {formatPrice(analytics.metrics.max_price)}</p>
+                </div>
+              </CardContent>
+            </Card>
 
-          <Card className="glass border-chart-6/30 shadow-lg hover:shadow-xl transition-all duration-300">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-foreground">Datos Históricos</CardTitle>
-              <div className="w-8 h-8 rounded-lg bg-chart-6/30 flex items-center justify-center">
-                <TrendingUp className="h-4 w-4" style={{ color: 'hsl(var(--chart-6))' }} />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">
-                {analytics.historical_data ? analytics.historical_data.length : 0}
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {filters.model ? `Puntos para ${filters.model}` : 'Selecciona modelo'}
-              </p>
-            </CardContent>
-          </Card>
+            {/* Métricas adicionales */}
+            <Card className="glass border-chart-5/30 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 animate-fade-in group" style={{ animationDelay: '400ms' }}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Última Actualización</CardTitle>
+                  <div className="w-10 h-10 rounded-xl bg-chart-5/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <CalendarIcon className="h-5 w-5" style={{ color: 'hsl(var(--chart-5))' }} />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="text-lg font-bold text-foreground mb-2">
+                  {analytics.metrics.current_scraping_date ? 
+                    new Date(analytics.metrics.current_scraping_date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : 'N/A'}
+                </div>
+                <Badge variant="outline" className="text-xs">
+                  {analytics.metrics.total_scraping_sessions || 0} sesiones
+                </Badge>
+              </CardContent>
+            </Card>
 
-          <Card className="glass border-chart-7/30 shadow-lg hover:shadow-xl transition-all duration-300">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-foreground">Q1 - Q3</CardTitle>
-              <div className="w-8 h-8 rounded-lg bg-chart-7/30 flex items-center justify-center">
-                <BarChart3 className="h-4 w-4" style={{ color: 'hsl(var(--chart-7))' }} />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-lg font-bold text-foreground">
-                {formatPrice(analytics.metrics.lower_quartile)}
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {formatPrice(analytics.metrics.upper_quartile)}
-              </p>
-            </CardContent>
-          </Card>
+            <Card className="glass border-chart-6/30 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 animate-fade-in group" style={{ animationDelay: '500ms' }}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Datos Históricos</CardTitle>
+                  <div className="w-10 h-10 rounded-xl bg-chart-6/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <TrendingUp className="h-5 w-5" style={{ color: 'hsl(var(--chart-6))' }} />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="text-3xl font-bold text-foreground mb-2">
+                  {analytics.historical_data ? analytics.historical_data.length : 0}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {filters.model ? `Puntos para ${filters.model}` : 'Selecciona modelo'}
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card className="glass border-chart-8/30 shadow-lg hover:shadow-xl transition-all duration-300">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-foreground">Variabilidad</CardTitle>
-              <div className="w-8 h-8 rounded-lg bg-chart-8/30 flex items-center justify-center">
-                {analytics.metrics.variation_coefficient > 50 ? (
-                  <AlertTriangle className="h-4 w-4" style={{ color: 'hsl(var(--chart-8))' }} />
-                ) : (
-                  <Award className="h-4 w-4" style={{ color: 'hsl(var(--chart-8))' }} />
-                )}
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">
-                {analytics.metrics.variation_coefficient > 50 ? 'Alta' : 
-                 analytics.metrics.variation_coefficient > 25 ? 'Media' : 'Baja'}
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {analytics.metrics.variation_coefficient.toFixed(1)}% coef.
-              </p>
-            </CardContent>
-          </Card>
+            <Card className="glass border-chart-7/30 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 animate-fade-in group" style={{ animationDelay: '600ms' }}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Cuartiles</CardTitle>
+                  <div className="w-10 h-10 rounded-xl bg-chart-7/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <BarChart3 className="h-5 w-5" style={{ color: 'hsl(var(--chart-7))' }} />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="space-y-1">
+                  <div className="text-lg font-bold text-foreground">Q1: {formatPrice(analytics.metrics.lower_quartile)}</div>
+                  <div className="text-sm text-muted-foreground">Q3: {formatPrice(analytics.metrics.upper_quartile)}</div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="glass border-chart-8/30 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 animate-fade-in group" style={{ animationDelay: '700ms' }}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Variabilidad</CardTitle>
+                  <div className="w-10 h-10 rounded-xl bg-chart-8/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    {analytics.metrics.variation_coefficient > 50 ? (
+                      <AlertTriangle className="h-5 w-5" style={{ color: 'hsl(var(--chart-8))' }} />
+                    ) : (
+                      <Award className="h-5 w-5" style={{ color: 'hsl(var(--chart-8))' }} />
+                    )}
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="text-2xl font-bold text-foreground mb-2">
+                  {analytics.metrics.variation_coefficient > 50 ? 'Alta' : 
+                   analytics.metrics.variation_coefficient > 25 ? 'Media' : 'Baja'}
+                </div>
+                <Badge 
+                  variant={analytics.metrics.variation_coefficient > 50 ? "destructive" : 
+                           analytics.metrics.variation_coefficient > 25 ? "default" : "secondary"}
+                  className="text-xs"
+                >
+                  {analytics.metrics.variation_coefficient.toFixed(1)}% CV
+                </Badge>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         {/* Gráficos mejorados */}
