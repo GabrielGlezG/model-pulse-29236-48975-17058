@@ -59,12 +59,12 @@ export default function Insights() {
 
   const getInsightColor = (insightType: string) => {
     switch (insightType) {
-      case 'price_trend': return 'border-blue-200 bg-blue-50'
-      case 'best_value': return 'border-green-200 bg-green-50'
-      case 'price_max': return 'border-red-200 bg-red-50'
-      case 'price_stability': return 'border-purple-200 bg-purple-50'
-      case 'category_comparison': return 'border-orange-200 bg-orange-50'
-      default: return 'border-gray-200 bg-gray-50'
+      case 'price_trend': return 'border-chart-1/30 bg-chart-1/10'
+      case 'best_value': return 'border-chart-2/30 bg-chart-2/10'
+      case 'price_max': return 'border-chart-3/30 bg-chart-3/10'
+      case 'price_stability': return 'border-chart-4/30 bg-chart-4/10'
+      case 'category_comparison': return 'border-chart-5/30 bg-chart-5/10'
+      default: return 'border-border bg-card'
     }
   }
 
@@ -97,7 +97,7 @@ export default function Insights() {
           return (
             <div className="space-y-3">
               {data.slice(0, 3).map((item, index) => (
-                <div key={index} className="p-3 bg-white rounded border">
+                <div key={index} className="p-3 bg-card rounded border border-border">
                   <div className="flex justify-between items-start">
                     <div>
                       <p className="font-medium">{item.brand} {item.model}</p>
@@ -152,13 +152,13 @@ export default function Insights() {
       case 'category_comparison':
         return (
           <div className="space-y-3">
-            <div className="p-3 bg-red-50 rounded border border-red-200">
-              <h4 className="font-medium text-red-800">Más Caro</h4>
+            <div className="p-3 bg-destructive/10 rounded border border-destructive/30">
+              <h4 className="font-medium text-destructive-foreground">Más Caro</h4>
               <p>{data.most_expensive_category?.category}</p>
               <p className="text-sm">{formatPrice(data.most_expensive_category?.avg_price || 0)}</p>
             </div>
-            <div className="p-3 bg-green-50 rounded border border-green-200">
-              <h4 className="font-medium text-green-800">Más Accesible</h4>
+            <div className="p-3 bg-accent/10 rounded border border-accent/30">
+              <h4 className="font-medium text-accent-foreground">Más Accesible</h4>
               <p>{data.most_affordable_category?.category}</p>
               <p className="text-sm">{formatPrice(data.most_affordable_category?.avg_price || 0)}</p>
             </div>

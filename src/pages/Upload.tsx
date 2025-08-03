@@ -90,10 +90,10 @@ export default function Upload() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-6 space-y-8">
         <div>
-          <h1 className="text-3xl font-bold gradient-text">Cargar Datos</h1>
+          <h1 className="text-3xl font-bold text-foreground">Cargar Datos</h1>
           <p className="text-muted-foreground mt-2">
             Sube archivos JSON con datos de precios de productos automotrices
           </p>

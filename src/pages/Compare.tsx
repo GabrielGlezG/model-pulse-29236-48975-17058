@@ -78,15 +78,15 @@ export default function Compare() {
   }
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-400'
-    if (score >= 60) return 'text-yellow-400'
-    return 'text-red-400'
+    if (score >= 80) return 'text-accent'
+    if (score >= 60) return 'text-primary'
+    return 'text-destructive'
   }
 
   const getScoreBadge = (score: number) => {
-    if (score >= 80) return <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Excelente</Badge>
-    if (score >= 60) return <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">Bueno</Badge>
-    return <Badge className="bg-red-500/20 text-red-400 border-red-500/30">Regular</Badge>
+    if (score >= 80) return <Badge className="bg-accent/20 text-accent border-accent/30">Excelente</Badge>
+    if (score >= 60) return <Badge className="bg-primary/20 text-primary border-primary/30">Bueno</Badge>
+    return <Badge className="bg-destructive/20 text-destructive border-destructive/30">Regular</Badge>
   }
 
   const addProduct = (productId: string) => {
@@ -213,9 +213,9 @@ export default function Compare() {
                   <div className="flex-1">
                     <p className="font-medium">{product.brand} {product.model}</p>
                      <p className="text-sm text-muted-foreground">{product.category}</p>
-                     <p className="text-sm font-semibold text-green-400">
-                       {formatPrice(product.latest_price)}
-                     </p>
+                      <p className="text-sm font-semibold text-accent">
+                        {formatPrice(product.latest_price)}
+                      </p>
                   </div>
                   {selectedProducts.includes(product.id) ? (
                     <X className="h-4 w-4 text-red-500" />
@@ -268,9 +268,9 @@ export default function Compare() {
                       <td className="p-3 font-medium">Precio Actual</td>
                       {comparisonData.map((item, index) => (
                          <td key={index} className="p-3 text-center">
-                           <span className="text-lg font-bold text-green-400">
-                             {formatPrice(item.product.latest_price || 0)}
-                           </span>
+                            <span className="text-lg font-bold text-accent">
+                              {formatPrice(item.product.latest_price || 0)}
+                            </span>
                          </td>
                       ))}
                     </tr>
