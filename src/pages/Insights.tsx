@@ -4,7 +4,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Lightbulb, TrendingUp, DollarSign, BarChart3, RefreshCw, AlertTriangle, Target, Award, Zap, Users, ShoppingCart, TrendingDown, Calendar } from "lucide-react"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell } from 'recharts'
+import { ChartContainer, CHART_COLORS } from '@/components/ui/chart'
+import { ApexOptions } from 'apexcharts'
 import { Insight } from "@/types/api"
 
 export default function Insights() {
@@ -311,40 +312,43 @@ export default function Insights() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={recentTrends.slice(0, 50)}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                    <XAxis 
-                      dataKey="date" 
-                      tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
-                    />
-                    <YAxis 
-                      tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
-                      tickFormatter={(value) => `$${(value / 1000000).toFixed(1)}M`}
-                    />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'hsl(var(--card))', 
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px',
-                        color: 'hsl(var(--foreground))'
-                      }}
-                      formatter={(value: any, name: any, props: any) => [
-                        formatPrice(Number(value)), 
-                        `${props.payload.brand} - ${props.payload.productName}`
-                      ]}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="price" 
-                      stroke="hsl(var(--primary))" 
-                      strokeWidth={2}
-                      dot={false}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+              <ChartContainer
+                type="line"
+                series={[{
+                  name: 'Precio',
+                  data: (recentTrends || []).slice(0, 50).map(item => ({
+                    x: item.date,
+                    y: item.price
+                  }))
+                }]}
+                options={{
+                  colors: [CHART_COLORS[0]],
+                  stroke: {
+                    width: 2,
+                    curve: 'smooth'
+                  },
+                  markers: {
+                    size: 0
+                  },
+                  xaxis: {
+                    type: 'datetime',
+                    title: {
+                      text: 'Fecha'
+                    }
+                  },
+                  yaxis: {
+                    title: {
+                      text: 'Precio'
+                    },
+                    labels: {
+                      formatter: function (val) {
+                        return '$' + (val / 1000000).toFixed(1) + 'M'
+                      }
+                    }
+                  }
+                } as ApexOptions}
+                height={320}
+              />
             </CardContent>
           </Card>
         )}
