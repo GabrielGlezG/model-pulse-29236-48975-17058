@@ -113,72 +113,43 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      {/* Enhanced Executive Hero Section */}
-      <div className="relative overflow-hidden rounded-2xl glass p-8 lg:p-12 shadow-2xl border border-primary/10">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/2 to-transparent" />
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-        <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTAgMzJMMzIgME04IDAgTDMyIDI0TTAgOEwyNCAyNCIgc3Ryb2tlPSIjRjBGMEYwIiBzdHJva2Utb3BhY2l0eT0iMC4wMiIvPgo8L3N2Zz4K')]" />
-        
-        <div className="relative z-10">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="p-3 rounded-2xl bg-primary/10 border border-primary/20 shadow-lg backdrop-blur">
-              <BarChart3 className="h-10 w-10 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-5xl font-black bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 bg-clip-text text-transparent tracking-tight">
-                MP
-              </h1>
-              <p className="text-sm text-muted-foreground font-semibold tracking-wide uppercase">ModelPulse Analytics</p>
-            </div>
+      {/* Simplified Clean Header */}
+      <div className="bg-card/50 backdrop-blur border rounded-xl p-8 mb-8">
+        <div className="flex items-center gap-4 mb-6">
+          <div className="p-3 rounded-xl bg-primary/10 border border-primary/20">
+            <BarChart3 className="h-8 w-8 text-primary" />
           </div>
-          
-          <div className="grid lg:grid-cols-2 gap-8 items-center">
-            <div>
-              <h2 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
-                Inteligencia de Mercado
-                <span className="block text-primary">Automotriz</span>
-              </h2>
-              <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-                Análisis avanzado de precios, tendencias y oportunidades de negocio 
-                <span className="font-semibold text-foreground"> en tiempo real</span>
-              </p>
-            </div>
-            
-            <div className="flex flex-wrap gap-4">
-              <Badge variant="secondary" className="px-4 py-2 text-sm font-medium">
-                <BarChart3 className="h-4 w-4 mr-2" />
-                Analytics Avanzado
-              </Badge>
-              <Badge variant="outline" className="px-4 py-2 text-sm font-medium border-primary/20">
-                <Target className="h-4 w-4 mr-2" />
-                IA Predictiva
-              </Badge>
-              <Badge variant="outline" className="px-4 py-2 text-sm font-medium border-chart-3/20">
-                <TrendingUp className="h-4 w-4 mr-2" />
-                Tiempo Real
-              </Badge>
-            </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">ModelPulse Analytics</h1>
+            <p className="text-muted-foreground">Dashboard de Análisis Automotriz</p>
           </div>
         </div>
+        
+        <h2 className="text-3xl font-bold mb-4 text-foreground">
+          Panel de Control Principal
+        </h2>
+        <p className="text-lg text-muted-foreground">
+          Análisis de precios, tendencias y oportunidades del mercado automotriz
+        </p>
       </div>
 
-      {/* Executive Control Panel */}
-      <Card className="glass shadow-lg border-primary/10">
-        <CardHeader className="pb-4">
+      {/* Simplified Control Panel */}
+      <Card className="border border-border/50 bg-card/50 backdrop-blur">
+        <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-primary/10">
                 <BarChart3 className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <CardTitle className="text-xl">Panel de Control Ejecutivo</CardTitle>
-                <CardDescription>Configuración inteligente de análisis</CardDescription>
+                <CardTitle className="text-lg">Configuración de Análisis</CardTitle>
+                <CardDescription>Filtros y período de tiempo</CardDescription>
               </div>
             </div>
             <Button 
               onClick={() => refetch()} 
               disabled={isRefetching}
-              className="gap-2 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary hover-scale shadow-lg"
+              className="gap-2"
             >
               <RefreshCw className={`h-4 w-4 ${isRefetching ? 'animate-spin' : ''}`} />
               Actualizar
@@ -242,31 +213,31 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
-      {/* Enhanced Executive Metrics Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      {/* Simplified Metrics Grid */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {getStatCards().map((stat, index) => {
           const IconComponent = stat.icon
           return (
-            <Card key={stat.title} className="glass shadow-lg hover-scale transition-all duration-300 border-border/50 hover:border-primary/20 group animate-fade-in" style={{ animationDelay: `${index * 150}ms` }}>
+            <Card key={stat.title} className="border border-border/50 bg-card/50 backdrop-blur">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
-                  <CardDescription className="font-medium">{stat.title}</CardDescription>
-                  <div className={`p-2 rounded-lg bg-${stat.color}/10 group-hover:bg-${stat.color}/20 transition-colors`}>
-                    <IconComponent className="h-5 w-5" style={{ color: `hsl(var(--${stat.color}))` }} />
+                  <CardDescription className="font-medium text-sm">{stat.title}</CardDescription>
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <IconComponent className="h-4 w-4 text-primary" />
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="pt-0">
-                <div className="text-3xl font-bold mb-2">{stat.value}</div>
+                <div className="text-2xl font-bold mb-2 text-foreground">{stat.value}</div>
                 <div className="flex items-center gap-2">
                   <Badge 
                     variant={stat.trend >= 0 ? "default" : "destructive"} 
-                    className="text-xs font-medium"
+                    className="text-xs"
                   >
                     {stat.trend >= 0 ? <TrendingUp className="h-3 w-3 mr-1" /> : <AlertTriangle className="h-3 w-3 mr-1" />}
                     {formatPercent(stat.trend)}
                   </Badge>
-                  <span className="text-sm text-muted-foreground">{stat.description}</span>
+                  <span className="text-xs text-muted-foreground">{stat.description}</span>
                 </div>
               </CardContent>
             </Card>
@@ -274,12 +245,12 @@ export default function Dashboard() {
         })}
       </div>
 
-      {/* Enhanced Charts Grid */}
-      <div className="grid gap-8 lg:grid-cols-2">
+      {/* Simplified Charts Grid */}
+      <div className="grid gap-6 lg:grid-cols-2">
         {/* Price Analysis by Brand */}
-        <Card className="glass shadow-lg border-chart-1/20">
+        <Card className="border border-border/50 bg-card/50 backdrop-blur">
           <CardHeader>
-            <CardTitle className="text-xl">Precios Promedio por Marca</CardTitle>
+            <CardTitle className="text-lg">Precios Promedio por Marca</CardTitle>
             <CardDescription>Comparación de precios entre marcas con tendencias</CardDescription>
           </CardHeader>
           <CardContent>
@@ -322,9 +293,9 @@ export default function Dashboard() {
         </Card>
 
         {/* Price Distribution */}
-        <Card className="glass shadow-lg border-chart-2/20">
+        <Card className="border border-border/50 bg-card/50 backdrop-blur">
           <CardHeader>
-            <CardTitle className="text-xl">Distribución por Rango de Precio</CardTitle>
+            <CardTitle className="text-lg">Distribución por Rango de Precio</CardTitle>
             <CardDescription>Segmentación del inventario por rangos de precio</CardDescription>
           </CardHeader>
           <CardContent>
@@ -357,9 +328,9 @@ export default function Dashboard() {
         </Card>
 
         {/* Historical Trends */}
-        <Card className="glass shadow-lg border-chart-3/20 lg:col-span-2">
+        <Card className="border border-border/50 bg-card/50 backdrop-blur lg:col-span-2">
           <CardHeader>
-            <CardTitle className="text-xl">Evolución Histórica de Precios</CardTitle>
+            <CardTitle className="text-lg">Evolución Histórica de Precios</CardTitle>
             <CardDescription>Tendencias temporales del mercado automotriz</CardDescription>
           </CardHeader>
           <CardContent>
@@ -408,9 +379,9 @@ export default function Dashboard() {
         </Card>
 
         {/* Category Analysis */}
-        <Card className="glass shadow-lg border-chart-4/20">
+        <Card className="border border-border/50 bg-card/50 backdrop-blur">
           <CardHeader>
-            <CardTitle className="text-xl">Productos por Categoría</CardTitle>
+            <CardTitle className="text-lg">Productos por Categoría</CardTitle>
             <CardDescription>Distribución del inventario por tipo de vehículo</CardDescription>
           </CardHeader>
           <CardContent>
@@ -448,9 +419,9 @@ export default function Dashboard() {
         </Card>
 
         {/* Brand Portfolio */}
-        <Card className="glass shadow-lg border-chart-5/20">
+        <Card className="border border-border/50 bg-card/50 backdrop-blur">
           <CardHeader>
-            <CardTitle className="text-xl">Portafolio de Marcas</CardTitle>
+            <CardTitle className="text-lg">Portafolio de Marcas</CardTitle>
             <CardDescription>Participación de mercado por marca</CardDescription>
           </CardHeader>
           <CardContent>

@@ -26,36 +26,48 @@ const defaultDarkTheme: Partial<ApexOptions> = {
   },
   chart: {
     background: 'transparent',
-    foreColor: 'hsl(var(--foreground))',
+    foreColor: '#e2e8f0',
+    fontFamily: 'Inter, system-ui, sans-serif',
     toolbar: {
       show: false,
     },
     animations: {
       enabled: true,
-      speed: 800,
+      speed: 600,
+      animateGradually: {
+        enabled: true,
+        delay: 100
+      }
     },
   },
   grid: {
-    borderColor: 'hsl(var(--border))',
-    strokeDashArray: 3,
+    borderColor: '#334155',
+    strokeDashArray: 2,
+  },
+  stroke: {
+    width: 2,
   },
   xaxis: {
     axisBorder: {
-      color: 'hsl(var(--border))',
+      color: '#475569',
+      height: 1,
     },
     axisTicks: {
-      color: 'hsl(var(--border))',
+      color: '#475569',
+      height: 6,
     },
     labels: {
       style: {
-        colors: 'hsl(var(--muted-foreground))',
+        colors: '#94a3b8',
+        fontSize: '12px',
       },
     },
   },
   yaxis: {
     labels: {
       style: {
-        colors: 'hsl(var(--muted-foreground))',
+        colors: '#94a3b8',
+        fontSize: '12px',
       },
     },
   },
@@ -64,16 +76,16 @@ const defaultDarkTheme: Partial<ApexOptions> = {
     style: {
       fontSize: '12px',
     },
+    fillSeriesColor: false,
   },
   legend: {
     labels: {
-      colors: 'hsl(var(--foreground))',
+      colors: '#e2e8f0',
     },
+    fontSize: '12px',
   },
   dataLabels: {
-    style: {
-      colors: ['hsl(var(--foreground))'],
-    },
+    enabled: false,
   },
 }
 
@@ -107,16 +119,16 @@ export const ChartContainer: React.FC<ChartProps> = ({
   )
 }
 
-// Color palette for charts
+// Simplified color palette for charts
 export const CHART_COLORS = [
-  'hsl(var(--chart-1))',
-  'hsl(var(--chart-2))',
-  'hsl(var(--chart-3))',
-  'hsl(var(--chart-4))',
-  'hsl(var(--chart-5))',
-  'hsl(var(--chart-6))',
-  'hsl(var(--chart-7))',
-  'hsl(var(--chart-8))',
+  '#3b82f6', // blue
+  '#10b981', // emerald  
+  '#f59e0b', // amber
+  '#ef4444', // red
+  '#8b5cf6', // violet
+  '#06b6d4', // cyan
+  '#84cc16', // lime
+  '#f97316', // orange
 ]
 
 export default ChartContainer
