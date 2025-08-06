@@ -6,8 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { X, Plus, TrendingUp, DollarSign, Award, Zap, Scale } from "lucide-react"
-import { ChartContainer, CHART_COLORS } from '@/components/ui/chart'
-import { ApexOptions } from 'apexcharts'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend } from 'recharts'
 
 interface ComparisonData {
   product: ProductWithPricing
@@ -344,22 +343,23 @@ export default function Compare() {
                 <CardDescription>Análisis visual de las métricas clave</CardDescription>
               </CardHeader>
               <CardContent>
-                <ChartContainer
-                  type="bar"
-                  series={[
-                    { name: 'Valor', data: comparisonData.map(item => item.value_score) },
-                    { name: 'Estabilidad', data: comparisonData.map(item => item.stability_score) },
-                    { name: 'Recomendación', data: comparisonData.map(item => item.recommendation_score) }
-                  ]}
-                  options={{
-                    colors: CHART_COLORS,
-                    xaxis: {
-                      categories: comparisonData.map(item => `${item.product.brand} ${item.product.model}`)
-                    },
-                    yaxis: { max: 100 }
-                  } as ApexOptions}
-                  height={300}
-                />
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={comparisonData.map((item, index) => ({
+                    name: `${item.product.brand} ${item.product.model}`,
+                    valor: item.value_score,
+                    estabilidad: item.stability_score,
+                    recomendacion: item.recommendation_score
+                  }))}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis domain={[0, 100]} />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="valor" fill="hsl(var(--primary))" name="Valor" />
+                    <Bar dataKey="estabilidad" fill="hsl(var(--secondary))" name="Estabilidad" />
+                    <Bar dataKey="recomendacion" fill="hsl(var(--accent))" name="Recomendación" />
+                  </BarChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
 
@@ -369,26 +369,23 @@ export default function Compare() {
                 <CardDescription>Diferencias de precio entre modelos</CardDescription>
               </CardHeader>
               <CardContent>
-                <ChartContainer
-                  type="bar"
-                  series={[
-                    { name: 'Precio Mínimo', data: comparisonData.map(item => item.product.min_price || 0) },
-                    { name: 'Precio Actual', data: comparisonData.map(item => item.product.latest_price || 0) },
-                    { name: 'Precio Máximo', data: comparisonData.map(item => item.product.max_price || 0) }
-                  ]}
-                  options={{
-                    colors: CHART_COLORS,
-                    xaxis: {
-                      categories: comparisonData.map(item => `${item.product.brand} ${item.product.model}`)
-                    },
-                    yaxis: {
-                      labels: {
-                        formatter: (val) => '$' + (val / 1000).toFixed(0) + 'k'
-                      }
-                    }
-                  } as ApexOptions}
-                  height={300}
-                />
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={comparisonData.map((item, index) => ({
+                    name: `${item.product.brand} ${item.product.model}`,
+                    precio: item.product.latest_price,
+                    minimo: item.product.min_price,
+                    maximo: item.product.max_price
+                  }))}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} />
+                    <Tooltip formatter={(value: number) => formatPrice(value)} />
+                    <Legend />
+                    <Bar dataKey="minimo" fill="hsl(var(--muted))" name="Precio Mínimo" />
+                    <Bar dataKey="precio" fill="hsl(var(--primary))" name="Precio Actual" />
+                    <Bar dataKey="maximo" fill="hsl(var(--destructive))" name="Precio Máximo" />
+                  </BarChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
           </div>
