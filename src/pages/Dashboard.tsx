@@ -430,10 +430,13 @@ export default function Dashboard() {
                     ]}
                     labelFormatter={(label) => `Marca: ${label}`}
                     contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
+                      backgroundColor: 'hsl(var(--background))',
                       border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px'
+                      borderRadius: '8px',
+                      color: 'hsl(var(--foreground))',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                     }}
+                    labelStyle={{ color: 'hsl(var(--foreground))' }}
                   />
                   <Bar dataKey="avg_price" yAxisId="left" radius={[4, 4, 0, 0]}>
                     {(analytics.chart_data?.prices_by_brand || []).map((entry, index) => (
@@ -468,11 +471,18 @@ export default function Dashboard() {
                     ))}
                   </Pie>
                   <Tooltip 
+                    formatter={(value: number, name: string, props: any) => [
+                      `${value} modelos`, 
+                      `${props.payload.category} (${((value / (analytics.chart_data?.models_by_category?.reduce((sum, item) => sum + item.count, 0) || 1)) * 100).toFixed(1)}%)`
+                    ]}
                     contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
+                      backgroundColor: 'hsl(var(--background))',
                       border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px'
+                      borderRadius: '8px',
+                      color: 'hsl(var(--foreground))',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                     }}
+                    labelStyle={{ color: 'hsl(var(--foreground))' }}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -508,10 +518,13 @@ export default function Dashboard() {
                     formatter={(value: number) => [formatPrice(value), 'Precio']}
                     labelFormatter={(value) => `Fecha: ${new Date(value).toLocaleDateString()}`}
                     contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
+                      backgroundColor: 'hsl(var(--background))',
                       border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px'
+                      borderRadius: '8px',
+                      color: 'hsl(var(--foreground))',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                     }}
+                    labelStyle={{ color: 'hsl(var(--foreground))' }}
                   />
                   <Line 
                     type="monotone" 
@@ -554,11 +567,15 @@ export default function Dashboard() {
                       name === 'avg_price' ? 'Promedio' : 
                       name === 'min_price' ? 'Mínimo' : 'Máximo'
                     ]}
+                    labelFormatter={(label) => `Categoría: ${label}`}
                     contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
+                      backgroundColor: 'hsl(var(--background))',
                       border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px'
+                      borderRadius: '8px',
+                      color: 'hsl(var(--foreground))',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                     }}
+                    labelStyle={{ color: 'hsl(var(--foreground))' }}
                   />
                   <Bar dataKey="min_price" fill="hsl(var(--chart-7))" name="min_price" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="avg_price" fill="hsl(var(--chart-1))" name="avg_price" radius={[4, 4, 0, 0]} />
@@ -597,11 +614,13 @@ export default function Dashboard() {
                       `${props.payload.range} (${((value / (analytics.chart_data?.price_distribution?.reduce((sum, item) => sum + item.count, 0) || 1)) * 100).toFixed(1)}%)`
                     ]}
                     contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
+                      backgroundColor: 'hsl(var(--background))',
                       border: '1px solid hsl(var(--border))',
                       borderRadius: '8px',
-                      color: 'hsl(var(--foreground))'
+                      color: 'hsl(var(--foreground))',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                     }}
+                    labelStyle={{ color: 'hsl(var(--foreground))' }}
                   />
                   <Legend 
                     formatter={(value: any, entry: any) => {
