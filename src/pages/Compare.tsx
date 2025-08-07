@@ -1,6 +1,6 @@
 import { useState } from "react"
-import { useProductsForComparison } from "@/hooks/useProducts"
-import type { ProductWithPricing } from "@/services/productsService"
+import { useQuery } from "@tanstack/react-query"
+import { supabase } from "@/integrations/supabase/client"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -8,8 +8,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { X, Plus, TrendingUp, DollarSign, Award, Zap, Scale } from "lucide-react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend } from 'recharts'
 
+interface Product {
+  id: string
+  brand: string
+  category: string
+  model: string
+  name: string
+  latest_price?: number
+  min_price?: number
+  max_price?: number
+  avg_price?: number
+  price_history?: Array<{date: string, price: number}>
+}
+
 interface ComparisonData {
-  product: ProductWithPricing
+  product: Product
   value_score: number
   stability_score: number
   recommendation_score: number
@@ -23,7 +36,37 @@ export default function Compare() {
     maxPrice: ''
   })
 
-  const { data: products } = useProductsForComparison()
+  // Fetch available products for selection
+  const { data: products } = useQuery({
+    queryKey: ['products-for-comparison'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select(`
+          *,
+          price_data (price, date)
+        `)
+        .order('brand')
+      
+      if (error) throw error
+      
+      return data?.map(product => {
+        const prices = product.price_data?.map(p => p.price) || []
+        const sortedHistory = product.price_data?.sort((a, b) => 
+          new Date(a.date).getTime() - new Date(b.date).getTime()
+        ) || []
+        
+        return {
+          ...product,
+          latest_price: prices.length > 0 ? prices[prices.length - 1] : 0,
+          min_price: prices.length > 0 ? Math.min(...prices) : 0,
+          max_price: prices.length > 0 ? Math.max(...prices) : 0,
+          avg_price: prices.length > 0 ? prices.reduce((a, b) => a + b, 0) / prices.length : 0,
+          price_history: sortedHistory
+        }
+      }) || []
+    }
+  })
 
   // Get brands and categories for filters
   const brands = [...new Set(products?.map(p => p.brand))].filter(Boolean)
@@ -40,22 +83,22 @@ export default function Compare() {
   // Get comparison data for selected products
   const getComparisonData = (productIds: string[]): ComparisonData[] => {
     const selectedData = products?.filter(p => productIds.includes(p.id)) || []
-    const avgMarketPrice = products?.reduce((sum, p) => sum + p.latest_price, 0) / (products?.length || 1)
+    const avgMarketPrice = products?.reduce((sum, p) => sum + (p.latest_price || 0), 0) / (products?.length || 1)
     
     return selectedData.map(product => {
-      const prices = product.price_history?.map(p => p.price) || []
+      const prices = product.price_data?.map(p => p.price) || []
       const priceVariation = prices.length > 1 ? 
-        Math.sqrt(prices.reduce((acc, price) => acc + Math.pow(price - product.avg_price, 2), 0) / prices.length) : 0
+        Math.sqrt(prices.reduce((acc, price) => acc + Math.pow(price - (product.avg_price || 0), 2), 0) / prices.length) : 0
       
       const valueScore = avgMarketPrice > 0 ? 
-        Math.max(0, Math.min(100, ((avgMarketPrice - product.latest_price) / avgMarketPrice * 100) + 50)) : 50
+        Math.max(0, Math.min(100, ((avgMarketPrice - (product.latest_price || 0)) / avgMarketPrice * 100) + 50)) : 50
       
       const stabilityScore = product.avg_price > 0 ? 
         Math.max(0, 100 - (priceVariation / product.avg_price * 100)) : 0
       
       const recommendationScore = (valueScore * 0.4) + (stabilityScore * 0.3) + 
         (product.category === 'Sedán' ? 15 : product.category === 'SUV' ? 10 : 5) + 
-        (product.latest_price < avgMarketPrice ? 10 : 0)
+        (product.latest_price && product.latest_price < avgMarketPrice ? 10 : 0)
       
       return {
         product,
@@ -78,15 +121,15 @@ export default function Compare() {
   }
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-accent'
-    if (score >= 60) return 'text-primary'
-    return 'text-destructive'
+    if (score >= 80) return 'text-green-600'
+    if (score >= 60) return 'text-yellow-600'
+    return 'text-red-600'
   }
 
   const getScoreBadge = (score: number) => {
-    if (score >= 80) return <Badge className="bg-accent/20 text-accent border-accent/30">Excelente</Badge>
-    if (score >= 60) return <Badge className="bg-primary/20 text-primary border-primary/30">Bueno</Badge>
-    return <Badge className="bg-destructive/20 text-destructive border-destructive/30">Regular</Badge>
+    if (score >= 80) return <Badge className="bg-green-100 text-green-800">Excelente</Badge>
+    if (score >= 60) return <Badge className="bg-yellow-100 text-yellow-800">Bueno</Badge>
+    return <Badge className="bg-red-100 text-red-800">Regular</Badge>
   }
 
   const addProduct = (productId: string) => {
@@ -125,9 +168,9 @@ export default function Compare() {
   ] : []
 
   return (
-    <div className="min-h-screen bg-background text-foreground space-y-6">
+    <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">Comparador de Vehículos</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Comparador de Vehículos</h1>
         <p className="text-muted-foreground">
           Compara hasta 4 modelos para encontrar la mejor opción para ti
         </p>
@@ -212,10 +255,10 @@ export default function Compare() {
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <p className="font-medium">{product.brand} {product.model}</p>
-                     <p className="text-sm text-muted-foreground">{product.category}</p>
-                      <p className="text-sm font-semibold text-accent">
-                        {formatPrice(product.latest_price)}
-                      </p>
+                    <p className="text-sm text-muted-foreground">{product.category}</p>
+                    <p className="text-sm font-semibold text-green-600">
+                      {formatPrice(product.latest_price || 0)}
+                    </p>
                   </div>
                   {selectedProducts.includes(product.id) ? (
                     <X className="h-4 w-4 text-red-500" />
@@ -227,14 +270,14 @@ export default function Compare() {
             ))}
           </div>
 
-           {selectedProducts.length > 0 && (
-             <div className="mt-4 p-3 bg-primary/10 border border-primary/20 rounded-lg">
-               <p className="text-sm text-foreground">
-                 <strong>{selectedProducts.length}/4 modelos seleccionados</strong> - 
-                 {selectedProducts.length < 4 ? ' Puedes agregar más modelos' : ' Máximo alcanzado'}
-               </p>
-             </div>
-           )}
+          {selectedProducts.length > 0 && (
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800">
+                <strong>{selectedProducts.length}/4 modelos seleccionados</strong> - 
+                {selectedProducts.length < 4 ? ' Puedes agregar más modelos' : ' Máximo alcanzado'}
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -267,11 +310,11 @@ export default function Compare() {
                     <tr className="border-b">
                       <td className="p-3 font-medium">Precio Actual</td>
                       {comparisonData.map((item, index) => (
-                         <td key={index} className="p-3 text-center">
-                            <span className="text-lg font-bold text-accent">
-                              {formatPrice(item.product.latest_price || 0)}
-                            </span>
-                         </td>
+                        <td key={index} className="p-3 text-center">
+                          <span className="text-lg font-bold text-green-600">
+                            {formatPrice(item.product.latest_price || 0)}
+                          </span>
+                        </td>
                       ))}
                     </tr>
                     <tr className="border-b">
