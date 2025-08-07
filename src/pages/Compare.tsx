@@ -199,8 +199,7 @@ export default function Compare() {
           </div>
 
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {filteredProducts && filteredProducts.length > 0 ? (
-              filteredProducts.slice(0, 12).map(product => (
+            {filteredProducts.slice(0, 12).map(product => (
               <div 
                 key={product.id} 
                 className={`p-3 border rounded-lg cursor-pointer transition-all ${
@@ -225,15 +224,7 @@ export default function Compare() {
                   )}
                 </div>
               </div>
-              ))
-            ) : (
-              <div className="col-span-full text-center py-8">
-                <p className="text-muted-foreground">No hay productos disponibles para comparar</p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  Sube datos de productos desde la página de Upload para comenzar
-                </p>
-              </div>
-            )}
+            ))}
           </div>
 
            {selectedProducts.length > 0 && (

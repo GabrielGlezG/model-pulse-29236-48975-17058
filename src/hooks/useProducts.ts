@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { ProductsService } from "@/services/api";
 import { PaginationParams } from "@/types/api";
-import { ProductWithPricing } from "@/services/productsService";
 
 export function useProducts(params: PaginationParams) {
   return useQuery({
@@ -35,9 +34,9 @@ export function useModels(brandFilter?: string, categoryFilter?: string) {
 export function useProductsForComparison() {
   return useQuery({
     queryKey: ['products-for-comparison'],
-    queryFn: async (): Promise<ProductWithPricing[]> => {
-      // For now, return empty array until we implement the proper service
-      return [];
+    queryFn: async () => {
+      const { getProductsForComparison } = await import("@/services/productsService");
+      return getProductsForComparison();
     }
   });
 }
