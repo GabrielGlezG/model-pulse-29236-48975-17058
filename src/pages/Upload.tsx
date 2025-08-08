@@ -119,22 +119,22 @@ export default function Upload() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'completed':
-        return <CheckCircle className="h-4 w-4 text-green-600" />
+        return <CheckCircle className="h-4 w-4 text-green-500" />
       case 'processing':
-        return <Clock className="h-4 w-4 text-blue-600" />
+        return <Clock className="h-4 w-4 text-blue-500" />
       case 'failed':
-        return <AlertCircle className="h-4 w-4 text-red-600" />
+        return <AlertCircle className="h-4 w-4 text-red-500" />
       default:
-        return <Clock className="h-4 w-4 text-gray-400" />
+        return <Clock className="h-4 w-4 text-muted-foreground" />
     }
   }
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed':
-        return <Badge className="bg-green-100 text-green-800">Completado</Badge>
+        return <Badge variant="default" className="bg-green-600 text-white">Completado</Badge>
       case 'processing':
-        return <Badge className="bg-blue-100 text-blue-800">Procesando</Badge>
+        return <Badge variant="default" className="bg-blue-600 text-white">Procesando</Badge>
       case 'failed':
         return <Badge variant="destructive">Fallido</Badge>
       default:
@@ -193,7 +193,7 @@ export default function Upload() {
 
           {/* Información del archivo seleccionado */}
           {selectedFile && (
-            <Card className="bg-muted/50">
+            <Card className="bg-muted/30 border-muted">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -237,7 +237,7 @@ export default function Upload() {
               <CardTitle className="text-base">Formato JSON Esperado</CardTitle>
             </CardHeader>
             <CardContent>
-              <pre className="bg-muted p-4 rounded-md text-sm overflow-x-auto">
+              <pre className="bg-muted/30 p-4 rounded-md text-sm overflow-x-auto text-foreground">
 {`[
   {
     "Marca": "Toyota",

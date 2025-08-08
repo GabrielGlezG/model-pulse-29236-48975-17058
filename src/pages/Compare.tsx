@@ -121,15 +121,15 @@ export default function Compare() {
   }
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-600'
-    if (score >= 60) return 'text-yellow-600'
-    return 'text-red-600'
+    if (score >= 80) return 'text-green-500'
+    if (score >= 60) return 'text-yellow-500'
+    return 'text-red-500'
   }
 
   const getScoreBadge = (score: number) => {
-    if (score >= 80) return <Badge className="bg-green-100 text-green-800">Excelente</Badge>
-    if (score >= 60) return <Badge className="bg-yellow-100 text-yellow-800">Bueno</Badge>
-    return <Badge className="bg-red-100 text-red-800">Regular</Badge>
+    if (score >= 80) return <Badge variant="default" className="bg-green-600 text-white">Excelente</Badge>
+    if (score >= 60) return <Badge variant="default" className="bg-yellow-600 text-white">Bueno</Badge>
+    return <Badge variant="default" className="bg-red-600 text-white">Regular</Badge>
   }
 
   const addProduct = (productId: string) => {
@@ -256,7 +256,7 @@ export default function Compare() {
                   <div className="flex-1">
                     <p className="font-medium">{product.brand} {product.model}</p>
                     <p className="text-sm text-muted-foreground">{product.category}</p>
-                    <p className="text-sm font-semibold text-green-600">
+                    <p className="text-sm font-semibold text-green-500">
                       {formatPrice(product.latest_price || 0)}
                     </p>
                   </div>
@@ -271,8 +271,8 @@ export default function Compare() {
           </div>
 
           {selectedProducts.length > 0 && (
-            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-800">
+            <div className="mt-4 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+              <p className="text-sm text-foreground">
                 <strong>{selectedProducts.length}/4 modelos seleccionados</strong> - 
                 {selectedProducts.length < 4 ? ' Puedes agregar más modelos' : ' Máximo alcanzado'}
               </p>
@@ -311,7 +311,7 @@ export default function Compare() {
                       <td className="p-3 font-medium">Precio Actual</td>
                       {comparisonData.map((item, index) => (
                         <td key={index} className="p-3 text-center">
-                          <span className="text-lg font-bold text-green-600">
+                          <span className="text-lg font-bold text-green-500">
                             {formatPrice(item.product.latest_price || 0)}
                           </span>
                         </td>
@@ -452,8 +452,8 @@ export default function Compare() {
                 
                 return (
                   <div className="grid gap-4 md:grid-cols-2">
-                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                      <h3 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
+                    <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+                      <h3 className="font-semibold text-green-400 mb-2 flex items-center gap-2">
                         🏆 Mejor Opción General
                       </h3>
                       <p className="font-medium text-lg">{bestModel.product.brand} {bestModel.product.model}</p>
@@ -465,8 +465,8 @@ export default function Compare() {
                       </p>
                     </div>
                     
-                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                      <h3 className="font-semibold text-blue-800 mb-2 flex items-center gap-2">
+                    <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                      <h3 className="font-semibold text-blue-400 mb-2 flex items-center gap-2">
                         💰 Mejor Valor por Dinero
                       </h3>
                       <p className="font-medium text-lg">{bestValue.product.brand} {bestValue.product.model}</p>

@@ -97,9 +97,9 @@ export default function Insights() {
   const getPriorityBadge = (priority: number) => {
     switch (priority) {
       case 1:
-        return <Badge className="bg-red-100 text-red-800">Alta Prioridad</Badge>
+        return <Badge variant="default" className="bg-red-600 text-white">Alta Prioridad</Badge>
       case 2:
-        return <Badge className="bg-yellow-100 text-yellow-800">Media Prioridad</Badge>
+        return <Badge variant="default" className="bg-yellow-600 text-white">Media Prioridad</Badge>
       case 3:
         return <Badge variant="secondary">Baja Prioridad</Badge>
       default:
@@ -147,18 +147,18 @@ export default function Insights() {
           return (
             <div className="space-y-3">
               {insight.data.slice(0, 3).map((model: any, index: number) => (
-                <div key={index} className="p-3 bg-green-50 border border-green-200 rounded-md">
+                <div key={index} className="p-3 bg-green-500/10 border border-green-500/20 rounded-md">
                   <div className="flex items-center justify-between mb-2">
                     <div>
                       <p className="font-medium">{model.brand} {model.model}</p>
                       <div className="flex gap-1 mt-1">
                         <Badge variant="outline" className="text-xs">{model.category}</Badge>
-                        <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
+                        <Badge variant="default" className="text-xs bg-green-600 text-white">
                           -{model.savings_vs_median}% vs mediana
                         </Badge>
                       </div>
                     </div>
-                    <p className="font-bold text-green-600">{formatPrice(model.price)}</p>
+                    <p className="font-bold text-green-500">{formatPrice(model.price)}</p>
                   </div>
                 </div>
               ))}
@@ -184,7 +184,7 @@ export default function Insights() {
             </div>
             <div className="flex items-center justify-between">
               <span className="font-medium">Precio:</span>
-              <span className="text-2xl font-bold text-red-600">
+              <span className="text-2xl font-bold text-red-500">
                 {formatPrice(insight.data.price)}
               </span>
             </div>
@@ -196,7 +196,7 @@ export default function Insights() {
           return (
             <div className="space-y-3">
               {insight.data.map((item: any, index: number) => (
-                <div key={index} className="p-3 bg-blue-50 border border-blue-200 rounded-md">
+                <div key={index} className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-md">
                   <div className="flex items-center justify-between mb-2">
                     <div>
                       <p className="font-medium">{item.brand} {item.model}</p>
@@ -223,8 +223,8 @@ export default function Insights() {
         return (
           <div className="space-y-4">
             <div className="grid gap-3 md:grid-cols-2">
-              <div className="p-4 rounded-lg border border-red-200 bg-red-50">
-                <h4 className="font-semibold text-red-800 mb-2 flex items-center gap-2">
+              <div className="p-4 rounded-lg border border-red-500/20 bg-red-500/10">
+                <h4 className="font-semibold text-red-400 mb-2 flex items-center gap-2">
                   🔴 Segmento Más Caro
                 </h4>
                 <p className="font-medium text-lg">{insight.data.most_expensive_category.category}</p>
@@ -241,8 +241,8 @@ export default function Insights() {
                 </div>
               </div>
               
-              <div className="p-4 rounded-lg border border-green-200 bg-green-50">
-                <h4 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
+              <div className="p-4 rounded-lg border border-green-500/20 bg-green-500/10">
+                <h4 className="font-semibold text-green-400 mb-2 flex items-center gap-2">
                   🟢 Segmento Más Accesible
                 </h4>
                 <p className="font-medium text-lg">{insight.data.most_affordable_category.category}</p>
@@ -260,8 +260,8 @@ export default function Insights() {
               </div>
             </div>
             
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
-              <p className="text-sm text-blue-800">
+            <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-md">
+              <p className="text-sm text-foreground">
                 💡 <strong>Tip para compradores:</strong> Considera el segmento {insight.data.most_affordable_category.category} 
                 para obtener el mejor valor por tu dinero.
               </p>
@@ -402,18 +402,18 @@ export default function Insights() {
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {marketStats.chart_data.best_value_models.slice(0, 6).map((model: any, index: number) => (
-                <div key={index} className="p-4 border rounded-lg bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+                <div key={index} className="p-4 border rounded-lg bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/20">
                   <div className="flex items-start justify-between mb-2">
                     <div>
-                      <h3 className="font-semibold text-green-900">{model.brand} {model.name}</h3>
+                      <h3 className="font-semibold text-green-400">{model.brand} {model.name}</h3>
                       <Badge variant="outline" className="text-xs mt-1">{model.category}</Badge>
                     </div>
-                    <Badge className="bg-green-100 text-green-800">
+                    <Badge variant="default" className="bg-green-600 text-white">
                       -{model.value_rating}%
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-green-700">{formatPrice(model.price)}</span>
+                    <span className="text-2xl font-bold text-green-500">{formatPrice(model.price)}</span>
                     <div className="text-right text-xs text-muted-foreground">
                       vs mediana del mercado
                     </div>
@@ -421,8 +421,8 @@ export default function Insights() {
                 </div>
               ))}
             </div>
-            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-800">
+            <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+              <p className="text-sm text-foreground">
                 💡 <strong>Tip de compra:</strong> Estos modelos están priceados por debajo de la mediana del mercado, 
                 representando excelentes oportunidades de inversión.
               </p>
