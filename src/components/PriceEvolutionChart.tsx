@@ -283,14 +283,14 @@ export function PriceEvolutionChart({
 
   return (
     <Card>
-      <CardHeader className="p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <CardHeader>
+        <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-              <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5" />
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
               Evolución de Precios
             </CardTitle>
-            <CardDescription className="text-xs sm:text-sm">
+            <CardDescription>
               Histórico de precios para los filtros seleccionados
               {evolutionData && (
                 <span className="ml-2">
@@ -299,9 +299,9 @@ export function PriceEvolutionChart({
               )}
             </CardDescription>
           </div>
-          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-2">
             <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger className="w-full sm:w-32">
+              <SelectTrigger className="w-32">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -319,7 +319,7 @@ export function PriceEvolutionChart({
                 setGroupBy(value)
               }
             >
-              <SelectTrigger className="w-full sm:w-32">
+              <SelectTrigger className="w-32">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -344,7 +344,7 @@ export function PriceEvolutionChart({
           </div>
         </div>
       </CardHeader>
-      <CardContent className="p-4 sm:p-6">
+      <CardContent>
         {isLoading ? (
           <div className="space-y-4">
             <Skeleton className="h-8 w-full" />
@@ -418,7 +418,7 @@ export function PriceEvolutionChart({
             </ResponsiveContainer>
 
             {/* Summary Statistics */}
-            <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-3">
               {evolutionData.models.map((model, index) => {
                 const modelData = evolutionData.chartData
                   .map((d) => d[model])

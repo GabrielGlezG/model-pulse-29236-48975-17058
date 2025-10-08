@@ -31,21 +31,21 @@ export function Sidebar() {
         {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
       </button>
 
-      <img src={logo} alt="PricingEngine" className={`${isCollapsed ? 'h-12 sm:h-16 w-12 sm:w-16 mx-auto' : 'h-20 sm:h-28 w-auto mx-3 sm:mx-4'} object-contain transition-all duration-300 mt-6 sm:mt-8 mb-4 sm:mb-6`} />
+      <img src={logo} alt="PricingEngine" className={`${isCollapsed ? 'h-16 w-16 mx-auto' : 'h-28 w-auto mx-4'} object-contain transition-all duration-300 mt-8 mb-6`} />
 
-      <nav className="flex-1 p-2 sm:p-4 space-y-1 sm:space-y-2 mt-2">
+      <nav className="flex-1 p-4 space-y-2 mt-2">
         {filteredItems.map((item) => (
           <NavLink
             key={item.url}
             to={item.url}
-            className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg transition-colors ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
               isActive(item.url)
                 ? 'bg-primary text-primary-foreground'
                 : 'text-muted-foreground hover:bg-muted hover:text-foreground'
             }`}
           >
-            <item.icon className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-            {!isCollapsed && <span className="font-medium text-sm sm:text-base">{item.title}</span>}
+            <item.icon className="h-5 w-5 flex-shrink-0" />
+            {!isCollapsed && <span className="font-medium">{item.title}</span>}
           </NavLink>
         ))}
       </nav>

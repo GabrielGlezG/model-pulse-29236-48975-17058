@@ -336,16 +336,16 @@ export default function Dashboard() {
       {/* Filtros */}
       <Card className="border-border/50 shadow-md">
         <CardHeader className="space-y-1 pb-4">
-          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-            <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <BarChart3 className="h-5 w-5 text-primary" />
             Filtros
           </CardTitle>
-          <CardDescription className="text-sm">
+          <CardDescription>
             Refina tu análisis con criterios específicos
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="grid gap-4 md:grid-cols-5">
             <Select
               value={filters.brand || "all"}
               onValueChange={(value) =>
@@ -441,16 +441,16 @@ export default function Dashboard() {
       </Card>
 
       {/* Métricas principales - Diseño inspirado en referencia */}
-      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="bg-primary border-none shadow-md rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium text-primary-foreground">
+            <CardTitle className="text-sm font-medium text-primary-foreground">
               Total Modelos
             </CardTitle>
-            <Package className="h-3 w-3 sm:h-4 sm:w-4 text-primary-foreground/70" />
+            <Package className="h-4 w-4 text-primary-foreground/70" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl sm:text-3xl font-bold text-primary-foreground">
+            <div className="text-3xl font-bold text-primary-foreground">
               {analytics.metrics.total_models}
             </div>
             <p className="text-xs text-primary-foreground/70 mt-1">

@@ -80,10 +80,10 @@ export default function Subscription() {
      new Date(profile.subscription_expires_at) > new Date())
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-6">
       <div className="text-center">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Planes de Suscripción</h1>
-        <p className="text-sm sm:text-base text-muted-foreground mt-2">
+        <h1 className="text-3xl font-bold tracking-tight">Planes de Suscripción</h1>
+        <p className="text-muted-foreground mt-2">
           Elige el plan que mejor se adapte a tus necesidades
         </p>
       </div>
@@ -151,7 +151,7 @@ export default function Subscription() {
       )}
 
       {/* Subscription Plans */}
-      <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         {MOCK_PLANS.map((plan) => {
           const price = selectedBilling === 'yearly' ? plan.price_yearly : plan.price_monthly
           const isCurrentPlan = profile?.subscription_plan === plan.id
