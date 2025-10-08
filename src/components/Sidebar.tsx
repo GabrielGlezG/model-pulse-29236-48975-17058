@@ -5,9 +5,13 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Badge } from './custom/Badge'
 import logo from '@/assets/pricing-engine-logo-new.png'
 
-export function Sidebar() {
+interface SidebarProps {
+  isMobileOpen: boolean
+  setIsMobileOpen: (open: boolean) => void
+}
+
+export function Sidebar({ isMobileOpen, setIsMobileOpen }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false)
-  const [isMobileOpen, setIsMobileOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
   const { user, profile, signOut, isAdmin, hasActiveSubscription } = useAuth()
@@ -46,17 +50,6 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile menu button */}
-      {!isMobileOpen && (
-        <button
-          onClick={() => setIsMobileOpen(true)}
-          className="fixed top-4 left-4 z-50 md:hidden h-12 w-12 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-105"
-          aria-label="Abrir menú"
-        >
-          <Menu className="h-5 w-5" />
-        </button>
-      )}
-
       {/* Mobile overlay */}
       {isMobileOpen && (
         <div
