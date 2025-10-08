@@ -190,7 +190,7 @@ export function ModelSubmodelSelector({
           </div>
         </div>
 
-        <div className={`grid gap-4 ${hideCategory ? 'md:grid-cols-4' : 'md:grid-cols-5'}`}>
+        <div className={`grid gap-3 grid-cols-1 sm:grid-cols-2 ${hideCategory ? 'lg:grid-cols-4' : 'lg:grid-cols-5'}`}>
           <Select value={selectedBrand || "all"} onValueChange={(value) => {
             onBrandChange(value === "all" ? "" : value)
           }}>
