@@ -130,26 +130,26 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-3 sm:p-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-6">
-            <img src={logo} alt="PricingEngine" className="h-32 w-auto object-contain" />
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="flex items-center justify-center mb-4 sm:mb-6">
+            <img src={logo} alt="PricingEngine" className="h-24 sm:h-32 w-auto object-contain" />
           </div>
           {/* <h1 className="text-3xl font-bold text-foreground mb-2">PricingEngine</h1>
           <p className="text-muted-foreground">Sistema de Análisis de Precios Automotrices</p> */}
         </div>
 
         <Card>
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">Acceso al Sistema</CardTitle>
-            <CardDescription className="text-center">
+          <CardHeader className="space-y-1 p-4 sm:p-6">
+            <CardTitle className="text-xl sm:text-2xl text-center">Acceso al Sistema</CardTitle>
+            <CardDescription className="text-sm text-center">
               Inicia sesión o crea una cuenta para continuar
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 sm:p-6">
             <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-6">
                 <TabsTrigger value="login">Iniciar Sesión</TabsTrigger>
                 <TabsTrigger value="signup">Registrarse</TabsTrigger>
               </TabsList>

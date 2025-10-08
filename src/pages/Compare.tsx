@@ -183,22 +183,22 @@ export default function Compare() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">Comparador de Vehículos</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Comparador de Vehículos</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Compara hasta 4 modelos para encontrar la mejor opción para ti
         </p>
       </div>
 
       {/* Filtros y Selección */}
       <Card>
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <div className="flex items-center gap-2 mb-2">
-            <Scale className="h-5 w-5 text-primary" />
-            <h2 className="text-xl font-semibold text-card-foreground">Seleccionar Vehículos para Comparar</h2>
+            <Scale className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+            <h2 className="text-lg sm:text-xl font-semibold text-card-foreground">Seleccionar Vehículos para Comparar</h2>
           </div>
-          <p className="text-sm text-muted-foreground mb-6">
+          <p className="text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6">
             Usa los filtros para encontrar los modelos que te interesan
           </p>
 
@@ -224,7 +224,7 @@ export default function Compare() {
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-4 mb-6">
+          <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mb-4 sm:mb-6">
             <Select value={comparisonFilter.brand || "all"} onValueChange={(value) => {
               setComparisonFilter(f => ({ ...f, brand: value === "all" ? "" : value, model: "", submodel: "" }))
             }}>
@@ -308,7 +308,7 @@ export default function Compare() {
             </div>
           )}
 
-          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {filteredProducts.slice(0, 12).map(product => (
               <div 
                 key={product.id} 
@@ -358,9 +358,9 @@ export default function Compare() {
         <>
           {/* Tabla de Comparación */}
           <Card>
-            <div className="p-6">
-              <h2 className="text-xl font-semibold text-card-foreground mb-2">Comparación Detallada</h2>
-              <p className="text-sm text-muted-foreground mb-6">Análisis lado a lado de los modelos seleccionados</p>
+            <div className="p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-semibold text-card-foreground mb-2">Comparación Detallada</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6">Análisis lado a lado de los modelos seleccionados</p>
               
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse">
@@ -422,9 +422,9 @@ export default function Compare() {
 
           {/* Gráfico de Evolución de Precios */}
           <Card>
-            <div className="p-6">
-              <h2 className="text-xl font-semibold text-card-foreground mb-2">Evolución de Precios</h2>
-              <p className="text-sm text-muted-foreground mb-6">Comparación de precios históricos</p>
+            <div className="p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-semibold text-card-foreground mb-2">Evolución de Precios</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6">Comparación de precios históricos</p>
               
               <ResponsiveContainer width="100%" height={400}>
                 <LineChart data={comparisonData[0]?.priceData || []}>

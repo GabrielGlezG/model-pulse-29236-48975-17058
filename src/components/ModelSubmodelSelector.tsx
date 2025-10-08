@@ -159,15 +159,15 @@ export function ModelSubmodelSelector({
   return (
     <Card className="border-border/50 shadow-md">
       <CardHeader className="space-y-1 pb-4">
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <Filter className="h-5 w-5 text-primary" />
+        <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+          <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
           Filtros de Búsqueda
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-sm">
           Filtra por marca, categoría, modelo y submodelo para análisis específico
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4 sm:p-6">
         {/* Search Input */}
         <div className="mb-4">
           <div className="relative">
@@ -190,7 +190,7 @@ export function ModelSubmodelSelector({
           </div>
         </div>
 
-        <div className={`grid gap-4 ${hideCategory ? 'md:grid-cols-4' : 'md:grid-cols-5'}`}>
+        <div className={`grid gap-3 sm:gap-4 ${hideCategory ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-4' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-5'}`}>
           <Select value={selectedBrand || "all"} onValueChange={(value) => {
             onBrandChange(value === "all" ? "" : value)
           }}>

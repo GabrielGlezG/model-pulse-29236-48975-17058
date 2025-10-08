@@ -45,18 +45,18 @@ export function TopBar() {
   const displayEmail = profile?.email || user.email || ''
 
   return (
-    <div className="h-16 bg-card border-b border-border flex items-center justify-between px-6">
+    <div className="h-14 sm:h-16 bg-card border-b border-border flex items-center justify-between px-3 sm:px-6">
       <CurrencySelector />
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setShowDropdown(!showDropdown)}
-          className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-muted transition-colors"
+          className="flex items-center gap-2 sm:gap-3 px-2 sm:px-4 py-2 rounded-lg hover:bg-muted transition-colors"
         >
-          <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium text-sm">
+          <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium text-xs sm:text-sm">
             {getInitials(displayName)}
           </div>
           <div className="text-left hidden md:block">
-            <p className="text-sm font-medium text-foreground">{displayName}</p>
+            <p className="text-xs sm:text-sm font-medium text-foreground">{displayName}</p>
             <p className="text-xs text-muted-foreground">{displayEmail}</p>
           </div>
         </button>

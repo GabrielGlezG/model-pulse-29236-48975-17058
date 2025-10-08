@@ -112,10 +112,10 @@ export default function Admin() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Panel de Administración</h1>
-        <p className="text-muted-foreground">Gestiona usuarios, suscripciones y configuración del sistema</p>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Panel de Administración</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">Gestiona usuarios, suscripciones y configuración del sistema</p>
       </div>
 
       <Tabs defaultValue="users" className="space-y-4">
@@ -128,10 +128,11 @@ export default function Admin() {
         <TabsContent value="users">
           <Card>
             <CardHeader>
-              <CardTitle>Gestión de Usuarios</CardTitle>
-              <CardDescription>Administra roles y permisos de usuarios</CardDescription>
+              <CardTitle className="text-lg sm:text-xl">Gestión de Usuarios</CardTitle>
+              <CardDescription className="text-sm">Administra roles y permisos de usuarios</CardDescription>
             </CardHeader>
             <CardContent>
+              <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -160,6 +161,7 @@ export default function Admin() {
                   ))}
                 </TableBody>
               </Table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -167,10 +169,11 @@ export default function Admin() {
         <TabsContent value="subscriptions">
           <Card>
             <CardHeader>
-              <CardTitle>Suscripciones Activas</CardTitle>
-              <CardDescription>Monitorea el estado de todas las suscripciones</CardDescription>
+              <CardTitle className="text-lg sm:text-xl">Suscripciones Activas</CardTitle>
+              <CardDescription className="text-sm">Monitorea el estado de todas las suscripciones</CardDescription>
             </CardHeader>
             <CardContent>
+              <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -191,6 +194,7 @@ export default function Admin() {
                   ))}
                 </TableBody>
               </Table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
