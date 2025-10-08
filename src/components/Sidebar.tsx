@@ -50,10 +50,10 @@ export function Sidebar() {
       {!isMobileOpen && (
         <button
           onClick={() => setIsMobileOpen(true)}
-          className="fixed bottom-4 right-4 z-50 md:hidden h-14 w-14 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110"
+          className="fixed top-4 left-4 z-50 md:hidden h-12 w-12 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-105"
           aria-label="Abrir menú"
         >
-          <Menu className="h-6 w-6" />
+          <Menu className="h-5 w-5" />
         </button>
       )}
 

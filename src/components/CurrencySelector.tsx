@@ -1,6 +1,5 @@
 import { Currency, useCurrency, CURRENCY_SYMBOLS, CURRENCY_NAMES } from '@/contexts/CurrencyContext'
 import { Button } from '@/components/ui/button'
-import { DollarSign } from 'lucide-react'
 
 const currencies: Currency[] = ['CLP', 'USD', 'GBP', 'JPY', 'CNY']
 
@@ -8,11 +7,7 @@ export function CurrencySelector() {
   const { currency, setCurrency } = useCurrency()
 
   return (
-    <div className="flex items-center justify-center gap-2 sm:gap-3 w-full max-w-3xl mx-auto">
-      <div className="flex items-center gap-1.5 text-sm text-muted-foreground shrink-0">
-        <DollarSign className="h-4 w-4" />
-        <span className="hidden sm:inline">Moneda:</span>
-      </div>
+    <div className="flex items-center justify-center w-full max-w-3xl mx-auto">
       <div className="flex gap-1 sm:gap-2 flex-wrap justify-center">
         {currencies.map((curr) => (
           <Button
