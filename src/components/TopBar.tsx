@@ -1,28 +1,40 @@
-import { Menu, User } from 'lucide-react'
+import { Menu, LogOut, Crown, CreditCard } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
+import { Badge } from './custom/Badge'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
-import { useNavigate } from 'react-router-dom'
 
 interface TopBarProps {
   onMenuClick: () => void
 }
 
 export function TopBar({ onMenuClick }: TopBarProps) {
-  const { user, profile, signOut } = useAuth()
+  const { user, profile, signOut, isAdmin, hasActiveSubscription } = useAuth()
   const navigate = useNavigate()
 
-  const handleSignOut = async () => {
-    await signOut()
-    navigate('/login')
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2)
   }
+
+  const getSubscriptionStatus = () => {
+    if (!profile) return { text: 'Configurando...', variant: 'default' as const }
+    if (isAdmin) return { text: 'Admin', variant: 'copper' as const }
+    if (hasActiveSubscription) return { text: 'Premium', variant: 'success' as const }
+    return { text: 'Sin Acceso', variant: 'default' as const }
+  }
+
+  const subscriptionStatus = getSubscriptionStatus()
+  const displayName = profile?.name || user?.email || 'Usuario'
+  const displayEmail = profile?.email || user?.email || ''
 
   return (
     <div className="h-16 bg-card border-b border-border flex items-center px-4 sm:px-6 justify-between">
@@ -36,28 +48,60 @@ export function TopBar({ onMenuClick }: TopBarProps) {
       
       <div className="flex-1" />
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full">
-            <User className="h-5 w-5" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuLabel>
-            <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">{profile?.name || 'Usuario'}</p>
-              <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+      {user && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center gap-3 px-2 py-1 rounded-lg hover:bg-muted transition-colors">
+              <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium text-sm flex-shrink-0">
+                {getInitials(displayName)}
+              </div>
+              <div className="hidden sm:flex flex-col items-start min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-medium text-foreground truncate">{displayName}</p>
+                  {profile && isAdmin && <Crown className="h-4 w-4 text-yellow-500 flex-shrink-0" />}
+                </div>
+                <Badge variant={subscriptionStatus.variant} className="text-xs">{subscriptionStatus.text}</Badge>
+              </div>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-64 p-3 space-y-3 bg-card z-50">
+            <div className="flex items-center gap-3 px-2">
+              <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium text-sm flex-shrink-0">
+                {getInitials(displayName)}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <p className="text-sm font-medium text-foreground truncate">{displayName}</p>
+                  {profile && isAdmin && <Crown className="h-4 w-4 text-yellow-500 flex-shrink-0" />}
+                </div>
+                <p className="text-xs text-muted-foreground truncate">{displayEmail}</p>
+                <Badge variant={subscriptionStatus.variant} className="mt-1">{subscriptionStatus.text}</Badge>
+              </div>
             </div>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate('/subscription')}>
-            Mi Suscripción
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
-            Cerrar Sesión
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+
+            {profile && !isAdmin && (
+              <button
+                onClick={() => navigate('/subscription')}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted transition-colors text-foreground"
+              >
+                <CreditCard className="h-4 w-4" />
+                <span className="text-sm">Suscripción</span>
+              </button>
+            )}
+
+            <button
+              onClick={() => {
+                signOut()
+                navigate('/login')
+              }}
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted transition-colors text-destructive"
+            >
+              <LogOut className="h-4 w-4" />
+              <span className="text-sm">Cerrar Sesión</span>
+            </button>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
     </div>
   )
 }
