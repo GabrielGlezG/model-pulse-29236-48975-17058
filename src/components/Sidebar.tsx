@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
-import { BarChart3, Upload, Lightbulb, Scale, TrendingUp, Users, ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { BarChart3, Upload, Lightbulb, Scale, TrendingUp, Users, ChevronLeft, ChevronRight, X, LogOut, Crown, CreditCard } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import { Badge } from './custom/Badge'
 import logo from '@/assets/pricing-engine-logo-new.png'
 
 interface SidebarProps {
@@ -12,7 +13,8 @@ interface SidebarProps {
 export function Sidebar({ isMobileOpen, setIsMobileOpen }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const location = useLocation()
-  const { isAdmin } = useAuth()
+  const navigate = useNavigate()
+  const { user, profile, signOut, isAdmin, hasActiveSubscription } = useAuth()
 
   const items = [
     { title: 'Dashboard', url: '/', icon: BarChart3, requireAdmin: false },
@@ -25,6 +27,26 @@ export function Sidebar({ isMobileOpen, setIsMobileOpen }: SidebarProps) {
 
   const filteredItems = items.filter(item => !item.requireAdmin || isAdmin)
   const isActive = (path: string) => location.pathname === path
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2)
+  }
+
+  const getSubscriptionStatus = () => {
+    if (!profile) return { text: 'Configurando...', variant: 'default' as const }
+    if (isAdmin) return { text: 'Admin', variant: 'copper' as const }
+    if (hasActiveSubscription) return { text: 'Premium', variant: 'success' as const }
+    return { text: 'Sin Acceso', variant: 'default' as const }
+  }
+
+  const subscriptionStatus = getSubscriptionStatus()
+  const displayName = profile?.name || user?.email || 'Usuario'
+  const displayEmail = profile?.email || user?.email || ''
 
   return (
     <>
@@ -77,6 +99,65 @@ export function Sidebar({ isMobileOpen, setIsMobileOpen }: SidebarProps) {
             </NavLink>
           ))}
         </nav>
+
+        {/* User section */}
+        {user && !isCollapsed && (
+          <div className="p-4 border-t border-border space-y-3">
+            <div className="flex items-center gap-3 px-2">
+              <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium text-sm flex-shrink-0">
+                {getInitials(displayName)}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <p className="text-sm font-medium text-foreground truncate">{displayName}</p>
+                  {profile && isAdmin && <Crown className="h-4 w-4 text-yellow-500 flex-shrink-0" />}
+                </div>
+                <p className="text-xs text-muted-foreground truncate">{displayEmail}</p>
+                <Badge variant={subscriptionStatus.variant} className="mt-1">{subscriptionStatus.text}</Badge>
+              </div>
+            </div>
+
+            {profile && !isAdmin && (
+              <button
+                onClick={() => {
+                  navigate('/subscription')
+                  setIsMobileOpen(false)
+                }}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted transition-colors text-foreground"
+              >
+                <CreditCard className="h-4 w-4" />
+                <span className="text-sm">Suscripción</span>
+              </button>
+            )}
+
+            <button
+              onClick={() => {
+                signOut()
+                setIsMobileOpen(false)
+              }}
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted transition-colors text-destructive"
+            >
+              <LogOut className="h-4 w-4" />
+              <span className="text-sm">Cerrar Sesión</span>
+            </button>
+          </div>
+        )}
+
+        {/* Collapsed user section */}
+        {user && isCollapsed && (
+          <div className="p-2 border-t border-border">
+            <button
+              onClick={() => {
+                signOut()
+                setIsMobileOpen(false)
+              }}
+              className="w-full flex items-center justify-center p-3 rounded-lg hover:bg-muted transition-colors text-destructive"
+              title="Cerrar Sesión"
+            >
+              <LogOut className="h-5 w-5" />
+            </button>
+          </div>
+        )}
       </div>
     </>
   )
