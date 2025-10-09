@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { BarChart3, Upload, Lightbulb, Scale, TrendingUp, Users, ChevronLeft, ChevronRight, X, LogOut, Crown, CreditCard } from 'lucide-react'
+import { BarChart3, Upload, Lightbulb, Scale, TrendingUp, Users, ChevronLeft, ChevronRight, Menu, X, LogOut, Crown, CreditCard } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { Badge } from './custom/Badge'
 import logo from '@/assets/pricing-engine-logo-new.png'
