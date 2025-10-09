@@ -56,6 +56,7 @@ import {
 } from "recharts";
 import { useState } from "react";
 import { usePriceDistribution } from "@/hooks/usePriceDistribution";
+import { CurrencySelector } from "@/components/CurrencySelector";
 
 interface AnalyticsData {
   metrics: {
@@ -333,6 +334,11 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
+      {/* Selector de Divisas */}
+      <div className="flex justify-center">
+        <CurrencySelector />
+      </div>
+
       {/* Filtros */}
       <Card className="border-border/50 shadow-md">
         <CardHeader className="space-y-1 pb-4">
