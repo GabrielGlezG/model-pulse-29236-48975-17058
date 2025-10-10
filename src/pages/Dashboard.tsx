@@ -35,28 +35,37 @@ import {
   TrendingDown,
   X,
 } from "lucide-react";
+import { Bar, Line, Pie, Bubble } from "react-chartjs-2";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  ScatterChart,
-  Scatter,
-  Legend,
-  ZAxis,
-  ComposedChart,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip as ChartTooltip,
+  Legend as ChartLegend,
+  Filler,
+} from "chart.js";
 import { useState } from "react";
 import { usePriceDistribution } from "@/hooks/usePriceDistribution";
 import { CurrencySelector } from "@/components/CurrencySelector";
+
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  ChartTooltip,
+  ChartLegend,
+  Filler
+);
 
 interface AnalyticsData {
   metrics: {
@@ -165,7 +174,6 @@ export default function Dashboard() {
   });
   const [refreshTick, setRefreshTick] = useState(0);
 
-  // Debug de autenticación
   const { user, profile, isAdmin, hasActiveSubscription } = useAuth();
   console.log("Dashboard Auth Debug:", {
     user: !!user,
@@ -204,19 +212,16 @@ export default function Dashboard() {
       console.error("Analytics query error:", error);
       return failureCount < 2;
     },
-    staleTime: 0, // Force refetch to get updated dynamic price ranges
+    staleTime: 0,
     refetchOnMount: true,
   });
 
-  // Log query errors
   if (queryError) {
     console.error("Query error:", queryError);
   }
 
-  // Local, accurate price distribution from DB (quartiles)
   const { data: priceDistributionLocal } = usePriceDistribution(filters);
 
-  // Debug: log price distribution and timestamp when analytics change
   if (analytics) {
     console.log("Analytics generated_at:", analytics.generated_at);
     console.log(
@@ -256,7 +261,6 @@ export default function Dashboard() {
       const { data, error } = await query;
       if (error) throw error;
 
-      // Remove duplicates by model name
       const uniqueModels = Array.from(
         new Map(
           data.map((p) => [
@@ -290,8 +294,6 @@ export default function Dashboard() {
       return [...new Set(data.map((p) => p.submodel).filter(Boolean))];
     },
   });
-
-  // Removed local analytics fallback - now always uses dynamic backend data
 
   if (isLoading) {
     return (
@@ -334,12 +336,10 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Selector de Divisas */}
       <div className="flex justify-center">
         <CurrencySelector />
       </div>
 
-      {/* Filtros */}
       <Card className="border-border/50 shadow-md">
         <CardHeader className="space-y-1 pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
@@ -446,7 +446,6 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
-      {/* Métricas principales - Diseño inspirado en referencia */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="bg-primary border-none shadow-md rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -517,7 +516,6 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      {/* Tabs con visualizaciones organizadas */}
       <Tabs defaultValue="general" className="space-y-6">
         <TabsList className="grid w-full grid-cols-3 h-auto bg-card border border-border">
           <TabsTrigger
@@ -540,7 +538,6 @@ export default function Dashboard() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Tab: Visión General */}
         <TabsContent value="general" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
             <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
@@ -554,52 +551,45 @@ export default function Dashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
-                <ResponsiveContainer width="100%" height={260}>
-                  <BarChart
-                    data={analytics.chart_data?.models_by_category || []}
-                  >
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      stroke="hsl(var(--border))"
-                      opacity={0.2}
-                    />
-                    <XAxis
-                      dataKey="category"
-                      tick={{
-                        fontSize: 11,
-                        fill: "hsl(var(--muted-foreground))",
-                      }}
-                      stroke="hsl(var(--muted-foreground))"
-                    />
-                    <YAxis
-                      tick={{
-                        fontSize: 11,
-                        fill: "hsl(var(--muted-foreground))",
-                      }}
-                      stroke="hsl(var(--muted-foreground))"
-                    />
-                    <Tooltip
-                      cursor={false}
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--card))",
-                        border: "1px solid hsl(var(--border))",
-                        borderRadius: "8px",
-                        color: "hsl(var(--foreground))",
-                      }}
-                      labelStyle={{
-                        color: "hsl(var(--foreground))",
-                        fontWeight: 600,
-                      }}
-                      itemStyle={{ color: "hsl(var(--foreground))" }}
-                    />
-                    <Bar
-                      dataKey="count"
-                      fill="hsl(var(--primary))"
-                      name="Cantidad"
-                      radius={[6, 6, 0, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
+                <div className="h-[260px]">
+                  <Bar
+                    data={{
+                      labels: (analytics.chart_data?.models_by_category || []).map(d => d.category),
+                      datasets: [{
+                        label: 'Cantidad',
+                        data: (analytics.chart_data?.models_by_category || []).map(d => d.count),
+                        backgroundColor: 'hsl(var(--primary))',
+                        borderRadius: 6,
+                      }]
+                    }}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                          backgroundColor: 'hsl(var(--card))',
+                          borderColor: 'hsl(var(--border))',
+                          borderWidth: 1,
+                          titleColor: 'hsl(var(--foreground))',
+                          bodyColor: 'hsl(var(--foreground))',
+                          padding: 12,
+                          cornerRadius: 8,
+                        }
+                      },
+                      scales: {
+                        x: {
+                          grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                          ticks: { color: 'hsl(var(--muted-foreground))', font: { size: 11 } }
+                        },
+                        y: {
+                          grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                          ticks: { color: 'hsl(var(--muted-foreground))', font: { size: 11 } }
+                        }
+                      }
+                    }}
+                  />
+                </div>
               </CardContent>
             </Card>
 
@@ -614,156 +604,63 @@ export default function Dashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
-                <ResponsiveContainer width="100%" height={260}>
-                  <PieChart>
-                    <Pie
-                      data={
-                        priceDistributionLocal ||
-                        analytics.chart_data?.price_distribution ||
-                        []
+                <div className="h-[260px]">
+                  <Pie
+                    data={{
+                      labels: (priceDistributionLocal || analytics.chart_data?.price_distribution || []).map(d => d.range),
+                      datasets: [{
+                        data: (priceDistributionLocal || analytics.chart_data?.price_distribution || []).map(d => d.count),
+                        backgroundColor: COLORS,
+                        borderWidth: 2,
+                        borderColor: 'hsl(var(--card))',
+                      }]
+                    }}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: {
+                          position: 'bottom',
+                          labels: {
+                            color: 'hsl(var(--foreground))',
+                            padding: 12,
+                            font: { size: 11 },
+                            generateLabels: (chart) => {
+                              const data = chart.data;
+                              const total = (data.datasets[0].data as number[]).reduce((sum, val) => sum + val, 0);
+                              return data.labels?.map((label, i) => {
+                                const value = (data.datasets[0].data as number[])[i];
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return {
+                                  text: `${label} (${percentage}%)`,
+                                  fillStyle: COLORS[i % COLORS.length],
+                                  hidden: false,
+                                  index: i
+                                };
+                              }) || [];
+                            }
+                          }
+                        },
+                        tooltip: {
+                          backgroundColor: 'hsl(var(--card))',
+                          borderColor: 'hsl(var(--border))',
+                          borderWidth: 1,
+                          titleColor: 'hsl(var(--foreground))',
+                          bodyColor: 'hsl(var(--foreground))',
+                          padding: 12,
+                          cornerRadius: 8,
+                          callbacks: {
+                            label: (context) => {
+                              const total = (context.dataset.data as number[]).reduce((sum: number, val) => sum + (val as number), 0);
+                              const percentage = ((context.parsed / total) * 100).toFixed(1);
+                              return `${percentage}% (${context.parsed} modelos)`;
+                            }
+                          }
+                        }
                       }
-                      dataKey="count"
-                      nameKey="range"
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      label={(entry) => {
-                        const data =
-                          priceDistributionLocal ||
-                          analytics.chart_data?.price_distribution ||
-                          [];
-                        const total = data.reduce(
-                          (sum, item) => sum + item.count,
-                          0
-                        );
-                        const percentage = (
-                          (entry.count / total) *
-                          100
-                        ).toFixed(1);
-                        return `${percentage}%`;
-                      }}
-                      labelLine={true}
-                    >
-                      {(
-                        priceDistributionLocal ||
-                        analytics.chart_data?.price_distribution ||
-                        []
-                      ).map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--card))",
-                        border: "1px solid hsl(var(--border))",
-                        borderRadius: "8px",
-                        color: "hsl(var(--foreground))",
-                      }}
-                      labelStyle={{
-                        color: "hsl(var(--foreground))",
-                        fontWeight: 600,
-                      }}
-                      itemStyle={{ color: "hsl(var(--foreground))" }}
-                      formatter={(value: number, name: string, props: any) => {
-                        const data =
-                          priceDistributionLocal ||
-                          analytics.chart_data?.price_distribution ||
-                          [];
-                        const total = data.reduce(
-                          (sum, item) => sum + item.count,
-                          0
-                        );
-                        const percentage = ((value / total) * 100).toFixed(1);
-
-                        const range = props.payload.range;
-                        const priceMatch = range.match(/\$[\d,.]+[MK]?/gi);
-
-                        if (priceMatch && priceMatch.length >= 2) {
-                          const parsePrice = (priceStr: string): number => {
-                            const cleanStr = priceStr
-                              .replace("$", "")
-                              .replace(/,/g, "");
-                            if (cleanStr.toUpperCase().includes("M")) {
-                              return (
-                                parseFloat(cleanStr.replace(/M/gi, "")) *
-                                1000000
-                              );
-                            } else if (cleanStr.toUpperCase().includes("K")) {
-                              return (
-                                parseFloat(cleanStr.replace(/K/gi, "")) * 1000
-                              );
-                            }
-                            return parseFloat(cleanStr);
-                          };
-
-                          const minPrice = parsePrice(priceMatch[0]);
-                          const maxPrice = parsePrice(priceMatch[1]);
-
-                          return [
-                            `${percentage}%`,
-                            `${formatPrice(minPrice)} - ${formatPrice(
-                              maxPrice
-                            )}`,
-                          ];
-                        }
-
-                        const priceRange = range.split(":")[0].trim();
-                        return [`${percentage}%`, priceRange];
-                      }}
-                    />
-                    <Legend
-                      formatter={(value, entry: any) => {
-                        const data =
-                          priceDistributionLocal ||
-                          analytics.chart_data?.price_distribution ||
-                          [];
-                        const total = data.reduce(
-                          (sum, item) => sum + item.count,
-                          0
-                        );
-                        const percentage = (
-                          (entry.payload.count / total) *
-                          100
-                        ).toFixed(1);
-
-                        const range = entry.payload.range;
-                        const priceMatch = range.match(/\$[\d,.]+[MK]?/gi);
-
-                        if (priceMatch && priceMatch.length >= 2) {
-                          const parsePrice = (priceStr: string): number => {
-                            const cleanStr = priceStr
-                              .replace("$", "")
-                              .replace(/,/g, "");
-                            if (cleanStr.toUpperCase().includes("M")) {
-                              return (
-                                parseFloat(cleanStr.replace(/M/gi, "")) *
-                                1000000
-                              );
-                            } else if (cleanStr.toUpperCase().includes("K")) {
-                              return (
-                                parseFloat(cleanStr.replace(/K/gi, "")) * 1000
-                              );
-                            }
-                            return parseFloat(cleanStr);
-                          };
-
-                          const minPrice = parsePrice(priceMatch[0]);
-                          const maxPrice = parsePrice(priceMatch[1]);
-
-                          return `${formatPrice(minPrice)} a ${formatPrice(
-                            maxPrice
-                          )})`;
-                        }
-
-                        const priceRange = range.split(":")[0].trim();
-                        return `${priceRange}`;
-                      }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
+                    }}
+                  />
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -779,91 +676,69 @@ export default function Dashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-2">
-              <ResponsiveContainer width="100%" height={400}>
-                <ScatterChart
-                  margin={{ top: 20, right: 20, bottom: 80, left: 60 }}
-                >
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    stroke="hsl(var(--border))"
-                    opacity={0.2}
-                  />
-                  <XAxis
-                    type="number"
-                    dataKey="index"
-                    name="Modelo"
-                    tick={{
-                      fontSize: 11,
-                      fill: "hsl(var(--muted-foreground))",
-                    }}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <YAxis
-                    type="number"
-                    dataKey="avg_price"
-                    name="Precio Promedio"
-                    tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                    tick={{
-                      fontSize: 11,
-                      fill: "hsl(var(--muted-foreground))",
-                    }}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <ZAxis
-                    type="number"
-                    dataKey="count"
-                    range={[100, 1000]}
-                    name="Volumen"
-                  />
-                  <Tooltip
-                    cursor={{ strokeDasharray: "3 3" }}
-                    content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
-                        const data = payload[0].payload;
-                        return (
-                          <div
-                            style={{
-                              backgroundColor: "hsl(var(--card))",
-                              border: "1px solid hsl(var(--border))",
-                              borderRadius: "8px",
-                              padding: "12px",
-                              color: "hsl(var(--foreground))",
-                            }}
-                          >
-                            <p style={{ fontWeight: 600, marginBottom: "8px" }}>
-                              {data.model_principal}
-                            </p>
-                            <p style={{ fontSize: "13px" }}>
-                              Precio Promedio: {formatPrice(data.avg_price)}
-                            </p>
-                            <p style={{ fontSize: "13px" }}>
-                              Volumen: {data.count} variantes
-                            </p>
-                            <p style={{ fontSize: "13px" }}>
-                              Rango: {formatPrice(data.min_price)} -{" "}
-                              {formatPrice(data.max_price)}
-                            </p>
-                          </div>
-                        );
+              <div className="h-[400px]">
+                <Bubble
+                  data={{
+                    datasets: [{
+                      label: 'Modelo Principal',
+                      data: (analytics.chart_data?.models_by_principal || []).map((item, index) => ({
+                        x: index + 1,
+                        y: item.avg_price,
+                        r: Math.sqrt(item.count) * 3
+                      })),
+                      backgroundColor: 'hsl(var(--primary))',
+                      borderColor: 'hsl(var(--primary))',
+                    }]
+                  }}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: { display: false },
+                      tooltip: {
+                        backgroundColor: 'hsl(var(--card))',
+                        borderColor: 'hsl(var(--border))',
+                        borderWidth: 1,
+                        titleColor: 'hsl(var(--foreground))',
+                        bodyColor: 'hsl(var(--foreground))',
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                          label: (context) => {
+                            const item = (analytics.chart_data?.models_by_principal || [])[context.dataIndex];
+                            return [
+                              `Modelo: ${item.model_principal}`,
+                              `Precio Promedio: ${formatPrice(item.avg_price)}`,
+                              `Volumen: ${item.count} variantes`,
+                              `Rango: ${formatPrice(item.min_price)} - ${formatPrice(item.max_price)}`
+                            ];
+                          }
+                        }
                       }
-                      return null;
-                    }}
-                  />
-                  <Scatter
-                    name="Modelo Principal"
-                    data={(analytics.chart_data?.models_by_principal || []).map(
-                      (item, index) => ({ ...item, index: index + 1 })
-                    )}
-                    fill="hsl(var(--primary))"
-                    opacity={0.7}
-                  />
-                </ScatterChart>
-              </ResponsiveContainer>
+                    },
+                    scales: {
+                      x: {
+                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                        ticks: { color: 'hsl(var(--muted-foreground))', font: { size: 11 } },
+                        title: { display: true, text: 'Modelo', color: 'hsl(var(--muted-foreground))' }
+                      },
+                      y: {
+                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                        ticks: { 
+                          color: 'hsl(var(--muted-foreground))',
+                          font: { size: 11 },
+                          callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
+                        },
+                        title: { display: true, text: 'Precio Promedio', color: 'hsl(var(--muted-foreground))' }
+                      }
+                    }
+                  }}
+                />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Tab: Análisis de Precios */}
         <TabsContent value="precios" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
             <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
@@ -877,60 +752,53 @@ export default function Dashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
-                <ResponsiveContainer width="100%" height={260}>
-                  <BarChart
-                    data={analytics.chart_data?.top_5_expensive || []}
-                    layout="vertical"
-                  >
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      stroke="hsl(var(--border))"
-                      opacity={0.2}
-                    />
-                    <XAxis
-                      type="number"
-                      tickFormatter={(value) =>
-                        `$${(value / 1000).toFixed(0)}k`
+                <div className="h-[260px]">
+                  <Bar
+                    data={{
+                      labels: (analytics.chart_data?.top_5_expensive || []).map(d => d.name),
+                      datasets: [{
+                        label: 'Precio',
+                        data: (analytics.chart_data?.top_5_expensive || []).map(d => d.price),
+                        backgroundColor: 'hsl(var(--chart-5))',
+                        borderRadius: 6,
+                      }]
+                    }}
+                    options={{
+                      indexAxis: 'y',
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                          backgroundColor: 'hsl(var(--card))',
+                          borderColor: 'hsl(var(--border))',
+                          borderWidth: 1,
+                          titleColor: 'hsl(var(--foreground))',
+                          bodyColor: 'hsl(var(--foreground))',
+                          padding: 12,
+                          cornerRadius: 8,
+                          callbacks: {
+                            label: (context) => formatPrice(context.parsed.x)
+                          }
+                        }
+                      },
+                      scales: {
+                        x: {
+                          grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                          ticks: { 
+                            color: 'hsl(var(--muted-foreground))',
+                            font: { size: 11 },
+                            callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
+                          }
+                        },
+                        y: {
+                          grid: { display: false },
+                          ticks: { color: 'hsl(var(--muted-foreground))', font: { size: 11 } }
+                        }
                       }
-                      tick={{
-                        fontSize: 11,
-                        fill: "hsl(var(--muted-foreground))",
-                      }}
-                      stroke="hsl(var(--muted-foreground))"
-                    />
-                    <YAxis
-                      dataKey="name"
-                      type="category"
-                      width={150}
-                      tick={{
-                        fontSize: 11,
-                        fill: "hsl(var(--muted-foreground))",
-                      }}
-                      stroke="hsl(var(--muted-foreground))"
-                    />
-                    <Tooltip
-                      cursor={false}
-                      formatter={(value: number) => formatPrice(value)}
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--card))",
-                        border: "1px solid hsl(var(--border))",
-                        borderRadius: "8px",
-                        color: "hsl(var(--foreground))",
-                      }}
-                      labelStyle={{
-                        color: "hsl(var(--foreground))",
-                        fontWeight: 600,
-                      }}
-                      itemStyle={{ color: "hsl(var(--foreground))" }}
-                    />
-                    <Bar
-                      dataKey="price"
-                      fill="hsl(var(--chart-5))"
-                      name="Precio"
-                      radius={[0, 6, 6, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
+                    }}
+                  />
+                </div>
               </CardContent>
             </Card>
 
@@ -945,60 +813,53 @@ export default function Dashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
-                <ResponsiveContainer width="100%" height={260}>
-                  <BarChart
-                    data={analytics.chart_data?.bottom_5_cheap || []}
-                    layout="vertical"
-                  >
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      stroke="hsl(var(--border))"
-                      opacity={0.2}
-                    />
-                    <XAxis
-                      type="number"
-                      tickFormatter={(value) =>
-                        `$${(value / 1000).toFixed(0)}k`
+                <div className="h-[260px]">
+                  <Bar
+                    data={{
+                      labels: (analytics.chart_data?.bottom_5_cheap || []).map(d => d.name),
+                      datasets: [{
+                        label: 'Precio',
+                        data: (analytics.chart_data?.bottom_5_cheap || []).map(d => d.price),
+                        backgroundColor: 'hsl(var(--chart-2))',
+                        borderRadius: 6,
+                      }]
+                    }}
+                    options={{
+                      indexAxis: 'y',
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                          backgroundColor: 'hsl(var(--card))',
+                          borderColor: 'hsl(var(--border))',
+                          borderWidth: 1,
+                          titleColor: 'hsl(var(--foreground))',
+                          bodyColor: 'hsl(var(--foreground))',
+                          padding: 12,
+                          cornerRadius: 8,
+                          callbacks: {
+                            label: (context) => formatPrice(context.parsed.x)
+                          }
+                        }
+                      },
+                      scales: {
+                        x: {
+                          grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                          ticks: { 
+                            color: 'hsl(var(--muted-foreground))',
+                            font: { size: 11 },
+                            callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
+                          }
+                        },
+                        y: {
+                          grid: { display: false },
+                          ticks: { color: 'hsl(var(--muted-foreground))', font: { size: 11 } }
+                        }
                       }
-                      tick={{
-                        fontSize: 11,
-                        fill: "hsl(var(--muted-foreground))",
-                      }}
-                      stroke="hsl(var(--muted-foreground))"
-                    />
-                    <YAxis
-                      dataKey="name"
-                      type="category"
-                      width={150}
-                      tick={{
-                        fontSize: 11,
-                        fill: "hsl(var(--muted-foreground))",
-                      }}
-                      stroke="hsl(var(--muted-foreground))"
-                    />
-                    <Tooltip
-                      cursor={false}
-                      formatter={(value: number) => formatPrice(value)}
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--card))",
-                        border: "1px solid hsl(var(--border))",
-                        borderRadius: "8px",
-                        color: "hsl(var(--foreground))",
-                      }}
-                      labelStyle={{
-                        color: "hsl(var(--foreground))",
-                        fontWeight: 600,
-                      }}
-                      itemStyle={{ color: "hsl(var(--foreground))" }}
-                    />
-                    <Bar
-                      dataKey="price"
-                      fill="hsl(var(--chart-2))"
-                      name="Precio"
-                      radius={[0, 6, 6, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
+                    }}
+                  />
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -1014,78 +875,77 @@ export default function Dashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-2">
-              <ResponsiveContainer width="100%" height={320}>
-                <ComposedChart
-                  data={analytics.chart_data?.prices_by_category || []}
-                >
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    stroke="hsl(var(--border))"
-                    opacity={0.2}
-                  />
-                  <XAxis
-                    dataKey="category"
-                    tick={{
-                      fontSize: 11,
-                      fill: "hsl(var(--muted-foreground))",
-                    }}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <YAxis
-                    tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                    tick={{
-                      fontSize: 11,
-                      fill: "hsl(var(--muted-foreground))",
-                    }}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <Tooltip
-                    formatter={(value: number) => formatPrice(value)}
-                    contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "8px",
-                      color: "hsl(var(--foreground))",
-                    }}
-                    labelStyle={{
-                      color: "hsl(var(--foreground))",
-                      fontWeight: 600,
-                    }}
-                    itemStyle={{ color: "hsl(var(--foreground))" }}
-                  />
-                  <Legend />
-                  <Bar
-                    dataKey="min_price"
-                    fill="hsl(var(--chart-6))"
-                    name="Mínimo"
-                    radius={[6, 6, 0, 0]}
-                  />
-                  <Bar
-                    dataKey="avg_price"
-                    fill="hsl(var(--primary))"
-                    name="Promedio"
-                    radius={[6, 6, 0, 0]}
-                  />
-                  <Bar
-                    dataKey="max_price"
-                    fill="hsl(var(--chart-5))"
-                    name="Máximo"
-                    radius={[6, 6, 0, 0]}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="avg_price"
-                    name="avg_precio"
-                    stroke="hsl(var(--chart-3))"
-                    strokeWidth={2}
-                  />
-                </ComposedChart>
-              </ResponsiveContainer>
+              <div className="h-[320px]">
+                <Bar
+                  data={{
+                    labels: (analytics.chart_data?.prices_by_category || []).map(d => d.category),
+                    datasets: [
+                      {
+                        label: 'Mínimo',
+                        data: (analytics.chart_data?.prices_by_category || []).map(d => d.min_price),
+                        backgroundColor: 'hsl(var(--chart-6))',
+                        borderRadius: 6,
+                      },
+                      {
+                        label: 'Promedio',
+                        data: (analytics.chart_data?.prices_by_category || []).map(d => d.avg_price),
+                        backgroundColor: 'hsl(var(--primary))',
+                        borderRadius: 6,
+                      },
+                      {
+                        label: 'Máximo',
+                        data: (analytics.chart_data?.prices_by_category || []).map(d => d.max_price),
+                        backgroundColor: 'hsl(var(--chart-5))',
+                        borderRadius: 6,
+                      }
+                    ]
+                  }}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        position: 'top',
+                        labels: {
+                          color: 'hsl(var(--foreground))',
+                          padding: 12,
+                          font: { size: 11 }
+                        }
+                      },
+                      tooltip: {
+                        backgroundColor: 'hsl(var(--card))',
+                        borderColor: 'hsl(var(--border))',
+                        borderWidth: 1,
+                        titleColor: 'hsl(var(--foreground))',
+                        bodyColor: 'hsl(var(--foreground))',
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                          label: (context) => `${context.dataset.label}: ${formatPrice(context.parsed.y)}`
+                        }
+                      }
+                    },
+                    scales: {
+                      x: {
+                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                        ticks: { color: 'hsl(var(--muted-foreground))', font: { size: 11 } }
+                      },
+                      y: {
+                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                        ticks: { 
+                          color: 'hsl(var(--muted-foreground))',
+                          font: { size: 11 },
+                          callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
+                        }
+                      }
+                    }
+                  }}
+                />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Tab: Por Marca */}
         <TabsContent value="marcas" className="space-y-6">
           <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
             <CardHeader className="space-y-1 pb-4">
@@ -1098,55 +958,57 @@ export default function Dashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-2">
-              <ResponsiveContainer width="100%" height={320}>
-                <BarChart data={analytics.chart_data?.prices_by_brand || []}>
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    stroke="hsl(var(--border))"
-                    opacity={0.2}
-                  />
-                  <XAxis
-                    dataKey="brand"
-                    angle={-45}
-                    textAnchor="end"
-                    height={100}
-                    tick={{
-                      fontSize: 11,
-                      fill: "hsl(var(--muted-foreground))",
-                    }}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <YAxis
-                    tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                    tick={{
-                      fontSize: 11,
-                      fill: "hsl(var(--muted-foreground))",
-                    }}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <Tooltip
-                    cursor={false}
-                    formatter={(value: number) => formatPrice(value)}
-                    contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "8px",
-                      color: "hsl(var(--foreground))",
-                    }}
-                    labelStyle={{
-                      color: "hsl(var(--foreground))",
-                      fontWeight: 600,
-                    }}
-                    itemStyle={{ color: "hsl(var(--foreground))" }}
-                  />
-                  <Bar
-                    dataKey="avg_price"
-                    name="Precio Promedio"
-                    radius={[6, 6, 0, 0]}
-                    fill="hsl(var(--primary))"
-                  />
-                </BarChart>
-              </ResponsiveContainer>
+              <div className="h-[320px]">
+                <Bar
+                  data={{
+                    labels: (analytics.chart_data?.prices_by_brand || []).map(d => d.brand),
+                    datasets: [{
+                      label: 'Precio Promedio',
+                      data: (analytics.chart_data?.prices_by_brand || []).map(d => d.avg_price),
+                      backgroundColor: 'hsl(var(--primary))',
+                      borderRadius: 6,
+                    }]
+                  }}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: { display: false },
+                      tooltip: {
+                        backgroundColor: 'hsl(var(--card))',
+                        borderColor: 'hsl(var(--border))',
+                        borderWidth: 1,
+                        titleColor: 'hsl(var(--foreground))',
+                        bodyColor: 'hsl(var(--foreground))',
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                          label: (context) => formatPrice(context.parsed.y)
+                        }
+                      }
+                    },
+                    scales: {
+                      x: {
+                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                        ticks: { 
+                          color: 'hsl(var(--muted-foreground))',
+                          font: { size: 11 },
+                          maxRotation: 45,
+                          minRotation: 45
+                        }
+                      },
+                      y: {
+                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                        ticks: { 
+                          color: 'hsl(var(--muted-foreground))',
+                          font: { size: 11 },
+                          callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
+                        }
+                      }
+                    }
+                  }}
+                />
+              </div>
             </CardContent>
           </Card>
 
@@ -1161,55 +1023,57 @@ export default function Dashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-2">
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={analytics.chart_data?.brand_variations || []}>
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    stroke="hsl(var(--border))"
-                    opacity={0.2}
-                  />
-                  <XAxis
-                    dataKey="brand"
-                    angle={-45}
-                    textAnchor="end"
-                    height={100}
-                    tick={{
-                      fontSize: 11,
-                      fill: "hsl(var(--muted-foreground))",
-                    }}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <YAxis
-                    tickFormatter={(value) => `${value}%`}
-                    tick={{
-                      fontSize: 11,
-                      fill: "hsl(var(--muted-foreground))",
-                    }}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <Tooltip
-                    cursor={false}
-                    formatter={(value: number) => `${value.toFixed(2)}%`}
-                    contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "8px",
-                      color: "hsl(var(--foreground))",
-                    }}
-                    labelStyle={{
-                      color: "hsl(var(--foreground))",
-                      fontWeight: 600,
-                    }}
-                    itemStyle={{ color: "hsl(var(--foreground))" }}
-                  />
-                  <Bar
-                    dataKey="variation_percent"
-                    fill="hsl(var(--chart-6))"
-                    name="Variación %"
-                    radius={[6, 6, 0, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
+              <div className="h-[300px]">
+                <Bar
+                  data={{
+                    labels: (analytics.chart_data?.brand_variations || []).map(d => d.brand),
+                    datasets: [{
+                      label: 'Variación %',
+                      data: (analytics.chart_data?.brand_variations || []).map(d => d.variation_percent),
+                      backgroundColor: 'hsl(var(--chart-6))',
+                      borderRadius: 6,
+                    }]
+                  }}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: { display: false },
+                      tooltip: {
+                        backgroundColor: 'hsl(var(--card))',
+                        borderColor: 'hsl(var(--border))',
+                        borderWidth: 1,
+                        titleColor: 'hsl(var(--foreground))',
+                        bodyColor: 'hsl(var(--foreground))',
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                          label: (context) => `${context.parsed.y.toFixed(2)}%`
+                        }
+                      }
+                    },
+                    scales: {
+                      x: {
+                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                        ticks: { 
+                          color: 'hsl(var(--muted-foreground))',
+                          font: { size: 11 },
+                          maxRotation: 45,
+                          minRotation: 45
+                        }
+                      },
+                      y: {
+                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                        ticks: { 
+                          color: 'hsl(var(--muted-foreground))',
+                          font: { size: 11 },
+                          callback: (value) => `${value}%`
+                        }
+                      }
+                    }
+                  }}
+                />
+              </div>
             </CardContent>
           </Card>
 
@@ -1224,61 +1088,57 @@ export default function Dashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-2">
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={
-                    analytics.chart_data?.monthly_volatility?.most_volatile ||
-                    []
-                  }
-                >
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    stroke="hsl(var(--border))"
-                    opacity={0.2}
-                  />
-                  <XAxis
-                    dataKey="model"
-                    angle={-45}
-                    textAnchor="end"
-                    height={120}
-                    tick={{
-                      fontSize: 11,
-                      fill: "hsl(var(--muted-foreground))",
-                    }}
-                    interval={0}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <YAxis
-                    tickFormatter={(value) => `${value}%`}
-                    tick={{
-                      fontSize: 11,
-                      fill: "hsl(var(--muted-foreground))",
-                    }}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <Tooltip
-                    cursor={false}
-                    formatter={(value: number) => `${value.toFixed(2)}%`}
-                    contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "8px",
-                      color: "hsl(var(--foreground))",
-                    }}
-                    labelStyle={{
-                      color: "hsl(var(--foreground))",
-                      fontWeight: 600,
-                    }}
-                    itemStyle={{ color: "hsl(var(--foreground))" }}
-                  />
-                  <Bar
-                    dataKey="avg_monthly_variation"
-                    fill="hsl(var(--chart-7))"
-                    name="Volatilidad %"
-                    radius={[6, 6, 0, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
+              <div className="h-[300px]">
+                <Bar
+                  data={{
+                    labels: (analytics.chart_data?.monthly_volatility?.most_volatile || []).map(d => d.model),
+                    datasets: [{
+                      label: 'Volatilidad %',
+                      data: (analytics.chart_data?.monthly_volatility?.most_volatile || []).map(d => d.avg_monthly_variation),
+                      backgroundColor: 'hsl(var(--chart-7))',
+                      borderRadius: 6,
+                    }]
+                  }}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: { display: false },
+                      tooltip: {
+                        backgroundColor: 'hsl(var(--card))',
+                        borderColor: 'hsl(var(--border))',
+                        borderWidth: 1,
+                        titleColor: 'hsl(var(--foreground))',
+                        bodyColor: 'hsl(var(--foreground))',
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                          label: (context) => `${context.parsed.y.toFixed(2)}%`
+                        }
+                      }
+                    },
+                    scales: {
+                      x: {
+                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                        ticks: { 
+                          color: 'hsl(var(--muted-foreground))',
+                          font: { size: 11 },
+                          maxRotation: 45,
+                          minRotation: 45
+                        }
+                      },
+                      y: {
+                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                        ticks: { 
+                          color: 'hsl(var(--muted-foreground))',
+                          font: { size: 11 },
+                          callback: (value) => `${value}%`
+                        }
+                      }
+                    }
+                  }}
+                />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

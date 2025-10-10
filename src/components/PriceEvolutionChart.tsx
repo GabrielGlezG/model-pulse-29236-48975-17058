@@ -18,18 +18,32 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Line } from "react-chartjs-2";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-} from "recharts";
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip as ChartTooltip,
+  Legend as ChartLegend,
+  Filler,
+} from "chart.js";
 import { TrendingUp, Calendar, RefreshCw } from "lucide-react";
 import { useState } from "react";
+
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  ChartTooltip,
+  ChartLegend,
+  Filler
+);
 
 interface PriceEvolutionProps {
   selectedBrand?: string;
@@ -37,6 +51,14 @@ interface PriceEvolutionProps {
   selectedModel?: string;
   selectedSubmodel?: string;
 }
+
+const CHART_COLORS = [
+  "hsl(var(--chart-1))",
+  "hsl(var(--chart-2))",
+  "hsl(var(--chart-3))",
+  "hsl(var(--chart-4))",
+  "hsl(var(--chart-5))",
+];
 
 export function PriceEvolutionChart({
   selectedBrand,
@@ -83,7 +105,6 @@ export function PriceEvolutionChart({
         )
         .order("date", { ascending: true });
 
-      // Apply date filter
       const now = new Date();
       let startDate: Date;
       switch (timeRange) {
@@ -132,7 +153,6 @@ export function PriceEvolutionChart({
 
       query = query.gte("date", startDate.toISOString());
 
-      // Apply filters
       if (selectedBrand) {
         query = query.eq("products.brand", selectedBrand);
       }
@@ -150,7 +170,6 @@ export function PriceEvolutionChart({
 
       if (error) throw error;
 
-      // Group data by time period and model/submodel
       const groupedData = new Map<string, Map<string, number[]>>();
 
       data?.forEach((item) => {
@@ -191,29 +210,9 @@ export function PriceEvolutionChart({
         timeGroup.get(modelKey)!.push(item.price);
       });
 
-      // Convert to chart format
-      const chartData: any[] = [];
       const sortedTimeKeys = Array.from(groupedData.keys()).sort();
-
-      sortedTimeKeys.forEach((timeKey) => {
-        const timeGroup = groupedData.get(timeKey)!;
-        const dataPoint: any = {
-          date: timeKey,
-          formattedDate: formatDateForDisplay(timeKey, groupBy),
-        };
-
-        timeGroup.forEach((prices, modelKey) => {
-          // Calculate average price for this time period
-          const avgPrice =
-            prices.reduce((sum, price) => sum + price, 0) / prices.length;
-          dataPoint[modelKey] = Math.round(avgPrice);
-        });
-
-        chartData.push(dataPoint);
-      });
-
-      // Get unique models for legend
       const uniqueModels = new Set<string>();
+      
       data?.forEach((item) => {
         const modelKey = selectedSubmodel
           ? `${item.products.brand} ${item.products.name} (${item.products.submodel})`
@@ -221,9 +220,60 @@ export function PriceEvolutionChart({
         uniqueModels.add(modelKey);
       });
 
+      const models = Array.from(uniqueModels);
+      const labels: string[] = [];
+      const datasets: any[] = models.map((model, index) => ({
+        label: model,
+        data: [],
+        borderColor: CHART_COLORS[index % CHART_COLORS.length],
+        backgroundColor: CHART_COLORS[index % CHART_COLORS.length],
+        borderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        tension: 0.4,
+      }));
+
+      sortedTimeKeys.forEach((timeKey) => {
+        labels.push(formatDateForDisplay(timeKey, groupBy));
+        const timeGroup = groupedData.get(timeKey)!;
+
+        models.forEach((model, modelIndex) => {
+          const prices = timeGroup.get(model) || [];
+          const avgPrice = prices.length > 0
+            ? Math.round(prices.reduce((sum, price) => sum + price, 0) / prices.length)
+            : null;
+          datasets[modelIndex].data.push(avgPrice);
+        });
+      });
+
+      // Calculate statistics
+      const statistics = models.map((model) => {
+        const modelData = datasets.find(d => d.label === model)?.data.filter((p: number | null) => p !== null) || [];
+        
+        if (modelData.length === 0) return null;
+
+        const minPrice = Math.min(...modelData);
+        const maxPrice = Math.max(...modelData);
+        const avgPrice = modelData.reduce((sum: number, price: number) => sum + price, 0) / modelData.length;
+        const firstPrice = modelData[0];
+        const lastPrice = modelData[modelData.length - 1];
+        const totalChange = ((lastPrice - firstPrice) / firstPrice) * 100;
+
+        return {
+          model,
+          minPrice,
+          maxPrice,
+          avgPrice,
+          totalChange,
+          dataPoints: modelData.length
+        };
+      }).filter(Boolean);
+
       return {
-        chartData,
-        models: Array.from(uniqueModels),
+        labels,
+        datasets,
+        models,
+        statistics,
         totalDataPoints: data?.length || 0,
       };
     },
@@ -254,14 +304,7 @@ export function PriceEvolutionChart({
   };
 
   const getLineColor = (index: number) => {
-    const colors = [
-      "hsl(var(--chart-1))",
-      "hsl(var(--chart-2))",
-      "hsl(var(--chart-3))",
-      "hsl(var(--chart-4))",
-      "hsl(var(--chart-5))",
-    ];
-    return colors[index % colors.length];
+    return CHART_COLORS[index % CHART_COLORS.length];
   };
 
   if (!selectedBrand && !selectedCategory && !selectedModel) {
@@ -350,9 +393,8 @@ export function PriceEvolutionChart({
             <Skeleton className="h-8 w-full" />
             <Skeleton className="h-64 w-full" />
           </div>
-        ) : evolutionData && evolutionData.chartData.length > 0 ? (
+        ) : evolutionData && evolutionData.labels.length > 0 ? (
           <div className="space-y-4">
-            {/* Models Legend */}
             <div className="flex flex-wrap gap-2">
               {evolutionData.models.map((model, index) => (
                 <Badge key={model} variant="outline" className="text-xs">
@@ -365,97 +407,86 @@ export function PriceEvolutionChart({
               ))}
             </div>
 
-            {/* Price Evolution Chart */}
-            <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={evolutionData.chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="formattedDate"
-                  tick={{ fontSize: 12 }}
-                  interval="preserveStartEnd"
-                />
-                <YAxis
-                  tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                  domain={["dataMin * 0.95", "dataMax * 1.05"]}
-                />
-                <Tooltip
-                  cursor={false}
-                  contentStyle={{
-                    backgroundColor: "hsl(var(--card))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "8px",
-                    color: "hsl(var(--foreground))",
-                  }}
-                  labelStyle={{
-                    color: "hsl(var(--foreground))",
-                    fontWeight: 600,
-                  }}
-                  itemStyle={{ color: "hsl(var(--foreground))" }}
-                  formatter={(value: number, name: string) => [
-                    formatPrice(value),
-                    name,
-                  ]}
-                  labelFormatter={(label) => `Período: ${label}`}
-                />
-                <Legend />
-                {evolutionData.models.map((model, index) => (
-                  <Line
-                    key={model}
-                    type="monotone"
-                    dataKey={model}
-                    stroke={getLineColor(index)}
-                    strokeWidth={2}
-                    dot={{ fill: getLineColor(index), strokeWidth: 2, r: 4 }}
-                    activeDot={{
-                      r: 6,
-                      stroke: getLineColor(index),
-                      strokeWidth: 2,
-                    }}
-                    connectNulls={false}
-                  />
-                ))}
-              </LineChart>
-            </ResponsiveContainer>
+            <div className="h-[400px]">
+              <Line
+                data={{
+                  labels: evolutionData.labels,
+                  datasets: evolutionData.datasets,
+                }}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      display: false
+                    },
+                    tooltip: {
+                      backgroundColor: 'hsl(var(--card))',
+                      borderColor: 'hsl(var(--border))',
+                      borderWidth: 1,
+                      titleColor: 'hsl(var(--foreground))',
+                      bodyColor: 'hsl(var(--foreground))',
+                      padding: 12,
+                      cornerRadius: 8,
+                      callbacks: {
+                        label: (context) => {
+                          return `${context.dataset.label}: ${formatPrice(context.parsed.y)}`;
+                        },
+                        title: (items) => `Período: ${items[0].label}`
+                      }
+                    }
+                  },
+                  scales: {
+                    x: {
+                      grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                      ticks: { 
+                        color: 'hsl(var(--muted-foreground))',
+                        font: { size: 12 },
+                        maxRotation: 45,
+                        minRotation: 0
+                      }
+                    },
+                    y: {
+                      grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                      ticks: { 
+                        color: 'hsl(var(--muted-foreground))',
+                        font: { size: 12 },
+                        callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
+                      }
+                    }
+                  },
+                  interaction: {
+                    mode: 'index',
+                    intersect: false,
+                  }
+                }}
+              />
+            </div>
 
-            {/* Summary Statistics */}
             <div className="grid gap-4 md:grid-cols-3">
-              {evolutionData.models.map((model, index) => {
-                const modelData = evolutionData.chartData
-                  .map((d) => d[model])
-                  .filter((price) => price !== undefined && price !== null);
-
-                if (modelData.length === 0) return null;
-
-                const minPrice = Math.min(...modelData);
-                const maxPrice = Math.max(...modelData);
-                const avgPrice =
-                  modelData.reduce((sum, price) => sum + price, 0) /
-                  modelData.length;
-                const firstPrice = modelData[0];
-                const lastPrice = modelData[modelData.length - 1];
-                const totalChange =
-                  ((lastPrice - firstPrice) / firstPrice) * 100;
+              {evolutionData.statistics?.map((stat, index) => {
+                if (!stat) return null;
 
                 return (
-                  <div key={model} className="p-4 border rounded-lg">
+                  <div key={stat.model} className="p-4 border rounded-lg">
                     <div className="flex items-center gap-2 mb-3">
                       <div
                         className="w-3 h-3 rounded-full"
                         style={{ backgroundColor: getLineColor(index) }}
                       />
-                      <h4 className="font-medium text-sm">{model}</h4>
+                      <h4 className="font-medium text-sm">{stat.model}</h4>
                     </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Promedio:</span>
                         <span className="font-medium">
-                          {formatPrice(avgPrice)}
+                          {formatPrice(stat.avgPrice)}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Rango:</span>
                         <span className="font-medium">
-                          {formatPrice(minPrice)} - {formatPrice(maxPrice)}
+                          {formatPrice(stat.minPrice)} - {formatPrice(stat.maxPrice)}
                         </span>
                       </div>
                       <div className="flex justify-between">
@@ -464,20 +495,20 @@ export function PriceEvolutionChart({
                         </span>
                         <span
                           className={`font-medium ${
-                            totalChange > 0
+                            stat.totalChange > 0
                               ? "text-red-500"
-                              : totalChange < 0
+                              : stat.totalChange < 0
                               ? "text-green-500"
                               : "text-muted-foreground"
                           }`}
                         >
-                          {totalChange > 0 ? "+" : ""}
-                          {totalChange.toFixed(1)}%
+                          {stat.totalChange > 0 ? "+" : ""}
+                          {stat.totalChange.toFixed(1)}%
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Puntos:</span>
-                        <span className="font-medium">{modelData.length}</span>
+                        <span className="font-medium">{stat.dataPoints}</span>
                       </div>
                     </div>
                   </div>
