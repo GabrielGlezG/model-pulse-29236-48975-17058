@@ -540,39 +540,43 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="pt-2">
                 <div className="h-[260px]">
-                  <Bar
-                    data={{
-                      labels: (analytics.chart_data?.models_by_category || []).map(d => d.category),
-                      datasets: [{
-                        label: 'Cantidad',
-                        data: (analytics.chart_data?.models_by_category || []).map(d => d.count),
-                        backgroundColor: hslVar('--primary'),
-                        borderRadius: 6,
-                      }]
-                    }}
-                    options={{
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                          backgroundColor: hslVar('--card'),
-                          borderColor: hslVar('--border'),
-                          borderWidth: 1,
-                          titleColor: hslVar('--foreground'),
-                          bodyColor: hslVar('--foreground'),
-                          padding: 12,
-                          cornerRadius: 8,
-                        }
-                      },
-                      scales: {
-                        x: {
-                          grid: { color: hslVar('--border'), lineWidth: 0.5 },
-                          ticks: { color: hslVar('--muted-foreground'), font: { size: 11 } }
-                        }
+                <Bar
+                  data={{
+                    labels: (analytics.chart_data?.models_by_category || []).map(d => d.category),
+                    datasets: [{
+                      label: 'Cantidad',
+                      data: (analytics.chart_data?.models_by_category || []).map(d => d.count),
+                      backgroundColor: hslVar('--primary'),
+                      borderRadius: 6,
+                    }]
+                  }}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: { display: false },
+                      tooltip: {
+                        backgroundColor: hslVar('--card'),
+                        borderColor: hslVar('--border'),
+                        borderWidth: 1,
+                        titleColor: hslVar('--foreground'),
+                        bodyColor: hslVar('--foreground'),
+                        padding: 12,
+                        cornerRadius: 8,
                       }
-                    }}
-                  />
+                    },
+                    scales: {
+                      x: {
+                        grid: { color: hslVar('--border'), lineWidth: 0.5 },
+                        ticks: { color: hslVar('--foreground'), font: { size: 11 } }
+                      },
+                      y: {
+                        grid: { color: hslVar('--border'), lineWidth: 0.5 },
+                        ticks: { color: hslVar('--foreground'), font: { size: 11 } }
+                      }
+                    }
+                  }}
+                />
                 </div>
               </CardContent>
             </Card>
@@ -599,16 +603,16 @@ export default function Dashboard() {
                          borderColor: hslVar('--card'),
                       }]
                     }}
-                    options={{
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      plugins: {
-                        legend: {
-                          position: 'bottom',
-                          labels: {
-                            color: 'hsl(var(--foreground))',
-                            padding: 12,
-                            font: { size: 11 },
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        position: 'bottom',
+                        labels: {
+                          color: hslVar('--foreground'),
+                          padding: 12,
+                          font: { size: 11 },
                             generateLabels: (chart) => {
                               const data = chart.data;
                               const total = (data.datasets[0].data as number[]).reduce((sum, val) => sum + val, 0);
@@ -625,12 +629,12 @@ export default function Dashboard() {
                             }
                           }
                         },
-                        tooltip: {
-                          backgroundColor: 'hsl(var(--card))',
-                          borderColor: 'hsl(var(--border))',
-                          borderWidth: 1,
-                          titleColor: 'hsl(var(--foreground))',
-                          bodyColor: 'hsl(var(--foreground))',
+                      tooltip: {
+                        backgroundColor: hslVar('--card'),
+                        borderColor: hslVar('--border'),
+                        borderWidth: 1,
+                        titleColor: hslVar('--foreground'),
+                        bodyColor: hslVar('--foreground'),
                           padding: 12,
                           cornerRadius: 8,
                           callbacks: {
@@ -703,17 +707,17 @@ export default function Dashboard() {
                     scales: {
                       x: {
                          grid: { color: hslVar('--border'), lineWidth: 0.5 },
-                        ticks: { color: hslVar('--muted-foreground'), font: { size: 11 } },
-                        title: { display: true, text: 'Modelo', color: hslVar('--muted-foreground') }
+                        ticks: { color: hslVar('--foreground'), font: { size: 11 } },
+                        title: { display: true, text: 'Modelo', color: hslVar('--foreground') }
                       },
                       y: {
                          grid: { color: hslVar('--border'), lineWidth: 0.5 },
                         ticks: { 
-                          color: hslVar('--muted-foreground'),
+                          color: hslVar('--foreground'),
                           font: { size: 11 },
                           callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
                         },
-                        title: { display: true, text: 'Precio Promedio', color: hslVar('--muted-foreground') }
+                        title: { display: true, text: 'Precio Promedio', color: hslVar('--foreground') }
                       }
                     }
                   }}
@@ -768,16 +772,16 @@ export default function Dashboard() {
                       },
                       scales: {
                         x: {
-                         grid: { color: hslVar('--border'), lineWidth: 0.5 },
+                           grid: { color: hslVar('--border'), lineWidth: 0.5 },
                           ticks: { 
-                            color: hslVar('--muted-foreground'),
+                            color: hslVar('--foreground'),
                             font: { size: 11 },
                             callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
                           }
                         },
                         y: {
                           grid: { display: false },
-                          ticks: { color: hslVar('--muted-foreground'), font: { size: 11 } }
+                          ticks: { color: hslVar('--foreground'), font: { size: 11 } }
                         }
                       }
                     }}
@@ -831,14 +835,14 @@ export default function Dashboard() {
                         x: {
                            grid: { color: hslVar('--border'), lineWidth: 0.5 },
                           ticks: { 
-                            color: hslVar('--muted-foreground'),
+                            color: hslVar('--foreground'),
                             font: { size: 11 },
                             callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
                           }
                         },
                         y: {
                            grid: { display: false },
-                          ticks: { color: hslVar('--muted-foreground'), font: { size: 11 } }
+                          ticks: { color: hslVar('--foreground'), font: { size: 11 } }
                         }
                       }
                     }}
@@ -867,19 +871,19 @@ export default function Dashboard() {
                       {
                         label: 'Mínimo',
                         data: (analytics.chart_data?.prices_by_category || []).map(d => d.min_price),
-                        backgroundColor: 'hsl(var(--chart-6))',
+                        backgroundColor: hslVar('--chart-6'),
                         borderRadius: 6,
                       },
                       {
                         label: 'Promedio',
                         data: (analytics.chart_data?.prices_by_category || []).map(d => d.avg_price),
-                        backgroundColor: 'hsl(var(--primary))',
+                        backgroundColor: hslVar('--primary'),
                         borderRadius: 6,
                       },
                       {
                         label: 'Máximo',
                         data: (analytics.chart_data?.prices_by_category || []).map(d => d.max_price),
-                        backgroundColor: 'hsl(var(--chart-5))',
+                        backgroundColor: hslVar('--chart-5'),
                         borderRadius: 6,
                       }
                     ]
@@ -912,12 +916,12 @@ export default function Dashboard() {
                     scales: {
                       x: {
                           grid: { color: hslVar('--border'), lineWidth: 0.5 },
-                          ticks: { color: hslVar('--muted-foreground'), font: { size: 11 } }
+                          ticks: { color: hslVar('--foreground'), font: { size: 11 } }
                       },
                       y: {
                          grid: { color: hslVar('--border'), lineWidth: 0.5 },
                         ticks: { 
-                          color: hslVar('--muted-foreground'),
+                          color: hslVar('--foreground'),
                           font: { size: 11 },
                           callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
                         }
@@ -975,7 +979,7 @@ export default function Dashboard() {
                       x: {
                          grid: { color: hslVar('--border'), lineWidth: 0.5 },
                         ticks: { 
-                          color: hslVar('--muted-foreground'),
+                          color: hslVar('--foreground'),
                           font: { size: 11 },
                           maxRotation: 45,
                           minRotation: 45
@@ -984,7 +988,7 @@ export default function Dashboard() {
                       y: {
                          grid: { color: hslVar('--border'), lineWidth: 0.5 },
                         ticks: { 
-                          color: hslVar('--muted-foreground'),
+                          color: hslVar('--foreground'),
                           font: { size: 11 },
                           callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
                         }
@@ -1040,7 +1044,7 @@ export default function Dashboard() {
                       x: {
                          grid: { color: hslVar('--border'), lineWidth: 0.5 },
                         ticks: { 
-                          color: hslVar('--muted-foreground'),
+                          color: hslVar('--foreground'),
                           font: { size: 11 },
                           maxRotation: 45,
                           minRotation: 45
@@ -1049,7 +1053,7 @@ export default function Dashboard() {
                       y: {
                          grid: { color: hslVar('--border'), lineWidth: 0.5 },
                         ticks: { 
-                          color: hslVar('--muted-foreground'),
+                          color: hslVar('--foreground'),
                           font: { size: 11 },
                           callback: (value) => `${value}%`
                         }
@@ -1103,18 +1107,18 @@ export default function Dashboard() {
                     },
                     scales: {
                       x: {
-                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                        grid: { color: hslVar('--border'), lineWidth: 0.5 },
                         ticks: { 
-                          color: 'hsl(var(--muted-foreground))',
+                          color: hslVar('--foreground'),
                           font: { size: 11 },
                           maxRotation: 45,
                           minRotation: 45
                         }
                       },
                       y: {
-                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                        grid: { color: hslVar('--border'), lineWidth: 0.5 },
                         ticks: { 
-                          color: 'hsl(var(--muted-foreground))',
+                          color: hslVar('--foreground'),
                           font: { size: 11 },
                           callback: (value) => `${value}%`
                         }

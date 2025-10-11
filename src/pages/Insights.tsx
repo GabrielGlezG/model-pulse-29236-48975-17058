@@ -602,7 +602,7 @@ export default function Insights() {
                     x: {
                       grid: { color: hslVar('--border'), lineWidth: 0.5 },
                       ticks: { 
-                        color: hslVar('--muted-foreground'),
+                        color: hslVar('--foreground'),
                         font: { size: 11 },
                         maxRotation: 45,
                         minRotation: 45
@@ -611,7 +611,7 @@ export default function Insights() {
                     y: {
                       grid: { color: hslVar('--border'), lineWidth: 0.5 },
                       ticks: { 
-                        color: hslVar('--muted-foreground'),
+                        color: hslVar('--foreground'),
                         font: { size: 12 },
                         stepSize: 1
                       }

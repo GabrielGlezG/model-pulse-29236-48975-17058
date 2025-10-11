@@ -441,7 +441,7 @@ export function PriceEvolutionChart({
                      x: {
                       grid: { color: hslVar('--border'), lineWidth: 0.5 },
                       ticks: { 
-                        color: hslVar('--muted-foreground'),
+                        color: hslVar('--foreground'),
                         font: { size: 12 },
                         maxRotation: 45,
                         minRotation: 0
@@ -450,7 +450,7 @@ export function PriceEvolutionChart({
                      y: {
                       grid: { color: hslVar('--border'), lineWidth: 0.5 },
                       ticks: { 
-                        color: hslVar('--muted-foreground'),
+                        color: hslVar('--foreground'),
                         font: { size: 12 },
                         callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
                       }
