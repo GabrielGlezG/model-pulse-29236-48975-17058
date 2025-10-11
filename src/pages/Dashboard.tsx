@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { useLastUpdate } from "@/contexts/LastUpdateContext";
 import {
   Card,
   CardContent,
@@ -49,7 +50,7 @@ import {
   Legend as ChartLegend,
   Filler,
 } from "chart.js";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePriceDistribution } from "@/hooks/usePriceDistribution";
 import { CurrencySelector } from "@/components/CurrencySelector";
 import { hslVar, chartPalette } from "@/lib/utils";
@@ -158,6 +159,7 @@ const COLORS = chartPalette(12);
 
 export default function Dashboard() {
   const { formatPrice } = useCurrency();
+  const { setLastUpdate } = useLastUpdate();
   const [filters, setFilters] = useState({
     brand: "",
     model: "",
@@ -210,6 +212,13 @@ export default function Dashboard() {
   if (queryError) {
     console.error("Query error:", queryError);
   }
+
+  // Update last update date when analytics data changes
+  useEffect(() => {
+    if (analytics?.generated_at) {
+      setLastUpdate(analytics.generated_at);
+    }
+  }, [analytics?.generated_at, setLastUpdate]);
 
   const { data: priceDistributionLocal } = usePriceDistribution(filters);
 

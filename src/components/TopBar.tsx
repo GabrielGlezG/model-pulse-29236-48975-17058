@@ -1,5 +1,6 @@
-import { Menu, LogOut, Crown, CreditCard } from 'lucide-react'
+import { Menu, LogOut, Crown, CreditCard, CalendarClock } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import { useLastUpdate } from '@/contexts/LastUpdateContext'
 import { useNavigate } from 'react-router-dom'
 import { Badge } from './custom/Badge'
 import {
@@ -7,6 +8,8 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { format } from 'date-fns'
+import { es } from 'date-fns/locale'
 
 interface TopBarProps {
   onMenuClick: () => void
@@ -14,6 +17,7 @@ interface TopBarProps {
 
 export function TopBar({ onMenuClick }: TopBarProps) {
   const { user, profile, signOut, isAdmin, hasActiveSubscription } = useAuth()
+  const { lastUpdate } = useLastUpdate()
   const navigate = useNavigate()
 
   const getInitials = (name: string) => {
@@ -47,6 +51,16 @@ export function TopBar({ onMenuClick }: TopBarProps) {
       </button>
       
       <div className="flex-1" />
+
+      {lastUpdate && (
+        <div className="flex items-center gap-2 mr-3 text-muted-foreground">
+          <CalendarClock className="h-4 w-4 hidden sm:block" />
+          <span className="text-xs sm:text-sm">
+            <span className="hidden md:inline">Última actualización: </span>
+            {format(new Date(lastUpdate), "d 'de' MMM, yyyy", { locale: es })}
+          </span>
+        </div>
+      )}
 
       {user && (
         <DropdownMenu>
