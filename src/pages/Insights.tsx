@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { hslVar } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -571,8 +572,8 @@ export default function Insights() {
                     {
                       label: 'Modelos',
                       data: (priceDistributionLocal || marketStats.chart_data.price_distribution).map((item: any) => item.count),
-                      backgroundColor: 'hsl(var(--chart-1))',
-                      borderColor: 'hsl(var(--chart-1))',
+                      backgroundColor: hslVar('--chart-1'),
+                      borderColor: hslVar('--chart-1'),
                       borderWidth: 1,
                     }
                   ]
@@ -585,11 +586,11 @@ export default function Insights() {
                       display: false
                     },
                     tooltip: {
-                      backgroundColor: 'hsl(var(--card))',
-                      borderColor: 'hsl(var(--border))',
+                      backgroundColor: hslVar('--card'),
+                      borderColor: hslVar('--border'),
                       borderWidth: 1,
-                      titleColor: 'hsl(var(--foreground))',
-                      bodyColor: 'hsl(var(--foreground))',
+                      titleColor: hslVar('--foreground'),
+                      bodyColor: hslVar('--foreground'),
                       padding: 12,
                       cornerRadius: 8,
                       callbacks: {
@@ -599,18 +600,18 @@ export default function Insights() {
                   },
                   scales: {
                     x: {
-                      grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                      grid: { color: hslVar('--border'), lineWidth: 0.5 },
                       ticks: { 
-                        color: 'hsl(var(--muted-foreground))',
+                        color: hslVar('--muted-foreground'),
                         font: { size: 11 },
                         maxRotation: 45,
                         minRotation: 45
                       }
                     },
                     y: {
-                      grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                      grid: { color: hslVar('--border'), lineWidth: 0.5 },
                       ticks: { 
-                        color: 'hsl(var(--muted-foreground))',
+                        color: hslVar('--muted-foreground'),
                         font: { size: 12 },
                         stepSize: 1
                       }

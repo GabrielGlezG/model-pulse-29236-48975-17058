@@ -52,6 +52,7 @@ import {
 import { useState } from "react";
 import { usePriceDistribution } from "@/hooks/usePriceDistribution";
 import { CurrencySelector } from "@/components/CurrencySelector";
+import { hslVar, chartPalette } from "@/lib/utils";
 
 // Register ChartJS components
 ChartJS.register(
@@ -150,20 +151,7 @@ interface AnalyticsData {
   generated_at: string;
 }
 
-const COLORS = [
-  "hsl(var(--chart-1))",
-  "hsl(var(--chart-2))",
-  "hsl(var(--chart-3))",
-  "hsl(var(--chart-4))",
-  "hsl(var(--chart-5))",
-  "hsl(var(--chart-6))",
-  "hsl(var(--chart-7))",
-  "hsl(var(--chart-8))",
-  "hsl(var(--chart-9))",
-  "hsl(var(--chart-10))",
-  "hsl(var(--chart-11))",
-  "hsl(var(--chart-12))",
-];
+const COLORS = chartPalette(12);
 
 export default function Dashboard() {
   const { formatPrice } = useCurrency();
@@ -558,7 +546,7 @@ export default function Dashboard() {
                       datasets: [{
                         label: 'Cantidad',
                         data: (analytics.chart_data?.models_by_category || []).map(d => d.count),
-                        backgroundColor: 'hsl(var(--primary))',
+                        backgroundColor: hslVar('--primary'),
                         borderRadius: 6,
                       }]
                     }}
@@ -568,23 +556,19 @@ export default function Dashboard() {
                       plugins: {
                         legend: { display: false },
                         tooltip: {
-                          backgroundColor: 'hsl(var(--card))',
-                          borderColor: 'hsl(var(--border))',
+                          backgroundColor: hslVar('--card'),
+                          borderColor: hslVar('--border'),
                           borderWidth: 1,
-                          titleColor: 'hsl(var(--foreground))',
-                          bodyColor: 'hsl(var(--foreground))',
+                          titleColor: hslVar('--foreground'),
+                          bodyColor: hslVar('--foreground'),
                           padding: 12,
                           cornerRadius: 8,
                         }
                       },
                       scales: {
                         x: {
-                          grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
-                          ticks: { color: 'hsl(var(--muted-foreground))', font: { size: 11 } }
-                        },
-                        y: {
-                          grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
-                          ticks: { color: 'hsl(var(--muted-foreground))', font: { size: 11 } }
+                          grid: { color: hslVar('--border'), lineWidth: 0.5 },
+                          ticks: { color: hslVar('--muted-foreground'), font: { size: 11 } }
                         }
                       }
                     }}
@@ -612,7 +596,7 @@ export default function Dashboard() {
                         data: (priceDistributionLocal || analytics.chart_data?.price_distribution || []).map(d => d.count),
                         backgroundColor: COLORS,
                         borderWidth: 2,
-                        borderColor: 'hsl(var(--card))',
+                         borderColor: hslVar('--card'),
                       }]
                     }}
                     options={{
@@ -686,8 +670,8 @@ export default function Dashboard() {
                         y: item.avg_price,
                         r: Math.sqrt(item.count) * 3
                       })),
-                      backgroundColor: 'hsl(var(--primary))',
-                      borderColor: 'hsl(var(--primary))',
+                       backgroundColor: hslVar('--primary'),
+                      borderColor: hslVar('--primary'),
                     }]
                   }}
                   options={{
@@ -696,11 +680,11 @@ export default function Dashboard() {
                     plugins: {
                       legend: { display: false },
                       tooltip: {
-                        backgroundColor: 'hsl(var(--card))',
-                        borderColor: 'hsl(var(--border))',
+                         backgroundColor: hslVar('--card'),
+                        borderColor: hslVar('--border'),
                         borderWidth: 1,
-                        titleColor: 'hsl(var(--foreground))',
-                        bodyColor: 'hsl(var(--foreground))',
+                        titleColor: hslVar('--foreground'),
+                        bodyColor: hslVar('--foreground'),
                         padding: 12,
                         cornerRadius: 8,
                         callbacks: {
@@ -718,18 +702,18 @@ export default function Dashboard() {
                     },
                     scales: {
                       x: {
-                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
-                        ticks: { color: 'hsl(var(--muted-foreground))', font: { size: 11 } },
-                        title: { display: true, text: 'Modelo', color: 'hsl(var(--muted-foreground))' }
+                         grid: { color: hslVar('--border'), lineWidth: 0.5 },
+                        ticks: { color: hslVar('--muted-foreground'), font: { size: 11 } },
+                        title: { display: true, text: 'Modelo', color: hslVar('--muted-foreground') }
                       },
                       y: {
-                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                         grid: { color: hslVar('--border'), lineWidth: 0.5 },
                         ticks: { 
-                          color: 'hsl(var(--muted-foreground))',
+                          color: hslVar('--muted-foreground'),
                           font: { size: 11 },
                           callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
                         },
-                        title: { display: true, text: 'Precio Promedio', color: 'hsl(var(--muted-foreground))' }
+                        title: { display: true, text: 'Precio Promedio', color: hslVar('--muted-foreground') }
                       }
                     }
                   }}
@@ -759,7 +743,7 @@ export default function Dashboard() {
                       datasets: [{
                         label: 'Precio',
                         data: (analytics.chart_data?.top_5_expensive || []).map(d => d.price),
-                        backgroundColor: 'hsl(var(--chart-5))',
+                        backgroundColor: hslVar('--chart-5'),
                         borderRadius: 6,
                       }]
                     }}
@@ -770,11 +754,11 @@ export default function Dashboard() {
                       plugins: {
                         legend: { display: false },
                         tooltip: {
-                          backgroundColor: 'hsl(var(--card))',
-                          borderColor: 'hsl(var(--border))',
+                           backgroundColor: hslVar('--card'),
+                          borderColor: hslVar('--border'),
                           borderWidth: 1,
-                          titleColor: 'hsl(var(--foreground))',
-                          bodyColor: 'hsl(var(--foreground))',
+                          titleColor: hslVar('--foreground'),
+                          bodyColor: hslVar('--foreground'),
                           padding: 12,
                           cornerRadius: 8,
                           callbacks: {
@@ -784,16 +768,16 @@ export default function Dashboard() {
                       },
                       scales: {
                         x: {
-                          grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                         grid: { color: hslVar('--border'), lineWidth: 0.5 },
                           ticks: { 
-                            color: 'hsl(var(--muted-foreground))',
+                            color: hslVar('--muted-foreground'),
                             font: { size: 11 },
                             callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
                           }
                         },
                         y: {
                           grid: { display: false },
-                          ticks: { color: 'hsl(var(--muted-foreground))', font: { size: 11 } }
+                          ticks: { color: hslVar('--muted-foreground'), font: { size: 11 } }
                         }
                       }
                     }}
@@ -820,7 +804,7 @@ export default function Dashboard() {
                       datasets: [{
                         label: 'Precio',
                         data: (analytics.chart_data?.bottom_5_cheap || []).map(d => d.price),
-                        backgroundColor: 'hsl(var(--chart-2))',
+                        backgroundColor: hslVar('--chart-2'),
                         borderRadius: 6,
                       }]
                     }}
@@ -831,11 +815,11 @@ export default function Dashboard() {
                       plugins: {
                         legend: { display: false },
                         tooltip: {
-                          backgroundColor: 'hsl(var(--card))',
-                          borderColor: 'hsl(var(--border))',
+                           backgroundColor: hslVar('--card'),
+                          borderColor: hslVar('--border'),
                           borderWidth: 1,
-                          titleColor: 'hsl(var(--foreground))',
-                          bodyColor: 'hsl(var(--foreground))',
+                          titleColor: hslVar('--foreground'),
+                          bodyColor: hslVar('--foreground'),
                           padding: 12,
                           cornerRadius: 8,
                           callbacks: {
@@ -845,16 +829,16 @@ export default function Dashboard() {
                       },
                       scales: {
                         x: {
-                          grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                           grid: { color: hslVar('--border'), lineWidth: 0.5 },
                           ticks: { 
-                            color: 'hsl(var(--muted-foreground))',
+                            color: hslVar('--muted-foreground'),
                             font: { size: 11 },
                             callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
                           }
                         },
                         y: {
-                          grid: { display: false },
-                          ticks: { color: 'hsl(var(--muted-foreground))', font: { size: 11 } }
+                           grid: { display: false },
+                          ticks: { color: hslVar('--muted-foreground'), font: { size: 11 } }
                         }
                       }
                     }}
@@ -906,18 +890,18 @@ export default function Dashboard() {
                     plugins: {
                       legend: {
                         position: 'top',
-                        labels: {
-                          color: 'hsl(var(--foreground))',
-                          padding: 12,
-                          font: { size: 11 }
-                        }
+                           labels: {
+                            color: hslVar('--foreground'),
+                            padding: 12,
+                            font: { size: 11 }
+                          }
                       },
                       tooltip: {
-                        backgroundColor: 'hsl(var(--card))',
-                        borderColor: 'hsl(var(--border))',
+                         backgroundColor: hslVar('--card'),
+                        borderColor: hslVar('--border'),
                         borderWidth: 1,
-                        titleColor: 'hsl(var(--foreground))',
-                        bodyColor: 'hsl(var(--foreground))',
+                        titleColor: hslVar('--foreground'),
+                        bodyColor: hslVar('--foreground'),
                         padding: 12,
                         cornerRadius: 8,
                         callbacks: {
@@ -927,13 +911,13 @@ export default function Dashboard() {
                     },
                     scales: {
                       x: {
-                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
-                        ticks: { color: 'hsl(var(--muted-foreground))', font: { size: 11 } }
+                          grid: { color: hslVar('--border'), lineWidth: 0.5 },
+                          ticks: { color: hslVar('--muted-foreground'), font: { size: 11 } }
                       },
                       y: {
-                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                         grid: { color: hslVar('--border'), lineWidth: 0.5 },
                         ticks: { 
-                          color: 'hsl(var(--muted-foreground))',
+                          color: hslVar('--muted-foreground'),
                           font: { size: 11 },
                           callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
                         }
@@ -965,7 +949,7 @@ export default function Dashboard() {
                     datasets: [{
                       label: 'Precio Promedio',
                       data: (analytics.chart_data?.prices_by_brand || []).map(d => d.avg_price),
-                      backgroundColor: 'hsl(var(--primary))',
+                       backgroundColor: hslVar('--primary'),
                       borderRadius: 6,
                     }]
                   }}
@@ -975,11 +959,11 @@ export default function Dashboard() {
                     plugins: {
                       legend: { display: false },
                       tooltip: {
-                        backgroundColor: 'hsl(var(--card))',
-                        borderColor: 'hsl(var(--border))',
+                         backgroundColor: hslVar('--card'),
+                        borderColor: hslVar('--border'),
                         borderWidth: 1,
-                        titleColor: 'hsl(var(--foreground))',
-                        bodyColor: 'hsl(var(--foreground))',
+                        titleColor: hslVar('--foreground'),
+                        bodyColor: hslVar('--foreground'),
                         padding: 12,
                         cornerRadius: 8,
                         callbacks: {
@@ -989,18 +973,18 @@ export default function Dashboard() {
                     },
                     scales: {
                       x: {
-                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                         grid: { color: hslVar('--border'), lineWidth: 0.5 },
                         ticks: { 
-                          color: 'hsl(var(--muted-foreground))',
+                          color: hslVar('--muted-foreground'),
                           font: { size: 11 },
                           maxRotation: 45,
                           minRotation: 45
                         }
                       },
                       y: {
-                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                         grid: { color: hslVar('--border'), lineWidth: 0.5 },
                         ticks: { 
-                          color: 'hsl(var(--muted-foreground))',
+                          color: hslVar('--muted-foreground'),
                           font: { size: 11 },
                           callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
                         }
@@ -1030,7 +1014,7 @@ export default function Dashboard() {
                     datasets: [{
                       label: 'Variación %',
                       data: (analytics.chart_data?.brand_variations || []).map(d => d.variation_percent),
-                      backgroundColor: 'hsl(var(--chart-6))',
+                       backgroundColor: hslVar('--chart-6'),
                       borderRadius: 6,
                     }]
                   }}
@@ -1040,11 +1024,11 @@ export default function Dashboard() {
                     plugins: {
                       legend: { display: false },
                       tooltip: {
-                        backgroundColor: 'hsl(var(--card))',
-                        borderColor: 'hsl(var(--border))',
+                         backgroundColor: hslVar('--card'),
+                        borderColor: hslVar('--border'),
                         borderWidth: 1,
-                        titleColor: 'hsl(var(--foreground))',
-                        bodyColor: 'hsl(var(--foreground))',
+                        titleColor: hslVar('--foreground'),
+                        bodyColor: hslVar('--foreground'),
                         padding: 12,
                         cornerRadius: 8,
                         callbacks: {
@@ -1054,18 +1038,18 @@ export default function Dashboard() {
                     },
                     scales: {
                       x: {
-                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                         grid: { color: hslVar('--border'), lineWidth: 0.5 },
                         ticks: { 
-                          color: 'hsl(var(--muted-foreground))',
+                          color: hslVar('--muted-foreground'),
                           font: { size: 11 },
                           maxRotation: 45,
                           minRotation: 45
                         }
                       },
                       y: {
-                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                         grid: { color: hslVar('--border'), lineWidth: 0.5 },
                         ticks: { 
-                          color: 'hsl(var(--muted-foreground))',
+                          color: hslVar('--muted-foreground'),
                           font: { size: 11 },
                           callback: (value) => `${value}%`
                         }
@@ -1095,7 +1079,7 @@ export default function Dashboard() {
                     datasets: [{
                       label: 'Volatilidad %',
                       data: (analytics.chart_data?.monthly_volatility?.most_volatile || []).map(d => d.avg_monthly_variation),
-                      backgroundColor: 'hsl(var(--chart-7))',
+                      backgroundColor: hslVar('--chart-7'),
                       borderRadius: 6,
                     }]
                   }}
@@ -1105,11 +1089,11 @@ export default function Dashboard() {
                     plugins: {
                       legend: { display: false },
                       tooltip: {
-                        backgroundColor: 'hsl(var(--card))',
-                        borderColor: 'hsl(var(--border))',
+                         backgroundColor: hslVar('--card'),
+                        borderColor: hslVar('--border'),
                         borderWidth: 1,
-                        titleColor: 'hsl(var(--foreground))',
-                        bodyColor: 'hsl(var(--foreground))',
+                        titleColor: hslVar('--foreground'),
+                        bodyColor: hslVar('--foreground'),
                         padding: 12,
                         cornerRadius: 8,
                         callbacks: {

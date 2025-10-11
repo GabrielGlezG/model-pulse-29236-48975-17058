@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { useCurrency } from "@/contexts/CurrencyContext"
+import { hslVar } from "@/lib/utils"
 import { Card } from "@/components/custom/Card"
 import { Badge } from "@/components/custom/Badge"
 import { Button } from "@/components/ui/button"
@@ -196,16 +197,10 @@ export default function Compare() {
     setSelectedProducts(selectedProducts.filter(id => id !== productId))
   }
 
-  // Get colors for each product line using theme colors
-  const CHART_COLORS = [
-    'hsl(var(--chart-1))',
-    'hsl(var(--chart-2))',
-    'hsl(var(--chart-3))',
-    'hsl(var(--chart-4))',
-  ]
-  
+  // Get colors for each product line using theme colors (resolved for Canvas)
   const getProductColor = (index: number) => {
-    return CHART_COLORS[index % CHART_COLORS.length]
+    const idx = (index % 8) + 1
+    return hslVar(`--chart-${idx}`)
   }
 
   return (
@@ -479,17 +474,17 @@ export default function Compare() {
                         display: true,
                         position: 'top' as const,
                         labels: {
-                          color: 'hsl(var(--foreground))',
+                          color: hslVar('--foreground'),
                           padding: 15,
                           font: { size: 12 }
                         }
                       },
                       tooltip: {
-                        backgroundColor: 'hsl(var(--card))',
-                        borderColor: 'hsl(var(--border))',
+                        backgroundColor: hslVar('--card'),
+                        borderColor: hslVar('--border'),
                         borderWidth: 1,
-                        titleColor: 'hsl(var(--foreground))',
-                        bodyColor: 'hsl(var(--foreground))',
+                        titleColor: hslVar('--foreground'),
+                        bodyColor: hslVar('--foreground'),
                         padding: 12,
                         cornerRadius: 8,
                         callbacks: {
@@ -502,16 +497,16 @@ export default function Compare() {
                     },
                     scales: {
                       x: {
-                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                        grid: { color: hslVar('--border'), lineWidth: 0.5 },
                         ticks: { 
-                          color: 'hsl(var(--muted-foreground))',
+                          color: hslVar('--muted-foreground'),
                           font: { size: 12 }
                         }
                       },
                       y: {
-                        grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                        grid: { color: hslVar('--border'), lineWidth: 0.5 },
                         ticks: { 
-                          color: 'hsl(var(--muted-foreground))',
+                          color: hslVar('--muted-foreground'),
                           font: { size: 12 },
                           callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
                         }

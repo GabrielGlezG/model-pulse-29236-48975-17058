@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { hslVar } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -420,12 +421,12 @@ export function PriceEvolutionChart({
                     legend: {
                       display: false
                     },
-                    tooltip: {
-                      backgroundColor: 'hsl(var(--card))',
-                      borderColor: 'hsl(var(--border))',
+                     tooltip: {
+                      backgroundColor: hslVar('--card'),
+                      borderColor: hslVar('--border'),
                       borderWidth: 1,
-                      titleColor: 'hsl(var(--foreground))',
-                      bodyColor: 'hsl(var(--foreground))',
+                      titleColor: hslVar('--foreground'),
+                      bodyColor: hslVar('--foreground'),
                       padding: 12,
                       cornerRadius: 8,
                       callbacks: {
@@ -437,19 +438,19 @@ export function PriceEvolutionChart({
                     }
                   },
                   scales: {
-                    x: {
-                      grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                     x: {
+                      grid: { color: hslVar('--border'), lineWidth: 0.5 },
                       ticks: { 
-                        color: 'hsl(var(--muted-foreground))',
+                        color: hslVar('--muted-foreground'),
                         font: { size: 12 },
                         maxRotation: 45,
                         minRotation: 0
                       }
                     },
-                    y: {
-                      grid: { color: 'hsl(var(--border))', lineWidth: 0.5 },
+                     y: {
+                      grid: { color: hslVar('--border'), lineWidth: 0.5 },
                       ticks: { 
-                        color: 'hsl(var(--muted-foreground))',
+                        color: hslVar('--muted-foreground'),
                         font: { size: 12 },
                         callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
                       }
