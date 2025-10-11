@@ -51,17 +51,8 @@ export function TopBar({ onMenuClick }: TopBarProps) {
       {user && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-3 px-2 py-1 rounded-lg hover:bg-muted transition-colors">
-              <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium text-sm flex-shrink-0">
-                {getInitials(displayName)}
-              </div>
-              <div className="hidden sm:flex flex-col items-start min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className="text-sm font-medium text-foreground truncate">{displayName}</p>
-                  {profile && isAdmin && <Crown className="h-4 w-4 text-yellow-500 flex-shrink-0" />}
-                </div>
-                <Badge variant={subscriptionStatus.variant} className="text-xs">{subscriptionStatus.text}</Badge>
-              </div>
+            <button className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors flex-shrink-0">
+              {getInitials(displayName)}
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-64 p-3 space-y-3 bg-card z-50">
