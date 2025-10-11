@@ -68,6 +68,9 @@ ChartJS.register(
   Filler
 );
 
+// Ensure all default text (legend, labels) is white on dark backgrounds
+ChartJS.defaults.color = '#FFFFFF';
+
 interface AnalyticsData {
   metrics: {
     total_models: number;

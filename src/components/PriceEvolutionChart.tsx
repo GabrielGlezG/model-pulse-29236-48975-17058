@@ -231,6 +231,10 @@ export function PriceEvolutionChart({
         borderWidth: 2,
         pointRadius: 4,
         pointHoverRadius: 6,
+        pointBackgroundColor: CHART_COLORS[index % CHART_COLORS.length],
+        pointBorderColor: CHART_COLORS[index % CHART_COLORS.length],
+        pointHoverBackgroundColor: CHART_COLORS[index % CHART_COLORS.length],
+        pointHoverBorderColor: CHART_COLORS[index % CHART_COLORS.length],
         tension: 0.4,
       }));
 
