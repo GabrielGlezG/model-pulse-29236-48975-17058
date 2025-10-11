@@ -70,7 +70,7 @@ ChartJS.register(
 );
 
 // Ensure all default text (legend, labels) is white on dark backgrounds
-ChartJS.defaults.color = '#FFFFFF';
+ChartJS.defaults.color = "#FFFFFF";
 
 interface AnalyticsData {
   metrics: {
@@ -564,47 +564,58 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="pt-2">
                 <div className="h-[260px]">
-                <Bar
-                  data={{
-                    labels: (analytics.chart_data?.models_by_category || []).map(d => d.category),
-                    datasets: [{
-                      label: 'Cantidad',
-                      data: (analytics.chart_data?.models_by_category || []).map(d => d.count),
-                      backgroundColor: hslVar('--primary'),
-                      borderRadius: 6,
-                    }]
-                  }}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                      legend: { display: false },
-                      tooltip: {
-                        backgroundColor: hslVar('--card'),
-                        borderColor: hslVar('--border'),
-                        borderWidth: 1,
-                        titleColor: hslVar('--foreground'),
-                        bodyColor: hslVar('--foreground'),
-                        padding: 12,
-                        cornerRadius: 8,
-                      }
-                    },
-                    scales: {
-                      x: {
-                        grid: { color: hslVar('--border'), lineWidth: 0.5 },
-                        ticks: { color: hslVar('--foreground'), font: { size: 11 } }
+                  <Bar
+                    data={{
+                      labels: (
+                        analytics.chart_data?.models_by_category || []
+                      ).map((d) => d.category),
+                      datasets: [
+                        {
+                          label: "Cantidad",
+                          data: (
+                            analytics.chart_data?.models_by_category || []
+                          ).map((d) => d.count),
+                          backgroundColor: hslVar("--primary"),
+                          borderRadius: 6,
+                        },
+                      ],
+                    }}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                          backgroundColor: hslVar("--card"),
+                          borderColor: hslVar("--border"),
+                          borderWidth: 1,
+                          titleColor: hslVar("--foreground"),
+                          bodyColor: hslVar("--foreground"),
+                          padding: 12,
+                          cornerRadius: 8,
+                        },
                       },
-                      y: {
-                        grid: { color: hslVar('--border'), lineWidth: 0.5 },
-                        ticks: { color: hslVar('--foreground'), font: { size: 11 } }
-                      }
-                    }
-                  }}
-                />
+                      scales: {
+                        x: {
+                          grid: { color: hslVar("--border"), lineWidth: 0.5 },
+                          ticks: {
+                            color: hslVar("--foreground"),
+                            font: { size: 11 },
+                          },
+                        },
+                        y: {
+                          grid: { color: hslVar("--border"), lineWidth: 0.5 },
+                          ticks: {
+                            color: hslVar("--foreground"),
+                            font: { size: 11 },
+                          },
+                        },
+                      },
+                    }}
+                  />
                 </div>
               </CardContent>
             </Card>
-
             <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
               <CardHeader className="space-y-1 pb-4">
                 <CardTitle className="text-lg flex items-center gap-2">
@@ -619,62 +630,131 @@ export default function Dashboard() {
                 <div className="h-[260px]">
                   <Pie
                     data={{
-                      labels: (priceDistributionLocal || analytics.chart_data?.price_distribution || []).map(d => d.range),
-                      datasets: [{
-                        data: (priceDistributionLocal || analytics.chart_data?.price_distribution || []).map(d => d.count),
-                        backgroundColor: COLORS,
-                        borderWidth: 2,
-                         borderColor: hslVar('--card'),
-                      }]
-                    }}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                      legend: {
-                        position: 'bottom',
-                        labels: {
-                          color: '#FFFFFF',
-                          padding: 12,
-                          font: { size: 11 },
-                            generateLabels: (chart) => {
-                              const data = chart.data;
-                              const total = (data.datasets[0].data as number[]).reduce((sum, val) => sum + val, 0);
-                              return data.labels?.map((label, i) => {
-                                const value = (data.datasets[0].data as number[])[i];
-                                const percentage = ((value / total) * 100).toFixed(1);
-                                return {
-                                  text: `${label} (${percentage}%)`,
-                                  fillStyle: COLORS[i % COLORS.length],
-                                  hidden: false,
-                                  index: i
-                                };
-                              }) || [];
-                            }
-                          }
+                      labels: (
+                        priceDistributionLocal ||
+                        analytics.chart_data?.price_distribution ||
+                        []
+                      ).map((d) => d.range),
+                      datasets: [
+                        {
+                          data: (
+                            priceDistributionLocal ||
+                            analytics.chart_data?.price_distribution ||
+                            []
+                          ).map((d) => d.count),
+                          backgroundColor: COLORS,
+                          borderWidth: 2,
+                          borderColor: hslVar("--card"),
                         },
-                      tooltip: {
-                        backgroundColor: hslVar('--card'),
-                        borderColor: hslVar('--border'),
-                        borderWidth: 1,
-                        titleColor: hslVar('--foreground'),
-                        bodyColor: hslVar('--foreground'),
+                      ],
+                    }}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: {
+                          position: "bottom",
+                          labels: {
+                            color: "#FFFFFF",
+                            padding: 14,
+                            font: { size: 12 },
+                            generateLabels: (chart: any) => {
+                              const data = chart.data;
+                              const dataset = data.datasets[0];
+                              const totals = (dataset.data as number[]).reduce(
+                                (sum, val) => sum + val,
+                                0
+                              );
+                              return (data.labels || []).map(
+                                (label: string, i: number) => {
+                                  const value =
+                                    (dataset.data as number[])[i] || 0;
+                                  const percentage =
+                                    totals > 0
+                                      ? ((value / totals) * 100).toFixed(1)
+                                      : "0.0";
+
+                                  const priceMatch =
+                                    label.match(/\$[\d.,]+[MK]?/gi);
+                                  let formattedLabel = label;
+
+                                  if (priceMatch && priceMatch.length >= 2) {
+                                    const parsePrice = (
+                                      priceStr: string
+                                    ): number => {
+                                      const clean = priceStr
+                                        .replace(/\$/g, "")
+                                        .replace(/,/g, "");
+                                      if (/M/i.test(clean))
+                                        return (
+                                          parseFloat(clean.replace(/M/gi, "")) *
+                                          1_000_000
+                                        );
+                                      if (/K/i.test(clean))
+                                        return (
+                                          parseFloat(clean.replace(/K/gi, "")) *
+                                          1_000
+                                        );
+                                      return parseFloat(clean);
+                                    };
+
+                                    const min = parsePrice(priceMatch[0]);
+                                    const max = parsePrice(priceMatch[1]);
+                                    formattedLabel = `${formatPrice(
+                                      min
+                                    )} - ${formatPrice(max)}`;
+                                  } else {
+                                    const onlyNumbers = (
+                                      label.match(/[\d,.MK]+/gi) || []
+                                    ).join(" - ");
+                                    if (onlyNumbers)
+                                      formattedLabel = onlyNumbers;
+                                  }
+
+                                  return {
+                                    text: `${formattedLabel} (${percentage}%)`,
+                                    fillStyle: COLORS[i % COLORS.length],
+                                    fontColor: "#FFFFFF", // <- forzar blanco
+                                    strokeStyle: "transparent",
+                                    hidden: false,
+                                    index: i,
+                                  };
+                                }
+                              );
+                            },
+                          },
+                        },
+                        tooltip: {
+                          backgroundColor: "hsl(var(--card))",
+                          borderColor: "hsl(var(--border))",
+                          borderWidth: 1,
+                          titleColor: "#FFFFFF", // <- blanco también
+                          bodyColor: "#FFFFFF", // <- texto blanco
                           padding: 12,
                           cornerRadius: 8,
                           callbacks: {
-                            label: (context) => {
-                              const total = (context.dataset.data as number[]).reduce((sum: number, val) => sum + (val as number), 0);
-                              const percentage = ((context.parsed / total) * 100).toFixed(1);
+                            label: (context: any) => {
+                              const total = (
+                                context.dataset.data as number[]
+                              ).reduce(
+                                (sum: number, val) => sum + (val as number),
+                                0
+                              );
+                              const percentage =
+                                total > 0
+                                  ? ((context.parsed / total) * 100).toFixed(1)
+                                  : "0.0";
                               return `${percentage}% (${context.parsed} modelos)`;
-                            }
-                          }
-                        }
-                      }
+                            },
+                          },
+                        },
+                      },
                     }}
                   />
                 </div>
               </CardContent>
             </Card>
+            ;
           </div>
 
           <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
@@ -691,16 +771,20 @@ export default function Dashboard() {
               <div className="h-[400px]">
                 <Bubble
                   data={{
-                    datasets: [{
-                      label: 'Modelo Principal',
-                      data: (analytics.chart_data?.models_by_principal || []).map((item, index) => ({
-                        x: index + 1,
-                        y: item.avg_price,
-                        r: Math.sqrt(item.count) * 3
-                      })),
-                       backgroundColor: hslVar('--primary'),
-                      borderColor: hslVar('--primary'),
-                    }]
+                    datasets: [
+                      {
+                        label: "Modelo Principal",
+                        data: (
+                          analytics.chart_data?.models_by_principal || []
+                        ).map((item, index) => ({
+                          x: index + 1,
+                          y: item.avg_price,
+                          r: Math.sqrt(item.count) * 3,
+                        })),
+                        backgroundColor: hslVar("--primary"),
+                        borderColor: hslVar("--primary"),
+                      },
+                    ],
                   }}
                   options={{
                     responsive: true,
@@ -708,42 +792,57 @@ export default function Dashboard() {
                     plugins: {
                       legend: { display: false },
                       tooltip: {
-                         backgroundColor: hslVar('--card'),
-                        borderColor: hslVar('--border'),
+                        backgroundColor: hslVar("--card"),
+                        borderColor: hslVar("--border"),
                         borderWidth: 1,
-                        titleColor: hslVar('--foreground'),
-                        bodyColor: hslVar('--foreground'),
+                        titleColor: hslVar("--foreground"),
+                        bodyColor: hslVar("--foreground"),
                         padding: 12,
                         cornerRadius: 8,
                         callbacks: {
                           label: (context) => {
-                            const item = (analytics.chart_data?.models_by_principal || [])[context.dataIndex];
+                            const item = (analytics.chart_data
+                              ?.models_by_principal || [])[context.dataIndex];
                             return [
                               `Modelo: ${item.model_principal}`,
                               `Precio Promedio: ${formatPrice(item.avg_price)}`,
                               `Volumen: ${item.count} variantes`,
-                              `Rango: ${formatPrice(item.min_price)} - ${formatPrice(item.max_price)}`
+                              `Rango: ${formatPrice(
+                                item.min_price
+                              )} - ${formatPrice(item.max_price)}`,
                             ];
-                          }
-                        }
-                      }
+                          },
+                        },
+                      },
                     },
                     scales: {
                       x: {
-                         grid: { color: hslVar('--border'), lineWidth: 0.5 },
-                        ticks: { color: hslVar('--foreground'), font: { size: 11 } },
-                        title: { display: true, text: 'Modelo', color: hslVar('--foreground') }
+                        grid: { color: hslVar("--border"), lineWidth: 0.5 },
+                        ticks: {
+                          color: hslVar("--foreground"),
+                          font: { size: 11 },
+                        },
+                        title: {
+                          display: true,
+                          text: "Modelo",
+                          color: hslVar("--foreground"),
+                        },
                       },
                       y: {
-                         grid: { color: hslVar('--border'), lineWidth: 0.5 },
-                        ticks: { 
-                          color: hslVar('--foreground'),
+                        grid: { color: hslVar("--border"), lineWidth: 0.5 },
+                        ticks: {
+                          color: hslVar("--foreground"),
                           font: { size: 11 },
-                          callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
+                          callback: (value) =>
+                            `$${((value as number) / 1000).toFixed(0)}k`,
                         },
-                        title: { display: true, text: 'Precio Promedio', color: hslVar('--foreground') }
-                      }
-                    }
+                        title: {
+                          display: true,
+                          text: "Precio Promedio",
+                          color: hslVar("--foreground"),
+                        },
+                      },
+                    },
                   }}
                 />
               </div>
@@ -767,47 +866,57 @@ export default function Dashboard() {
                 <div className="h-[260px]">
                   <Bar
                     data={{
-                      labels: (analytics.chart_data?.top_5_expensive || []).map(d => d.name),
-                      datasets: [{
-                        label: 'Precio',
-                        data: (analytics.chart_data?.top_5_expensive || []).map(d => d.price),
-                        backgroundColor: hslVar('--chart-5'),
-                        borderRadius: 6,
-                      }]
+                      labels: (analytics.chart_data?.top_5_expensive || []).map(
+                        (d) => d.name
+                      ),
+                      datasets: [
+                        {
+                          label: "Precio",
+                          data: (
+                            analytics.chart_data?.top_5_expensive || []
+                          ).map((d) => d.price),
+                          backgroundColor: hslVar("--chart-5"),
+                          borderRadius: 6,
+                        },
+                      ],
                     }}
                     options={{
-                      indexAxis: 'y',
+                      indexAxis: "y",
                       responsive: true,
                       maintainAspectRatio: false,
                       plugins: {
                         legend: { display: false },
                         tooltip: {
-                           backgroundColor: hslVar('--card'),
-                          borderColor: hslVar('--border'),
+                          backgroundColor: hslVar("--card"),
+                          borderColor: hslVar("--border"),
                           borderWidth: 1,
-                          titleColor: hslVar('--foreground'),
-                          bodyColor: hslVar('--foreground'),
+                          titleColor: hslVar("--foreground"),
+                          bodyColor: hslVar("--foreground"),
                           padding: 12,
                           cornerRadius: 8,
                           callbacks: {
-                            label: (context) => formatPrice(context.parsed.x)
-                          }
-                        }
+                            label: (context) => formatPrice(context.parsed.x),
+                          },
+                        },
                       },
                       scales: {
                         x: {
-                           grid: { color: hslVar('--border'), lineWidth: 0.5 },
-                          ticks: { 
-                            color: hslVar('--foreground'),
+                          grid: { color: hslVar("--border"), lineWidth: 0.5 },
+                          ticks: {
+                            color: hslVar("--foreground"),
                             font: { size: 11 },
-                            callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
-                          }
+                            callback: (value) =>
+                              `$${((value as number) / 1000).toFixed(0)}k`,
+                          },
                         },
                         y: {
                           grid: { display: false },
-                          ticks: { color: hslVar('--foreground'), font: { size: 11 } }
-                        }
-                      }
+                          ticks: {
+                            color: hslVar("--foreground"),
+                            font: { size: 11 },
+                          },
+                        },
+                      },
                     }}
                   />
                 </div>
@@ -828,47 +937,57 @@ export default function Dashboard() {
                 <div className="h-[260px]">
                   <Bar
                     data={{
-                      labels: (analytics.chart_data?.bottom_5_cheap || []).map(d => d.name),
-                      datasets: [{
-                        label: 'Precio',
-                        data: (analytics.chart_data?.bottom_5_cheap || []).map(d => d.price),
-                        backgroundColor: hslVar('--chart-2'),
-                        borderRadius: 6,
-                      }]
+                      labels: (analytics.chart_data?.bottom_5_cheap || []).map(
+                        (d) => d.name
+                      ),
+                      datasets: [
+                        {
+                          label: "Precio",
+                          data: (
+                            analytics.chart_data?.bottom_5_cheap || []
+                          ).map((d) => d.price),
+                          backgroundColor: hslVar("--chart-2"),
+                          borderRadius: 6,
+                        },
+                      ],
                     }}
                     options={{
-                      indexAxis: 'y',
+                      indexAxis: "y",
                       responsive: true,
                       maintainAspectRatio: false,
                       plugins: {
                         legend: { display: false },
                         tooltip: {
-                           backgroundColor: hslVar('--card'),
-                          borderColor: hslVar('--border'),
+                          backgroundColor: hslVar("--card"),
+                          borderColor: hslVar("--border"),
                           borderWidth: 1,
-                          titleColor: hslVar('--foreground'),
-                          bodyColor: hslVar('--foreground'),
+                          titleColor: hslVar("--foreground"),
+                          bodyColor: hslVar("--foreground"),
                           padding: 12,
                           cornerRadius: 8,
                           callbacks: {
-                            label: (context) => formatPrice(context.parsed.x)
-                          }
-                        }
+                            label: (context) => formatPrice(context.parsed.x),
+                          },
+                        },
                       },
                       scales: {
                         x: {
-                           grid: { color: hslVar('--border'), lineWidth: 0.5 },
-                          ticks: { 
-                            color: hslVar('--foreground'),
+                          grid: { color: hslVar("--border"), lineWidth: 0.5 },
+                          ticks: {
+                            color: hslVar("--foreground"),
                             font: { size: 11 },
-                            callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
-                          }
+                            callback: (value) =>
+                              `$${((value as number) / 1000).toFixed(0)}k`,
+                          },
                         },
                         y: {
-                           grid: { display: false },
-                          ticks: { color: hslVar('--foreground'), font: { size: 11 } }
-                        }
-                      }
+                          grid: { display: false },
+                          ticks: {
+                            color: hslVar("--foreground"),
+                            font: { size: 11 },
+                          },
+                        },
+                      },
                     }}
                   />
                 </div>
@@ -890,67 +1009,82 @@ export default function Dashboard() {
               <div className="h-[320px]">
                 <Bar
                   data={{
-                    labels: (analytics.chart_data?.prices_by_category || []).map(d => d.category),
+                    labels: (
+                      analytics.chart_data?.prices_by_category || []
+                    ).map((d) => d.category),
                     datasets: [
                       {
-                        label: 'Mínimo',
-                        data: (analytics.chart_data?.prices_by_category || []).map(d => d.min_price),
-                        backgroundColor: hslVar('--chart-6'),
+                        label: "Mínimo",
+                        data: (
+                          analytics.chart_data?.prices_by_category || []
+                        ).map((d) => d.min_price),
+                        backgroundColor: hslVar("--chart-6"),
                         borderRadius: 6,
                       },
                       {
-                        label: 'Promedio',
-                        data: (analytics.chart_data?.prices_by_category || []).map(d => d.avg_price),
-                        backgroundColor: hslVar('--primary'),
+                        label: "Promedio",
+                        data: (
+                          analytics.chart_data?.prices_by_category || []
+                        ).map((d) => d.avg_price),
+                        backgroundColor: hslVar("--primary"),
                         borderRadius: 6,
                       },
                       {
-                        label: 'Máximo',
-                        data: (analytics.chart_data?.prices_by_category || []).map(d => d.max_price),
-                        backgroundColor: hslVar('--chart-5'),
+                        label: "Máximo",
+                        data: (
+                          analytics.chart_data?.prices_by_category || []
+                        ).map((d) => d.max_price),
+                        backgroundColor: hslVar("--chart-5"),
                         borderRadius: 6,
-                      }
-                    ]
+                      },
+                    ],
                   }}
                   options={{
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
                       legend: {
-                        position: 'top',
-                           labels: {
-                            color: hslVar('--foreground'),
-                            padding: 12,
-                            font: { size: 11 }
-                          }
+                        position: "top",
+                        labels: {
+                          color: hslVar("--foreground"),
+                          padding: 12,
+                          font: { size: 11 },
+                        },
                       },
                       tooltip: {
-                         backgroundColor: hslVar('--card'),
-                        borderColor: hslVar('--border'),
+                        backgroundColor: hslVar("--card"),
+                        borderColor: hslVar("--border"),
                         borderWidth: 1,
-                        titleColor: hslVar('--foreground'),
-                        bodyColor: hslVar('--foreground'),
+                        titleColor: hslVar("--foreground"),
+                        bodyColor: hslVar("--foreground"),
                         padding: 12,
                         cornerRadius: 8,
                         callbacks: {
-                          label: (context) => `${context.dataset.label}: ${formatPrice(context.parsed.y)}`
-                        }
-                      }
+                          label: (context) =>
+                            `${context.dataset.label}: ${formatPrice(
+                              context.parsed.y
+                            )}`,
+                        },
+                      },
                     },
                     scales: {
                       x: {
-                          grid: { color: hslVar('--border'), lineWidth: 0.5 },
-                          ticks: { color: hslVar('--foreground'), font: { size: 11 } }
+                        grid: { color: hslVar("--border"), lineWidth: 0.5 },
+                        ticks: {
+                          color: hslVar("--foreground"),
+                          font: { size: 11 },
+                        },
                       },
                       y: {
-                         grid: { color: hslVar('--border'), lineWidth: 0.5 },
-                        ticks: { 
-                          color: hslVar('--foreground'),
+                        grid: { color: hslVar("--border"), lineWidth: 0.5 },
+                        ticks: {
+                          color: hslVar("--foreground"),
                           font: { size: 11 },
-                          callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
-                        }
-                      }
-                    }
+                          callback: (value) =>
+                            `$${((value as number) / 1000).toFixed(0)}k`,
+                        },
+                      },
+                    },
                   }}
                 />
               </div>
@@ -973,13 +1107,19 @@ export default function Dashboard() {
               <div className="h-[320px]">
                 <Bar
                   data={{
-                    labels: (analytics.chart_data?.prices_by_brand || []).map(d => d.brand),
-                    datasets: [{
-                      label: 'Precio Promedio',
-                      data: (analytics.chart_data?.prices_by_brand || []).map(d => d.avg_price),
-                       backgroundColor: hslVar('--primary'),
-                      borderRadius: 6,
-                    }]
+                    labels: (analytics.chart_data?.prices_by_brand || []).map(
+                      (d) => d.brand
+                    ),
+                    datasets: [
+                      {
+                        label: "Precio Promedio",
+                        data: (analytics.chart_data?.prices_by_brand || []).map(
+                          (d) => d.avg_price
+                        ),
+                        backgroundColor: hslVar("--primary"),
+                        borderRadius: 6,
+                      },
+                    ],
                   }}
                   options={{
                     responsive: true,
@@ -987,37 +1127,38 @@ export default function Dashboard() {
                     plugins: {
                       legend: { display: false },
                       tooltip: {
-                         backgroundColor: hslVar('--card'),
-                        borderColor: hslVar('--border'),
+                        backgroundColor: hslVar("--card"),
+                        borderColor: hslVar("--border"),
                         borderWidth: 1,
-                        titleColor: hslVar('--foreground'),
-                        bodyColor: hslVar('--foreground'),
+                        titleColor: hslVar("--foreground"),
+                        bodyColor: hslVar("--foreground"),
                         padding: 12,
                         cornerRadius: 8,
                         callbacks: {
-                          label: (context) => formatPrice(context.parsed.y)
-                        }
-                      }
+                          label: (context) => formatPrice(context.parsed.y),
+                        },
+                      },
                     },
                     scales: {
                       x: {
-                         grid: { color: hslVar('--border'), lineWidth: 0.5 },
-                        ticks: { 
-                          color: hslVar('--foreground'),
+                        grid: { color: hslVar("--border"), lineWidth: 0.5 },
+                        ticks: {
+                          color: hslVar("--foreground"),
                           font: { size: 11 },
                           maxRotation: 45,
-                          minRotation: 45
-                        }
+                          minRotation: 45,
+                        },
                       },
                       y: {
-                         grid: { color: hslVar('--border'), lineWidth: 0.5 },
-                        ticks: { 
-                          color: hslVar('--foreground'),
+                        grid: { color: hslVar("--border"), lineWidth: 0.5 },
+                        ticks: {
+                          color: hslVar("--foreground"),
                           font: { size: 11 },
-                          callback: (value) => `$${((value as number) / 1000).toFixed(0)}k`
-                        }
-                      }
-                    }
+                          callback: (value) =>
+                            `$${((value as number) / 1000).toFixed(0)}k`,
+                        },
+                      },
+                    },
                   }}
                 />
               </div>
@@ -1038,13 +1179,19 @@ export default function Dashboard() {
               <div className="h-[300px]">
                 <Bar
                   data={{
-                    labels: (analytics.chart_data?.brand_variations || []).map(d => d.brand),
-                    datasets: [{
-                      label: 'Variación %',
-                      data: (analytics.chart_data?.brand_variations || []).map(d => d.variation_percent),
-                       backgroundColor: hslVar('--chart-6'),
-                      borderRadius: 6,
-                    }]
+                    labels: (analytics.chart_data?.brand_variations || []).map(
+                      (d) => d.brand
+                    ),
+                    datasets: [
+                      {
+                        label: "Variación %",
+                        data: (
+                          analytics.chart_data?.brand_variations || []
+                        ).map((d) => d.variation_percent),
+                        backgroundColor: hslVar("--chart-6"),
+                        borderRadius: 6,
+                      },
+                    ],
                   }}
                   options={{
                     responsive: true,
@@ -1052,37 +1199,37 @@ export default function Dashboard() {
                     plugins: {
                       legend: { display: false },
                       tooltip: {
-                         backgroundColor: hslVar('--card'),
-                        borderColor: hslVar('--border'),
+                        backgroundColor: hslVar("--card"),
+                        borderColor: hslVar("--border"),
                         borderWidth: 1,
-                        titleColor: hslVar('--foreground'),
-                        bodyColor: hslVar('--foreground'),
+                        titleColor: hslVar("--foreground"),
+                        bodyColor: hslVar("--foreground"),
                         padding: 12,
                         cornerRadius: 8,
                         callbacks: {
-                          label: (context) => `${context.parsed.y.toFixed(2)}%`
-                        }
-                      }
+                          label: (context) => `${context.parsed.y.toFixed(2)}%`,
+                        },
+                      },
                     },
                     scales: {
                       x: {
-                         grid: { color: hslVar('--border'), lineWidth: 0.5 },
-                        ticks: { 
-                          color: hslVar('--foreground'),
+                        grid: { color: hslVar("--border"), lineWidth: 0.5 },
+                        ticks: {
+                          color: hslVar("--foreground"),
                           font: { size: 11 },
                           maxRotation: 45,
-                          minRotation: 45
-                        }
+                          minRotation: 45,
+                        },
                       },
                       y: {
-                         grid: { color: hslVar('--border'), lineWidth: 0.5 },
-                        ticks: { 
-                          color: hslVar('--foreground'),
+                        grid: { color: hslVar("--border"), lineWidth: 0.5 },
+                        ticks: {
+                          color: hslVar("--foreground"),
                           font: { size: 11 },
-                          callback: (value) => `${value}%`
-                        }
-                      }
-                    }
+                          callback: (value) => `${value}%`,
+                        },
+                      },
+                    },
                   }}
                 />
               </div>
@@ -1103,13 +1250,21 @@ export default function Dashboard() {
               <div className="h-[300px]">
                 <Bar
                   data={{
-                    labels: (analytics.chart_data?.monthly_volatility?.most_volatile || []).map(d => d.model),
-                    datasets: [{
-                      label: 'Volatilidad %',
-                      data: (analytics.chart_data?.monthly_volatility?.most_volatile || []).map(d => d.avg_monthly_variation),
-                      backgroundColor: hslVar('--chart-7'),
-                      borderRadius: 6,
-                    }]
+                    labels: (
+                      analytics.chart_data?.monthly_volatility?.most_volatile ||
+                      []
+                    ).map((d) => d.model),
+                    datasets: [
+                      {
+                        label: "Volatilidad %",
+                        data: (
+                          analytics.chart_data?.monthly_volatility
+                            ?.most_volatile || []
+                        ).map((d) => d.avg_monthly_variation),
+                        backgroundColor: hslVar("--chart-7"),
+                        borderRadius: 6,
+                      },
+                    ],
                   }}
                   options={{
                     responsive: true,
@@ -1117,37 +1272,37 @@ export default function Dashboard() {
                     plugins: {
                       legend: { display: false },
                       tooltip: {
-                         backgroundColor: hslVar('--card'),
-                        borderColor: hslVar('--border'),
+                        backgroundColor: hslVar("--card"),
+                        borderColor: hslVar("--border"),
                         borderWidth: 1,
-                        titleColor: hslVar('--foreground'),
-                        bodyColor: hslVar('--foreground'),
+                        titleColor: hslVar("--foreground"),
+                        bodyColor: hslVar("--foreground"),
                         padding: 12,
                         cornerRadius: 8,
                         callbacks: {
-                          label: (context) => `${context.parsed.y.toFixed(2)}%`
-                        }
-                      }
+                          label: (context) => `${context.parsed.y.toFixed(2)}%`,
+                        },
+                      },
                     },
                     scales: {
                       x: {
-                        grid: { color: hslVar('--border'), lineWidth: 0.5 },
-                        ticks: { 
-                          color: hslVar('--foreground'),
+                        grid: { color: hslVar("--border"), lineWidth: 0.5 },
+                        ticks: {
+                          color: hslVar("--foreground"),
                           font: { size: 11 },
                           maxRotation: 45,
-                          minRotation: 45
-                        }
+                          minRotation: 45,
+                        },
                       },
                       y: {
-                        grid: { color: hslVar('--border'), lineWidth: 0.5 },
-                        ticks: { 
-                          color: hslVar('--foreground'),
+                        grid: { color: hslVar("--border"), lineWidth: 0.5 },
+                        ticks: {
+                          color: hslVar("--foreground"),
                           font: { size: 11 },
-                          callback: (value) => `${value}%`
-                        }
-                      }
-                    }
+                          callback: (value) => `${value}%`,
+                        },
+                      },
+                    },
                   }}
                 />
               </div>

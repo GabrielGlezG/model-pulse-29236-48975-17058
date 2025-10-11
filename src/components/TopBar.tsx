@@ -95,8 +95,8 @@ export function TopBar({ onMenuClick }: TopBarProps) {
             )}
 
             <button
-              onClick={() => {
-                signOut()
+              onClick={async () => {
+                await signOut()
                 navigate('/login')
               }}
               className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted transition-colors text-destructive"
