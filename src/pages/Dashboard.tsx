@@ -754,7 +754,6 @@ export default function Dashboard() {
                 </div>
               </CardContent>
             </Card>
-            ;
           </div>
 
           <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
