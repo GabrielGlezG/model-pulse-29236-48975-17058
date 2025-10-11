@@ -54,11 +54,11 @@ interface PriceEvolutionProps {
 }
 
 const CHART_COLORS = [
-  "hsl(var(--chart-1))",
-  "hsl(var(--chart-2))",
-  "hsl(var(--chart-3))",
-  "hsl(var(--chart-4))",
-  "hsl(var(--chart-5))",
+  hslVar('--chart-1'),
+  hslVar('--chart-2'),
+  hslVar('--chart-3'),
+  hslVar('--chart-4'),
+  hslVar('--chart-5'),
 ];
 
 export function PriceEvolutionChart({

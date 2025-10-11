@@ -610,7 +610,7 @@ export default function Dashboard() {
                       legend: {
                         position: 'bottom',
                         labels: {
-                          color: hslVar('--foreground'),
+                          color: '#FFFFFF',
                           padding: 12,
                           font: { size: 11 },
                             generateLabels: (chart) => {
