@@ -215,10 +215,22 @@ export default function Dashboard() {
 
   // Update last update date when analytics data changes
   useEffect(() => {
-    if (analytics?.generated_at) {
-      setLastUpdate(analytics.generated_at);
-    }
-  }, [analytics?.generated_at, setLastUpdate]);
+    const fetchLastUploadDate = async () => {
+      const { data, error } = await supabase
+        .from("scraping_jobs")
+        .select("completed_at")
+        .eq("status", "completed")
+        .order("completed_at", { ascending: false })
+        .limit(1)
+        .single();
+
+      if (!error && data?.completed_at) {
+        setLastUpdate(data.completed_at);
+      }
+    };
+
+    fetchLastUploadDate();
+  }, [setLastUpdate]);
 
   const { data: priceDistributionLocal } = usePriceDistribution(filters);
 
