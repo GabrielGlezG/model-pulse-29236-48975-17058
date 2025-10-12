@@ -7,7 +7,7 @@ export function CurrencySelector() {
   const { currency, setCurrency } = useCurrency()
 
   return (
-    <div className="flex items-center justify-center w-full max-w-3xl mx-auto px-2">
+    <div className="flex items-center justify-center w-full max-w-3xl mx-auto px-2 animate-fade-in">
       <div className="flex gap-1 sm:gap-2 flex-wrap justify-center">
         {currencies.map((curr) => (
           <Button
@@ -15,10 +15,10 @@ export function CurrencySelector() {
             variant={currency === curr ? 'default' : 'outline'}
             size="sm"
             onClick={() => setCurrency(curr)}
-            className={`min-w-[48px] sm:min-w-[60px] h-8 px-2 sm:px-3 ${
+            className={`min-w-[48px] sm:min-w-[60px] h-8 px-2 sm:px-3 transition-all duration-300 hover:scale-105 active:scale-95 ${
               currency === curr
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-card text-card-foreground hover:bg-primary/10'
+                ? 'bg-primary text-primary-foreground shadow-copper'
+                : 'bg-card text-card-foreground hover:bg-primary/10 hover:border-primary'
             }`}
             title={CURRENCY_NAMES[curr]}
           >

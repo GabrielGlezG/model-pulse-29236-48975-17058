@@ -157,9 +157,9 @@ export function ModelSubmodelSelector({
   }, [searchQuery, filteredBrands, filteredModels, filteredSubmodels, selectedBrand, selectedModel, selectedSubmodel])
 
   return (
-    <Card className="border-border/50 shadow-md">
+    <Card className="border-border/50 shadow-lg hover:shadow-copper-lg transition-all duration-300">
       <CardHeader className="space-y-1 pb-4">
-        <CardTitle className="flex items-center gap-2 text-lg">
+        <CardTitle className="flex items-center gap-2 text-lg font-bold">
           <Filter className="h-5 w-5 text-primary" />
           Filtros de Búsqueda
         </CardTitle>
@@ -194,7 +194,7 @@ export function ModelSubmodelSelector({
           <Select value={selectedBrand || "all"} onValueChange={(value) => {
             onBrandChange(value === "all" ? "" : value)
           }}>
-            <SelectTrigger className="bg-card border-border">
+            <SelectTrigger className="bg-card border-border transition-all hover:border-primary hover:shadow-sm">
               <SelectValue placeholder="Todas las marcas" />
             </SelectTrigger>
             <SelectContent>
@@ -207,7 +207,7 @@ export function ModelSubmodelSelector({
 
           {!hideCategory && (
             <Select value={selectedCategory || "all"} onValueChange={(value) => onCategoryChange(value === "all" ? "" : value)}>
-              <SelectTrigger className="bg-card border-border">
+              <SelectTrigger className="bg-card border-border transition-all hover:border-primary hover:shadow-sm">
                 <SelectValue placeholder="Todas las categorías" />
               </SelectTrigger>
               <SelectContent>
@@ -222,7 +222,7 @@ export function ModelSubmodelSelector({
           <Select value={selectedModel || "all"} onValueChange={(value) => {
             onModelChange(value === "all" ? "" : value)
           }}>
-            <SelectTrigger className="bg-card border-border">
+            <SelectTrigger className="bg-card border-border transition-all hover:border-primary hover:shadow-sm">
               <SelectValue placeholder="Todos los modelos" />
             </SelectTrigger>
             <SelectContent>
@@ -236,7 +236,7 @@ export function ModelSubmodelSelector({
           <Select value={selectedSubmodel || "all"} onValueChange={(value) => {
             onSubmodelChange(value === "all" ? "" : value)
           }}>
-            <SelectTrigger className="bg-card border-border">
+            <SelectTrigger className="bg-card border-border transition-all hover:border-primary hover:shadow-sm">
               <SelectValue placeholder="Todos los submodelos" />
             </SelectTrigger>
             <SelectContent>
@@ -250,7 +250,7 @@ export function ModelSubmodelSelector({
           <Button 
             variant={copperClearButton ? "copper" : (hasActiveFilters ? "default" : "outline")}
             onClick={onClearFilters}
-            className="w-full"
+            className="w-full transition-all hover:shadow-md"
           >
             {hasActiveFilters ? (
               <>
@@ -268,40 +268,40 @@ export function ModelSubmodelSelector({
 
         {/* Active Filters Display */}
         {hasActiveFilters && (
-          <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border">
-            <span className="text-sm text-muted-foreground font-medium">Filtros activos:</span>
+          <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border animate-fade-in">
+            <span className="text-sm text-muted-foreground font-semibold">Filtros activos:</span>
             {selectedBrand && (
-              <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30">
+              <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 hover:bg-primary/30 transition-colors cursor-pointer">
                 Marca: {selectedBrand}
                 <X 
-                  className="h-3 w-3 ml-1 cursor-pointer hover:opacity-70" 
+                  className="h-3 w-3 ml-1 hover:scale-110 transition-transform" 
                   onClick={() => onBrandChange("")}
                 />
               </Badge>
             )}
             {selectedCategory && (
-              <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30">
+              <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 hover:bg-primary/30 transition-colors cursor-pointer">
                 Categoría: {selectedCategory}
                 <X 
-                  className="h-3 w-3 ml-1 cursor-pointer hover:opacity-70" 
+                  className="h-3 w-3 ml-1 hover:scale-110 transition-transform" 
                   onClick={() => onCategoryChange("")}
                 />
               </Badge>
             )}
             {selectedModel && (
-              <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30">
+              <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 hover:bg-primary/30 transition-colors cursor-pointer">
                 Modelo: {selectedModel}
                 <X 
-                  className="h-3 w-3 ml-1 cursor-pointer hover:opacity-70" 
+                  className="h-3 w-3 ml-1 hover:scale-110 transition-transform" 
                   onClick={() => onModelChange("")}
                 />
               </Badge>
             )}
             {selectedSubmodel && (
-              <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30">
+              <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 hover:bg-primary/30 transition-colors cursor-pointer">
                 Submodelo: {selectedSubmodel}
                 <X 
-                  className="h-3 w-3 ml-1 cursor-pointer hover:opacity-70" 
+                  className="h-3 w-3 ml-1 hover:scale-110 transition-transform" 
                   onClick={() => onSubmodelChange("")}
                 />
               </Badge>

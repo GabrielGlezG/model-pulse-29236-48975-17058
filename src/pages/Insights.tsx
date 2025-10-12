@@ -439,13 +439,13 @@ export default function Insights() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
             Insights Automáticos
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground mt-1">
             Análisis inteligente basado en datos históricos del mercado
           </p>
         </div>
@@ -462,12 +462,12 @@ export default function Insights() {
       {/* Market Overview Cards */}
       {marketStats && (
         <div className="grid gap-3 sm:gap-4 grid-cols-1 xs:grid-cols-2 lg:grid-cols-4">
-          <Card>
+          <Card className="shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02] animate-fade-in-up">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-sm font-semibold">
                 Modelos Analizados
               </CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <Users className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
