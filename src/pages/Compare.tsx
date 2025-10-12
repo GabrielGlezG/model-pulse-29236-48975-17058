@@ -204,20 +204,20 @@ export default function Compare() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-foreground">Comparador de Vehículos</h1>
-        <p className="text-muted-foreground mt-1">
+        <p className="text-muted-foreground">
           Compara hasta 4 modelos para encontrar la mejor opción para ti
         </p>
       </div>
 
       {/* Filtros y Selección */}
-      <Card className="shadow-lg">
+      <Card>
         <div className="p-6">
           <div className="flex items-center gap-2 mb-2">
             <Scale className="h-5 w-5 text-primary" />
-            <h2 className="text-xl font-bold text-card-foreground">Seleccionar Vehículos para Comparar</h2>
+            <h2 className="text-xl font-semibold text-card-foreground">Seleccionar Vehículos para Comparar</h2>
           </div>
           <p className="text-sm text-muted-foreground mb-6">
             Usa los filtros para encontrar los modelos que te interesan
@@ -333,10 +333,10 @@ export default function Compare() {
             {filteredProducts.slice(0, 12).map(product => (
               <div 
                 key={product.id} 
-                className={`p-3 border rounded-lg cursor-pointer transition-all duration-300 hover:shadow-md ${
+                className={`p-3 border rounded-lg cursor-pointer transition-all ${
                   selectedProducts.includes(product.id) 
-                    ? 'border-primary bg-primary/10 shadow-copper' 
-                    : 'border-border hover:border-primary/70 hover:bg-card/50'
+                    ? 'border-primary bg-primary/5' 
+                    : 'border-border hover:border-primary/50'
                 }`}
                 onClick={() => selectedProducts.includes(product.id) ? removeProduct(product.id) : addProduct(product.id)}
               >

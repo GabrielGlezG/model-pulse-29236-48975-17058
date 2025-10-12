@@ -10,10 +10,10 @@ export default function PriceEvolution() {
   })
 
   return (
-    <div className="space-y-4 sm:space-y-6 animate-fade-in">
+    <div className="space-y-4 sm:space-y-6">
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Evolución de Precios</h1>
-        <p className="text-sm sm:text-base text-muted-foreground mt-2">
+        <p className="text-sm sm:text-base text-muted-foreground mt-1">
           Visualiza la evolución histórica de precios de productos específicos
         </p>
       </div>

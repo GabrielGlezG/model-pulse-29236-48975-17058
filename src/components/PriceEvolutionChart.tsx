@@ -314,10 +314,10 @@ export function PriceEvolutionChart({
 
   if (!selectedBrand && !selectedCategory && !selectedModel) {
     return (
-      <Card className="shadow-md">
+      <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
-          <Calendar className="h-12 w-12 text-muted-foreground mb-4 animate-pulse" />
-          <h3 className="text-lg font-semibold mb-2">
+          <Calendar className="h-12 w-12 text-muted-foreground mb-4" />
+          <h3 className="text-lg font-medium mb-2">
             Selecciona filtros para ver evolución
           </h3>
           <p className="text-muted-foreground text-center">
@@ -330,18 +330,18 @@ export function PriceEvolutionChart({
   }
 
   return (
-    <Card className="shadow-lg hover:shadow-copper-lg transition-all duration-300 animate-fade-in-up">
+    <Card>
       <CardHeader>
         <div className="flex flex-col gap-4">
           <div>
-            <CardTitle className="flex items-center gap-2 font-bold">
-              <TrendingUp className="h-5 w-5 text-primary" />
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
               Evolución de Precios
             </CardTitle>
             <CardDescription>
               Histórico de precios para los filtros seleccionados
               {evolutionData && (
-                <span className="block sm:inline sm:ml-2 mt-1 sm:mt-0 font-medium">
+                <span className="block sm:inline sm:ml-2 mt-1 sm:mt-0">
                   • {evolutionData.totalDataPoints} puntos de datos
                 </span>
               )}
@@ -349,7 +349,7 @@ export function PriceEvolutionChart({
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger className="w-full sm:w-32 transition-all hover:border-primary">
+              <SelectTrigger className="w-full sm:w-32">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -367,7 +367,7 @@ export function PriceEvolutionChart({
                 setGroupBy(value)
               }
             >
-              <SelectTrigger className="w-full sm:w-32 transition-all hover:border-primary">
+              <SelectTrigger className="w-full sm:w-32">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -382,7 +382,7 @@ export function PriceEvolutionChart({
               size="sm"
               onClick={() => refetch()}
               disabled={isRefetching}
-              className="w-full sm:w-auto hover:shadow-md transition-all"
+              className="w-full sm:w-auto"
             >
               {isRefetching ? (
                 <RefreshCw className="h-4 w-4 animate-spin" />

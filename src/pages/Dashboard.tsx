@@ -347,14 +347,14 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6">
       <div className="flex justify-center">
         <CurrencySelector />
       </div>
 
-      <Card className="border-border/50 shadow-lg hover:shadow-copper-lg transition-all duration-300">
+      <Card className="border-border/50 shadow-md">
         <CardHeader className="space-y-1 pb-4">
-          <CardTitle className="flex items-center gap-2 text-lg font-bold">
+          <CardTitle className="flex items-center gap-2 text-lg">
             <BarChart3 className="h-5 w-5 text-primary" />
             Filtros
           </CardTitle>
@@ -459,43 +459,43 @@ export default function Dashboard() {
       </Card>
 
       <div className="grid gap-3 sm:gap-4 grid-cols-1 xs:grid-cols-2 lg:grid-cols-4">
-        <Card className="bg-primary border-none shadow-copper-lg hover:shadow-xl rounded-2xl transition-all duration-300 hover:scale-[1.02] animate-fade-in-up">
+        <Card className="bg-primary border-none shadow-md rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-semibold text-primary-foreground">
+            <CardTitle className="text-sm font-medium text-primary-foreground">
               Total Modelos
             </CardTitle>
-            <Package className="h-5 w-5 text-primary-foreground/80" />
+            <Package className="h-4 w-4 text-primary-foreground/70" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-primary-foreground">
               {analytics.metrics.total_models}
             </div>
-            <p className="text-xs text-primary-foreground/80 mt-1">
+            <p className="text-xs text-primary-foreground/70 mt-1">
               {analytics.metrics.total_brands} marcas activas
             </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-primary border-none shadow-copper-lg hover:shadow-xl rounded-2xl transition-all duration-300 hover:scale-[1.02] animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+        <Card className="bg-primary border-none shadow-md rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-semibold text-primary-foreground">
+            <CardTitle className="text-sm font-medium text-primary-foreground">
               Precio Promedio
             </CardTitle>
-            <DollarSign className="h-5 w-5 text-primary-foreground/80" />
+            <DollarSign className="h-4 w-4 text-primary-foreground/70" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-primary-foreground">
               {formatPrice(analytics.metrics.avg_price)}
             </div>
-            <p className="text-xs text-primary-foreground/80 mt-1">
+            <p className="text-xs text-primary-foreground/70 mt-1">
               Variación: {analytics.metrics.variation_coefficient.toFixed(1)}%
             </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-primary border-none shadow-copper-lg hover:shadow-xl rounded-2xl transition-all duration-300 hover:scale-[1.02] animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+        <Card className="bg-primary border-none shadow-md rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-semibold text-primary-foreground">
+            <CardTitle className="text-sm font-medium text-primary-foreground">
               Precio Mínimo
             </CardTitle>
             <TrendingDown className="h-4 w-4 text-primary-foreground/70" />
