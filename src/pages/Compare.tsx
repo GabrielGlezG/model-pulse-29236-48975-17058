@@ -245,7 +245,7 @@ export default function Compare() {
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-4 mb-6">
+          <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mb-6">
             <Select value={comparisonFilter.brand || "all"} onValueChange={(value) => {
               setComparisonFilter(f => ({ ...f, brand: value === "all" ? "" : value, model: "", submodel: "" }))
             }}>
@@ -329,7 +329,7 @@ export default function Compare() {
             </div>
           )}
 
-          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {filteredProducts.slice(0, 12).map(product => (
               <div 
                 key={product.id} 
@@ -447,7 +447,7 @@ export default function Compare() {
               <h2 className="text-xl font-semibold text-card-foreground mb-2">Evolución de Precios</h2>
               <p className="text-sm text-muted-foreground mb-6">Comparación de precios históricos</p>
               
-              <div className="h-[400px]">
+              <div className="h-[300px] sm:h-[400px]">
                 <Line
                   data={{
                     labels: comparisonData[0]?.priceData.map(d => d.date) || [],

@@ -53,11 +53,12 @@ export function TopBar({ onMenuClick }: TopBarProps) {
       <div className="flex-1" />
 
       {lastUpdate && (
-        <div className="flex items-center gap-2 mr-3 text-muted-foreground">
-          <CalendarClock className="h-4 w-4 hidden sm:block" />
-          <span className="text-xs sm:text-sm">
-            <span className="hidden md:inline">Última actualización: </span>
-            {format(new Date(lastUpdate), "d 'de' MMM, yyyy", { locale: es })}
+        <div className="hidden sm:flex items-center gap-1.5 sm:gap-2 mr-2 sm:mr-3 text-muted-foreground">
+          <CalendarClock className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+          <span className="text-xs whitespace-nowrap">
+            <span className="hidden lg:inline">Última actualización: </span>
+            {format(new Date(lastUpdate), "d MMM", { locale: es })}
+            <span className="hidden md:inline">{format(new Date(lastUpdate), ", yyyy", { locale: es })}</span>
           </span>
         </div>
       )}

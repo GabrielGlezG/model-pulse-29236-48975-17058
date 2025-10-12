@@ -310,7 +310,7 @@ export default function Dashboard() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:gap-4 grid-cols-1 xs:grid-cols-2 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
             <Card key={i}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -363,7 +363,7 @@ export default function Dashboard() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-5">
+          <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
             <Select
               value={filters.brand || "all"}
               onValueChange={(value) =>
@@ -458,7 +458,7 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 xs:grid-cols-2 lg:grid-cols-4">
         <Card className="bg-primary border-none shadow-md rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-primary-foreground">
@@ -529,29 +529,32 @@ export default function Dashboard() {
       </div>
 
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3 h-auto bg-card border border-border">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 h-auto bg-card border border-border">
           <TabsTrigger
             value="general"
-            className="text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            className="text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground py-2 sm:py-2.5"
           >
-            Visión General
+            <span className="hidden sm:inline">Visión General</span>
+            <span className="sm:hidden">General</span>
           </TabsTrigger>
           <TabsTrigger
             value="precios"
-            className="text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            className="text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground py-2 sm:py-2.5"
           >
-            Análisis de Precios
+            <span className="hidden sm:inline">Análisis de Precios</span>
+            <span className="sm:hidden">Precios</span>
           </TabsTrigger>
           <TabsTrigger
             value="marcas"
-            className="text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            className="text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground py-2 sm:py-2.5"
           >
-            Por Marca
+            <span className="hidden sm:inline">Por Marca</span>
+            <span className="sm:hidden">Marcas</span>
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
             <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
               <CardHeader className="space-y-1 pb-4">
                 <CardTitle className="text-lg flex items-center gap-2">
@@ -563,7 +566,7 @@ export default function Dashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
-                <div className="h-[260px]">
+                <div className="h-[220px] sm:h-[260px]">
                   <Bar
                     data={{
                       labels: (
@@ -627,7 +630,7 @@ export default function Dashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
-                <div className="h-[260px]">
+                <div className="h-[220px] sm:h-[260px]">
                   <Pie
                     data={{
                       labels: (
@@ -850,7 +853,7 @@ export default function Dashboard() {
         </TabsContent>
 
         <TabsContent value="precios" className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
             <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
               <CardHeader className="space-y-1 pb-4">
                 <CardTitle className="text-lg flex items-center gap-2">
@@ -862,7 +865,7 @@ export default function Dashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
-                <div className="h-[260px]">
+                <div className="h-[220px] sm:h-[260px]">
                   <Bar
                     data={{
                       labels: (analytics.chart_data?.top_5_expensive || []).map(
@@ -933,7 +936,7 @@ export default function Dashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
-                <div className="h-[260px]">
+                <div className="h-[220px] sm:h-[260px]">
                   <Bar
                     data={{
                       labels: (analytics.chart_data?.bottom_5_cheap || []).map(
@@ -1103,7 +1106,7 @@ export default function Dashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-2">
-              <div className="h-[320px]">
+              <div className="h-[280px] sm:h-[320px]">
                 <Bar
                   data={{
                     labels: (analytics.chart_data?.prices_by_brand || []).map(
@@ -1175,7 +1178,7 @@ export default function Dashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-2">
-              <div className="h-[300px]">
+              <div className="h-[260px] sm:h-[300px]">
                 <Bar
                   data={{
                     labels: (analytics.chart_data?.brand_variations || []).map(

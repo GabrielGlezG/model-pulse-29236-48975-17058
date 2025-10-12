@@ -261,7 +261,7 @@ export default function Insights() {
                     </div>
                     <Badge className="bg-green-600">Oportunidad</Badge>
                   </div>
-                  <div className="grid grid-cols-3 gap-2 text-sm">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
                     <div className="text-center p-2 bg-background/50 rounded">
                       <p className="text-xs text-muted-foreground">Actual</p>
                       <p className="font-bold text-primary">
@@ -363,7 +363,7 @@ export default function Insights() {
       case "category_comparison":
         return (
           <div className="space-y-4">
-            <div className="grid gap-3 md:grid-cols-2">
+            <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
               <div className="p-4 rounded-lg border border-destructive/20 bg-destructive/10">
                 <h4 className="font-semibold text-destructive mb-2 flex items-center gap-2">
                   🔴 Segmento Más Caro
@@ -461,7 +461,7 @@ export default function Insights() {
 
       {/* Market Overview Cards */}
       {marketStats && (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:gap-4 grid-cols-1 xs:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
@@ -638,7 +638,7 @@ export default function Insights() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {marketStats.chart_data.best_value_models
                   .slice(0, 6)
                   .map((model: any, index: number) => (

@@ -332,7 +332,7 @@ export function PriceEvolutionChart({
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4">
           <div>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5" />
@@ -341,15 +341,15 @@ export function PriceEvolutionChart({
             <CardDescription>
               Histórico de precios para los filtros seleccionados
               {evolutionData && (
-                <span className="ml-2">
+                <span className="block sm:inline sm:ml-2 mt-1 sm:mt-0">
                   • {evolutionData.totalDataPoints} puntos de datos
                 </span>
               )}
             </CardDescription>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger className="w-32">
+              <SelectTrigger className="w-full sm:w-32">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -367,7 +367,7 @@ export function PriceEvolutionChart({
                 setGroupBy(value)
               }
             >
-              <SelectTrigger className="w-32">
+              <SelectTrigger className="w-full sm:w-32">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -382,6 +382,7 @@ export function PriceEvolutionChart({
               size="sm"
               onClick={() => refetch()}
               disabled={isRefetching}
+              className="w-full sm:w-auto"
             >
               {isRefetching ? (
                 <RefreshCw className="h-4 w-4 animate-spin" />
@@ -468,12 +469,12 @@ export function PriceEvolutionChart({
               />
             </div>
 
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {evolutionData.statistics?.map((stat, index) => {
                 if (!stat) return null;
 
                 return (
-                  <div key={stat.model} className="p-4 border rounded-lg">
+                  <div key={stat.model} className="p-3 sm:p-4 border rounded-lg">
                     <div className="flex items-center gap-2 mb-3">
                       <div
                         className="w-3 h-3 rounded-full"
