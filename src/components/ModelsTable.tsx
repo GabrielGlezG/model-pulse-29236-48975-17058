@@ -89,7 +89,7 @@ export function ModelsTable({ filters, statusFilter = 'active' }: ModelsTablePro
         if (filters.model && product.model !== filters.model) return;
         
         // Apply status filter
-        const estado = product.estado?.toLowerCase() || 'activo';
+        const estado = product.estado?.toLowerCase() || 'vigente';
         if (statusFilter === 'active' && estado === 'inactivo') return;
         if (statusFilter === 'inactive' && estado !== 'inactivo') return;
 
