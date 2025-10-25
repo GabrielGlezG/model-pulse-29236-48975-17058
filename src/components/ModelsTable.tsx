@@ -13,6 +13,16 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/custom/Badge";
 import { Package } from "lucide-react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationEllipsis,
+} from "@/components/ui/pagination";
+import { useState } from "react";
 
 interface ModelsTableProps {
   filters: {
@@ -25,18 +35,21 @@ interface ModelsTableProps {
 
 interface ModelData {
   model: string;
+  submodel: string | null;
   brand: string;
   name: string;
   estado: string | null;
   units: number;
   revenue: number;
-  precio_total: number | null;
+  precio_con_bono: number | null;
   precio_lista: number | null;
-  precio_sin_bono: number | null;
+  bono: number | null;
 }
 
 export function ModelsTable({ filters, statusFilter = 'active' }: ModelsTableProps) {
   const { formatPrice } = useCurrency();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const { data: modelsData, isLoading } = useQuery({
     queryKey: ['models-table', filters, statusFilter],
@@ -56,6 +69,7 @@ export function ModelsTable({ filters, statusFilter = 'active' }: ModelsTablePro
             name,
             brand,
             model,
+            submodel,
             estado
           )
         `)
@@ -87,24 +101,25 @@ export function ModelsTable({ filters, statusFilter = 'active' }: ModelsTablePro
         }
       });
 
-      // Aggregate by model
+      // Aggregate by model and submodel
       const modelMap = new Map<string, ModelData>();
       
       Array.from(productMap.values()).forEach((item) => {
         const product = item.product;
-        const modelKey = `${product.brand}-${product.model}`;
+        const modelKey = `${product.brand}-${product.model}-${product.submodel || 'sin-submodelo'}`;
         
         if (!modelMap.has(modelKey)) {
           modelMap.set(modelKey, {
             model: product.model,
+            submodel: product.submodel,
             brand: product.brand,
             name: product.name,
             estado: product.estado,
             units: 0,
             revenue: 0,
-            precio_total: null,
+            precio_con_bono: null,
             precio_lista: null,
-            precio_sin_bono: null,
+            bono: null,
           });
         }
 
@@ -114,11 +129,17 @@ export function ModelsTable({ filters, statusFilter = 'active' }: ModelsTablePro
         
         // Calculate average prices
         const currentCount = modelData.units;
-        const precioTotal = parseFloat(item.precio_texto?.replace(/[^0-9.-]/g, '') || '0');
         
-        modelData.precio_total = ((modelData.precio_total || 0) * (currentCount - 1) + (precioTotal || item.price)) / currentCount;
-        modelData.precio_lista = ((modelData.precio_lista || 0) * (currentCount - 1) + (item.precio_lista_num || item.price)) / currentCount;
-        modelData.precio_sin_bono = ((modelData.precio_sin_bono || 0) * (currentCount - 1) + ((item.precio_lista_num || 0) - (item.bono_num || 0))) / currentCount;
+        // precio_con_bono es el precio final (price o precio_texto parseado)
+        const precioConBono = item.price || 0;
+        // precio_lista_num es el precio de lista (sin bono)
+        const precioLista = item.precio_lista_num || 0;
+        // bono_num es el bono
+        const bono = item.bono_num || 0;
+        
+        modelData.precio_con_bono = ((modelData.precio_con_bono || 0) * (currentCount - 1) + precioConBono) / currentCount;
+        modelData.precio_lista = ((modelData.precio_lista || 0) * (currentCount - 1) + precioLista) / currentCount;
+        modelData.bono = ((modelData.bono || 0) * (currentCount - 1) + bono) / currentCount;
       });
 
       return Array.from(modelMap.values()).sort((a, b) => b.revenue - a.revenue);
@@ -126,10 +147,16 @@ export function ModelsTable({ filters, statusFilter = 'active' }: ModelsTablePro
     staleTime: 30000,
   });
 
-  const calculateVsList = (precioTotal: number | null, precioLista: number | null) => {
-    if (!precioTotal || !precioLista || precioLista === 0) return 0;
-    return ((precioTotal - precioLista) / precioLista) * 100;
+  const calculateVsList = (precioConBono: number | null, precioLista: number | null) => {
+    if (!precioConBono || !precioLista || precioLista === 0) return 0;
+    return ((precioConBono - precioLista) / precioLista) * 100;
   };
+
+  // Pagination logic
+  const totalPages = Math.ceil((modelsData?.length || 0) / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = modelsData?.slice(startIndex, endIndex);
 
   const formatRevenue = (revenue: number) => {
     if (revenue >= 1000000) {
@@ -172,21 +199,22 @@ export function ModelsTable({ filters, statusFilter = 'active' }: ModelsTablePro
             <TableHeader>
               <TableRow>
                 <TableHead className="min-w-[180px]">Modelo</TableHead>
+                <TableHead className="min-w-[120px]">Submodelo</TableHead>
                 <TableHead className="text-right">Unidades</TableHead>
                 <TableHead className="text-right">Revenue</TableHead>
-                <TableHead className="text-right">Precio Total</TableHead>
+                <TableHead className="text-right">Precio c/Bono</TableHead>
                 <TableHead className="text-right">Precio Lista</TableHead>
-                <TableHead className="text-right">Sin Bono</TableHead>
+                <TableHead className="text-right">Bono</TableHead>
                 <TableHead className="text-right">vs. Lista</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {modelsData?.map((model, index) => {
-                const vsList = calculateVsList(model.precio_total, model.precio_lista);
+              {paginatedData?.map((model, index) => {
+                const vsList = calculateVsList(model.precio_con_bono, model.precio_lista);
                 const isNuevo = model.estado?.toLowerCase() === 'nuevo';
                 
                 return (
-                  <TableRow key={`${model.brand}-${model.model}-${index}`}>
+                  <TableRow key={`${model.brand}-${model.model}-${model.submodel}-${index}`}>
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
                         <span>{model.model}</span>
@@ -196,11 +224,14 @@ export function ModelsTable({ filters, statusFilter = 'active' }: ModelsTablePro
                       </div>
                       <div className="text-xs text-muted-foreground">{model.brand}</div>
                     </TableCell>
+                    <TableCell className="font-medium">
+                      {model.submodel || '-'}
+                    </TableCell>
                     <TableCell className="text-right">{model.units.toLocaleString()}</TableCell>
                     <TableCell className="text-right font-medium">{formatRevenue(model.revenue)}</TableCell>
-                    <TableCell className="text-right">{formatPrice(model.precio_total || 0)}</TableCell>
+                    <TableCell className="text-right">{formatPrice(model.precio_con_bono || 0)}</TableCell>
                     <TableCell className="text-right">{formatPrice(model.precio_lista || 0)}</TableCell>
-                    <TableCell className="text-right">{formatPrice(model.precio_sin_bono || 0)}</TableCell>
+                    <TableCell className="text-right">{formatPrice(model.bono || 0)}</TableCell>
                     <TableCell className="text-right">
                       <span className={vsList < 0 ? 'text-red-500' : vsList > 0 ? 'text-green-500' : ''}>
                         {vsList.toFixed(1)}%
@@ -209,9 +240,9 @@ export function ModelsTable({ filters, statusFilter = 'active' }: ModelsTablePro
                   </TableRow>
                 );
               })}
-              {(!modelsData || modelsData.length === 0) && (
+              {(!paginatedData || paginatedData.length === 0) && (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
                     No hay modelos {statusFilter === 'inactive' ? 'inactivos' : 'activos'} para mostrar
                   </TableCell>
                 </TableRow>
@@ -219,6 +250,57 @@ export function ModelsTable({ filters, statusFilter = 'active' }: ModelsTablePro
             </TableBody>
           </Table>
         </div>
+        
+        {totalPages > 1 && (
+          <div className="mt-4 flex justify-center">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious 
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                  />
+                </PaginationItem>
+                
+                {[...Array(totalPages)].map((_, i) => {
+                  const pageNum = i + 1;
+                  // Show first page, last page, current page, and pages around current
+                  if (
+                    pageNum === 1 ||
+                    pageNum === totalPages ||
+                    (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+                  ) {
+                    return (
+                      <PaginationItem key={pageNum}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(pageNum)}
+                          isActive={currentPage === pageNum}
+                          className="cursor-pointer"
+                        >
+                          {pageNum}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  } else if (pageNum === currentPage - 2 || pageNum === currentPage + 2) {
+                    return (
+                      <PaginationItem key={pageNum}>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    );
+                  }
+                  return null;
+                })}
+                
+                <PaginationItem>
+                  <PaginationNext 
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
