@@ -199,7 +199,7 @@ export type Database = {
     }
     Functions: {
       generate_automatic_insights: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           data: Json
           description: string
