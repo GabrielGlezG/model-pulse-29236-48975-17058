@@ -49,7 +49,7 @@ interface ModelData {
 export function ModelsTable({ filters, statusFilter = 'active' }: ModelsTableProps) {
   const { formatPrice } = useCurrency();
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
 
   const { data: modelsData, isLoading } = useQuery({
     queryKey: ['models-table', filters, statusFilter],
