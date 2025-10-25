@@ -54,6 +54,7 @@ import { useState, useEffect } from "react";
 import { usePriceDistribution } from "@/hooks/usePriceDistribution";
 import { CurrencySelector } from "@/components/CurrencySelector";
 import { hslVar, chartPalette } from "@/lib/utils";
+import { ModelsTable } from "@/components/ModelsTable";
 
 // Register ChartJS components
 ChartJS.register(
@@ -529,13 +530,20 @@ export default function Dashboard() {
       </div>
 
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 h-auto bg-card border border-border">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto bg-card border border-border">
           <TabsTrigger
             value="general"
             className="text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground py-2 sm:py-2.5"
           >
             <span className="hidden sm:inline">Visión General</span>
             <span className="sm:hidden">General</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="modelos"
+            className="text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground py-2 sm:py-2.5"
+          >
+            <span className="hidden sm:inline">Modelos</span>
+            <span className="sm:hidden">Modelos</span>
           </TabsTrigger>
           <TabsTrigger
             value="precios"
@@ -848,6 +856,25 @@ export default function Dashboard() {
                   }}
                 />
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="modelos" className="space-y-6">
+          <ModelsTable filters={filters} statusFilter="active" />
+          
+          <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
+            <CardHeader className="space-y-1 pb-4">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Package className="h-5 w-5 text-primary" />
+                Modelos Inactivos
+              </CardTitle>
+              <CardDescription>
+                Vehículos descontinuados o fuera de stock
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-2">
+              <ModelsTable filters={filters} statusFilter="inactive" />
             </CardContent>
           </Card>
         </TabsContent>
