@@ -163,6 +163,7 @@ export default function Dashboard() {
   const { formatPrice } = useCurrency();
   const { setLastUpdate } = useLastUpdate();
   const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const COLORS = useMemo(() => chartPalette(12), [theme]);
   const [filters, setFilters] = useState({
     brand: "",
@@ -171,10 +172,17 @@ export default function Dashboard() {
   });
   const [refreshTick, setRefreshTick] = useState(0);
 
-  // Update ChartJS defaults when theme changes
+  // Update ChartJS defaults and force remount when theme changes
   useEffect(() => {
-    ChartJS.defaults.color = "hsl(var(--foreground))";
+    ChartJS.defaults.color = hslVar('--foreground');
+    setMounted(false);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, [theme]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { user, profile, isAdmin, hasActiveSubscription } = useAuth();
   console.log("Dashboard Auth Debug:", {
@@ -583,7 +591,7 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="pt-2">
                 <div className="h-[220px] sm:h-[260px]">
-                  <Bar key={theme}
+                  {mounted && <Bar
                     data={{
                       labels: (
                         analytics.chart_data?.models_by_category || []
@@ -631,7 +639,7 @@ export default function Dashboard() {
                         },
                       },
                     }}
-                  />
+                  />}
                 </div>
               </CardContent>
             </Card>
@@ -647,7 +655,7 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="pt-2">
                 <div className="h-[220px] sm:h-[260px]">
-                  <Pie key={theme}
+                  {mounted && <Pie
                     data={{
                       labels: (
                         priceDistributionLocal ||
@@ -769,7 +777,7 @@ export default function Dashboard() {
                         },
                       },
                     }}
-                  />
+                  />}
                 </div>
               </CardContent>
             </Card>
@@ -787,7 +795,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="pt-2">
               <div className="h-[400px]">
-                <Bubble
+                {mounted && <Bubble
                   data={{
                     datasets: [
                       {
@@ -862,7 +870,7 @@ export default function Dashboard() {
                       },
                     },
                   }}
-                />
+                />}
               </div>
             </CardContent>
           </Card>
@@ -901,7 +909,7 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="pt-2">
                 <div className="h-[220px] sm:h-[260px]">
-                  <Bar key={theme}
+                  {mounted && <Bar
                     data={{
                       labels: (analytics.chart_data?.top_5_expensive || []).map(
                         (d) => d.name
@@ -955,7 +963,7 @@ export default function Dashboard() {
                         },
                       },
                     }}
-                  />
+                  />}
                 </div>
               </CardContent>
             </Card>
@@ -972,7 +980,7 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="pt-2">
                 <div className="h-[220px] sm:h-[260px]">
-                  <Bar key={theme}
+                  {mounted && <Bar
                     data={{
                       labels: (analytics.chart_data?.bottom_5_cheap || []).map(
                         (d) => d.name
@@ -1026,7 +1034,7 @@ export default function Dashboard() {
                         },
                       },
                     }}
-                  />
+                  />}
                 </div>
               </CardContent>
             </Card>
@@ -1044,7 +1052,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="pt-2">
               <div className="h-[320px]">
-                <Bar key={theme}
+                {mounted && <Bar
                   data={{
                     labels: (
                       analytics.chart_data?.prices_by_category || []
@@ -1123,7 +1131,7 @@ export default function Dashboard() {
                       },
                     },
                   }}
-                />
+                />}
               </div>
             </CardContent>
           </Card>
@@ -1142,7 +1150,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="pt-2">
               <div className="h-[280px] sm:h-[320px]">
-                 <Bar key={theme}
+                 {mounted && <Bar
                   data={{
                     labels: (analytics.chart_data?.prices_by_brand || []).map(
                       (d) => d.brand
@@ -1197,7 +1205,7 @@ export default function Dashboard() {
                       },
                     },
                   }}
-                />
+                />}
               </div>
             </CardContent>
           </Card>
@@ -1214,7 +1222,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="pt-2">
               <div className="h-[260px] sm:h-[300px]">
-                 <Bar key={theme}
+                 {mounted && <Bar
                   data={{
                     labels: (analytics.chart_data?.brand_variations || []).map(
                       (d) => d.brand
@@ -1268,7 +1276,7 @@ export default function Dashboard() {
                       },
                     },
                   }}
-                />
+                />}
               </div>
             </CardContent>
           </Card>
@@ -1285,7 +1293,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="pt-2">
               <div className="h-[300px]">
-                <Bar key={theme}
+                {mounted && <Bar
                   data={{
                     labels: (
                       analytics.chart_data?.monthly_volatility?.most_volatile ||
@@ -1341,7 +1349,7 @@ export default function Dashboard() {
                       },
                     },
                   }}
-                />
+                />}
               </div>
             </CardContent>
           </Card>

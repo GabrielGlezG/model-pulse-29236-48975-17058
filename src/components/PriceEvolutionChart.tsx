@@ -67,6 +67,7 @@ export function PriceEvolutionChart({
 }: PriceEvolutionProps) {
   const { formatPrice } = useCurrency();
   const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const chartColors = useMemo(() => [
     hslVar('--chart-1'),
     hslVar('--chart-2'),
@@ -77,10 +78,17 @@ export function PriceEvolutionChart({
   const [timeRange, setTimeRange] = useState("6months");
   const [groupBy, setGroupBy] = useState<"day" | "week" | "month">("week");
 
-  // Update ChartJS defaults when theme changes
+  // Update ChartJS defaults and force remount when theme changes
   useEffect(() => {
-    ChartJS.defaults.color = "hsl(var(--foreground))";
+    ChartJS.defaults.color = hslVar('--foreground');
+    setMounted(false);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, [theme]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const {
     data: evolutionData,
@@ -425,7 +433,7 @@ export function PriceEvolutionChart({
             </div>
 
             <div className="h-[400px]">
-              <Line key={theme}
+              {mounted && <Line
                 data={{
                   labels: evolutionData.labels,
                   datasets: evolutionData.datasets,
@@ -477,7 +485,7 @@ export function PriceEvolutionChart({
                     intersect: false,
                   }
                 }}
-              />
+              />}
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
