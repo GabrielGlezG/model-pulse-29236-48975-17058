@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { useCurrency } from "@/contexts/CurrencyContext"
+import { useTheme } from "next-themes"
 import { hslVar } from "@/lib/utils"
 import { Card } from "@/components/custom/Card"
 import { Badge } from "@/components/custom/Badge"
@@ -33,6 +34,9 @@ ChartJS.register(
   ChartLegend
 )
 
+// Set default chart colors - will be updated dynamically
+ChartJS.defaults.color = "hsl(var(--foreground))";
+
 interface Product {
   id: string
   brand: string
@@ -54,6 +58,7 @@ interface ComparisonData {
 
 export default function Compare() {
   const { formatPrice } = useCurrency()
+  const { theme } = useTheme()
   const [selectedProducts, setSelectedProducts] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [comparisonFilter, setComparisonFilter] = useState({
@@ -62,6 +67,11 @@ export default function Compare() {
     submodel: '',
     priceRange: [0, 2000000] as [number, number]
   })
+
+  // Update ChartJS defaults when theme changes
+  useEffect(() => {
+    ChartJS.defaults.color = "hsl(var(--foreground))";
+  }, [theme]);
 
   // Fetch available products for selection
   const { data: products } = useQuery({

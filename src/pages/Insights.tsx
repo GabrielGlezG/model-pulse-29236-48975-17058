@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { useTheme } from "next-themes";
 import { hslVar } from "@/lib/utils";
 import {
   Card,
@@ -37,6 +38,7 @@ import {
   Tooltip as ChartTooltip,
   Legend as ChartLegend,
 } from 'chart.js'
+import { useEffect } from "react";
 
 ChartJS.register(
   CategoryScale,
@@ -46,6 +48,10 @@ ChartJS.register(
   ChartTooltip,
   ChartLegend
 )
+
+// Set default chart colors - will be updated dynamically
+ChartJS.defaults.color = "hsl(var(--foreground))";
+
 import { usePriceDistribution } from "@/hooks/usePriceDistribution";
 
 interface Insight {
@@ -58,6 +64,13 @@ interface Insight {
 
 export default function Insights() {
   const { formatPrice } = useCurrency();
+  const { theme } = useTheme();
+
+  // Update ChartJS defaults when theme changes
+  useEffect(() => {
+    ChartJS.defaults.color = "hsl(var(--foreground))";
+  }, [theme]);
+
   const {
     data: insights,
     isLoading,

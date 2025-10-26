@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { useTheme } from "next-themes";
 import { hslVar } from "@/lib/utils";
 import {
   Card,
@@ -32,7 +33,7 @@ import {
   Filler,
 } from "chart.js";
 import { TrendingUp, Calendar, RefreshCw } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Register ChartJS components
 ChartJS.register(
@@ -45,6 +46,9 @@ ChartJS.register(
   ChartLegend,
   Filler
 );
+
+// Set default chart colors - will be updated dynamically
+ChartJS.defaults.color = "hsl(var(--foreground))";
 
 interface PriceEvolutionProps {
   selectedBrand?: string;
@@ -68,8 +72,14 @@ export function PriceEvolutionChart({
   selectedSubmodel,
 }: PriceEvolutionProps) {
   const { formatPrice } = useCurrency();
+  const { theme } = useTheme();
   const [timeRange, setTimeRange] = useState("6months");
   const [groupBy, setGroupBy] = useState<"day" | "week" | "month">("week");
+
+  // Update ChartJS defaults when theme changes
+  useEffect(() => {
+    ChartJS.defaults.color = "hsl(var(--foreground))";
+  }, [theme]);
 
   const {
     data: evolutionData,

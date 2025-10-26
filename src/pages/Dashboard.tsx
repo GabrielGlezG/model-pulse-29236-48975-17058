@@ -55,6 +55,7 @@ import { usePriceDistribution } from "@/hooks/usePriceDistribution";
 import { CurrencySelector } from "@/components/CurrencySelector";
 import { hslVar, chartPalette } from "@/lib/utils";
 import { ModelsTable } from "@/components/ModelsTable";
+import { useTheme } from "next-themes";
 
 // Register ChartJS components
 ChartJS.register(
@@ -70,8 +71,8 @@ ChartJS.register(
   Filler
 );
 
-// Ensure all default text (legend, labels) is white on dark backgrounds
-ChartJS.defaults.color = "#FFFFFF";
+// Set default chart colors based on theme - will be updated dynamically
+ChartJS.defaults.color = "hsl(var(--foreground))";
 
 interface AnalyticsData {
   metrics: {
@@ -161,12 +162,18 @@ const COLORS = chartPalette(12);
 export default function Dashboard() {
   const { formatPrice } = useCurrency();
   const { setLastUpdate } = useLastUpdate();
+  const { theme } = useTheme();
   const [filters, setFilters] = useState({
     brand: "",
     model: "",
     submodel: "",
   });
   const [refreshTick, setRefreshTick] = useState(0);
+
+  // Update ChartJS defaults when theme changes
+  useEffect(() => {
+    ChartJS.defaults.color = "hsl(var(--foreground))";
+  }, [theme]);
 
   const { user, profile, isAdmin, hasActiveSubscription } = useAuth();
   console.log("Dashboard Auth Debug:", {
@@ -666,7 +673,7 @@ export default function Dashboard() {
                         legend: {
                           position: "bottom",
                           labels: {
-                            color: "#FFFFFF",
+                            color: hslVar("--foreground"),
                             padding: 14,
                             font: { size: 12 },
                             generateLabels: (chart: any) => {
@@ -725,7 +732,7 @@ export default function Dashboard() {
                                   return {
                                     text: `${formattedLabel} (${percentage}%)`,
                                     fillStyle: COLORS[i % COLORS.length],
-                                    fontColor: "#FFFFFF", // <- forzar blanco
+                                    fontColor: hslVar("--foreground"),
                                     strokeStyle: "transparent",
                                     hidden: false,
                                     index: i,
@@ -739,8 +746,8 @@ export default function Dashboard() {
                           backgroundColor: "hsl(var(--card))",
                           borderColor: "hsl(var(--border))",
                           borderWidth: 1,
-                          titleColor: "#FFFFFF", // <- blanco también
-                          bodyColor: "#FFFFFF", // <- texto blanco
+                          titleColor: hslVar("--foreground"),
+                          bodyColor: hslVar("--foreground"),
                           padding: 12,
                           cornerRadius: 8,
                           callbacks: {
