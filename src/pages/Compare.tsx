@@ -60,6 +60,7 @@ export default function Compare() {
   const { formatPrice } = useCurrency()
   const { theme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const [chartKey, setChartKey] = useState(0)
   const [selectedProducts, setSelectedProducts] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [comparisonFilter, setComparisonFilter] = useState({
@@ -73,9 +74,13 @@ export default function Compare() {
   useEffect(() => {
     ChartJS.defaults.color = hslVar('--foreground');
     setMounted(false);
-    const timer = setTimeout(() => setMounted(true), 0);
+    setChartKey((prev) => prev + 1);
+    const isMobile = window.innerWidth < 768;
+    const delay = isMobile ? 100 : 50;
+
+    const timer = setTimeout(() => setMounted(true), delay);
     return () => clearTimeout(timer);
-  }, [theme]);
+}, [theme]);
 
   useEffect(() => {
     setMounted(true);
@@ -467,6 +472,7 @@ export default function Compare() {
               
               <div className="h-[300px] sm:h-[400px]">
                 {mounted && <Line
+                  key={`compare-price-evolution-${chartKey}`}
                   data={{
                     labels: comparisonData[0]?.priceData.map(d => d.date) || [],
                     datasets: comparisonData.map((item, index) => {
