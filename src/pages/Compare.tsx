@@ -458,7 +458,7 @@ export default function Compare() {
               <p className="text-sm text-muted-foreground mb-6">Comparación de precios históricos</p>
               
               <div className="h-[300px] sm:h-[400px]">
-                <Line
+                <Line key={theme}
                   data={{
                     labels: comparisonData[0]?.priceData.map(d => d.date) || [],
                     datasets: comparisonData.map((item, index) => {

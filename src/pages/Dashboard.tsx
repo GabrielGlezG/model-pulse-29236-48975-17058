@@ -50,7 +50,7 @@ import {
   Legend as ChartLegend,
   Filler,
 } from "chart.js";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { usePriceDistribution } from "@/hooks/usePriceDistribution";
 import { CurrencySelector } from "@/components/CurrencySelector";
 import { hslVar, chartPalette } from "@/lib/utils";
@@ -157,12 +157,13 @@ interface AnalyticsData {
   generated_at: string;
 }
 
-const COLORS = chartPalette(12);
+// COLORS will be computed per-theme inside component
 
 export default function Dashboard() {
   const { formatPrice } = useCurrency();
   const { setLastUpdate } = useLastUpdate();
   const { theme } = useTheme();
+  const COLORS = useMemo(() => chartPalette(12), [theme]);
   const [filters, setFilters] = useState({
     brand: "",
     model: "",
@@ -582,7 +583,7 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="pt-2">
                 <div className="h-[220px] sm:h-[260px]">
-                  <Bar
+                  <Bar key={theme}
                     data={{
                       labels: (
                         analytics.chart_data?.models_by_category || []
@@ -646,7 +647,7 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="pt-2">
                 <div className="h-[220px] sm:h-[260px]">
-                  <Pie
+                  <Pie key={theme}
                     data={{
                       labels: (
                         priceDistributionLocal ||
@@ -900,7 +901,7 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="pt-2">
                 <div className="h-[220px] sm:h-[260px]">
-                  <Bar
+                  <Bar key={theme}
                     data={{
                       labels: (analytics.chart_data?.top_5_expensive || []).map(
                         (d) => d.name
@@ -971,7 +972,7 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="pt-2">
                 <div className="h-[220px] sm:h-[260px]">
-                  <Bar
+                  <Bar key={theme}
                     data={{
                       labels: (analytics.chart_data?.bottom_5_cheap || []).map(
                         (d) => d.name
@@ -1043,7 +1044,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="pt-2">
               <div className="h-[320px]">
-                <Bar
+                <Bar key={theme}
                   data={{
                     labels: (
                       analytics.chart_data?.prices_by_category || []
@@ -1141,7 +1142,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="pt-2">
               <div className="h-[280px] sm:h-[320px]">
-                <Bar
+                 <Bar key={theme}
                   data={{
                     labels: (analytics.chart_data?.prices_by_brand || []).map(
                       (d) => d.brand
@@ -1213,7 +1214,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="pt-2">
               <div className="h-[260px] sm:h-[300px]">
-                <Bar
+                 <Bar key={theme}
                   data={{
                     labels: (analytics.chart_data?.brand_variations || []).map(
                       (d) => d.brand
@@ -1284,7 +1285,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="pt-2">
               <div className="h-[300px]">
-                <Bar
+                <Bar key={theme}
                   data={{
                     labels: (
                       analytics.chart_data?.monthly_volatility?.most_volatile ||

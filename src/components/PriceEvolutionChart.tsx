@@ -33,7 +33,7 @@ import {
   Filler,
 } from "chart.js";
 import { TrendingUp, Calendar, RefreshCw } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 // Register ChartJS components
 ChartJS.register(
@@ -57,13 +57,7 @@ interface PriceEvolutionProps {
   selectedSubmodel?: string;
 }
 
-const CHART_COLORS = [
-  hslVar('--chart-1'),
-  hslVar('--chart-2'),
-  hslVar('--chart-3'),
-  hslVar('--chart-4'),
-  hslVar('--chart-5'),
-];
+/* Colors are now computed via useMemo inside component for theme reactivity */
 
 export function PriceEvolutionChart({
   selectedBrand,
@@ -73,6 +67,13 @@ export function PriceEvolutionChart({
 }: PriceEvolutionProps) {
   const { formatPrice } = useCurrency();
   const { theme } = useTheme();
+  const chartColors = useMemo(() => [
+    hslVar('--chart-1'),
+    hslVar('--chart-2'),
+    hslVar('--chart-3'),
+    hslVar('--chart-4'),
+    hslVar('--chart-5'),
+  ], [theme]);
   const [timeRange, setTimeRange] = useState("6months");
   const [groupBy, setGroupBy] = useState<"day" | "week" | "month">("week");
 
@@ -236,15 +237,15 @@ export function PriceEvolutionChart({
       const datasets: any[] = models.map((model, index) => ({
         label: model,
         data: [],
-        borderColor: CHART_COLORS[index % CHART_COLORS.length],
-        backgroundColor: CHART_COLORS[index % CHART_COLORS.length],
+        borderColor: chartColors[index % chartColors.length],
+        backgroundColor: chartColors[index % chartColors.length],
         borderWidth: 2,
         pointRadius: 4,
         pointHoverRadius: 6,
-        pointBackgroundColor: CHART_COLORS[index % CHART_COLORS.length],
-        pointBorderColor: CHART_COLORS[index % CHART_COLORS.length],
-        pointHoverBackgroundColor: CHART_COLORS[index % CHART_COLORS.length],
-        pointHoverBorderColor: CHART_COLORS[index % CHART_COLORS.length],
+        pointBackgroundColor: chartColors[index % chartColors.length],
+        pointBorderColor: chartColors[index % chartColors.length],
+        pointHoverBackgroundColor: chartColors[index % chartColors.length],
+        pointHoverBorderColor: chartColors[index % chartColors.length],
         tension: 0.4,
       }));
 
@@ -319,7 +320,7 @@ export function PriceEvolutionChart({
   };
 
   const getLineColor = (index: number) => {
-    return CHART_COLORS[index % CHART_COLORS.length];
+    return chartColors[index % chartColors.length];
   };
 
   if (!selectedBrand && !selectedCategory && !selectedModel) {
@@ -424,7 +425,7 @@ export function PriceEvolutionChart({
             </div>
 
             <div className="h-[400px]">
-              <Line
+              <Line key={theme}
                 data={{
                   labels: evolutionData.labels,
                   datasets: evolutionData.datasets,

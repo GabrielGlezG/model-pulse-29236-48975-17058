@@ -561,7 +561,7 @@ export default function Insights() {
 
           <CardContent>
             <div className="h-[300px]">
-              <Bar
+              <Bar key={theme}
                 data={{
                   labels: (priceDistributionLocal || marketStats.chart_data.price_distribution).map((item: any) => {
                     const range = item.range
