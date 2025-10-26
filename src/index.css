@@ -49,34 +49,34 @@
   }
 
   .dark {
-    --background: 60 14% 98%;
-    --foreground: 0 0% 15%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 15%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 15%;
-    --primary: 30 49% 58%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 40 25% 94%;
-    --secondary-foreground: 0 0% 20%;
-    --muted: 40 20% 92%;
-    --muted-foreground: 0 0% 40%;
-    --accent: 30 49% 58%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 30 15% 88%;
-    --input: 30 15% 88%;
-    --ring: 30 49% 58%;
+    --background: 0 0% 10%;          /* Fondo oscuro */
+    --foreground: 0 0% 95%;          /* Texto claro */
+    --card: 0 0% 14%;                /* Cards oscuros */
+    --card-foreground: 0 0% 95%;     /* Texto claro en cards */
+    --popover: 0 0% 14%;             /* Popovers oscuros */
+    --popover-foreground: 0 0% 95%;  /* Texto claro en popovers */
+    --primary: 30 49% 58%;           /* Mantener color del logo */
+    --primary-foreground: 0 0% 100%; /* Texto blanco sobre primary */
+    --secondary: 0 0% 20%;           /* Secundario oscuro */
+    --secondary-foreground: 0 0% 95%; /* Texto claro sobre secondary */
+    --muted: 0 0% 20%;               /* Gris oscuro */
+    --muted-foreground: 0 0% 65%;    /* Texto medio claro */
+    --accent: 30 49% 58%;            /* Mantener color del logo */
+    --accent-foreground: 0 0% 100%;  /* Texto blanco sobre accent */
+    --destructive: 0 84% 60%;        /* Rojo para destructive */
+    --destructive-foreground: 0 0% 100%; /* Texto blanco sobre destructive */
+    --border: 0 0% 25%;              /* Bordes oscuros */
+    --input: 0 0% 25%;               /* Bordes de inputs oscuros */
+    --ring: 30 49% 58%;              /* Ring color = primary */
     
     /* Sidebar colors */
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 0 0% 15%;
+    --sidebar-background: 0 0% 14%;
+    --sidebar-foreground: 0 0% 95%;
     --sidebar-primary: 30 49% 58%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 40 25% 94%;
-    --sidebar-accent-foreground: 0 0% 20%;
-    --sidebar-border: 30 15% 88%;
+    --sidebar-accent: 0 0% 20%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 25%;
     --sidebar-ring: 30 49% 58%;
     
     /* Chart colors - variaciones del color del logo */
