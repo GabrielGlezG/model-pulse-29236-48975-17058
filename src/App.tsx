@@ -9,6 +9,7 @@ import { CurrencyProvider } from "./contexts/CurrencyContext";
 import { LastUpdateProvider } from "./contexts/LastUpdateContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { NewLayout } from "./components/NewLayout";
+import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Upload from "./pages/Upload";
 import Compare from "./pages/Compare";
@@ -33,7 +34,13 @@ const App = () => (
               <BrowserRouter>
             <Routes>
               <Route path="/login" element={<Login />} />
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/" element={
+                <ProtectedRoute requireSubscription={true}>
+                  <NewLayout>
+                    <Index />
+                  </NewLayout>
+                </ProtectedRoute>
+              } />
               <Route path="/dashboard" element={
                 <ProtectedRoute requireSubscription={true}>
                   <NewLayout>
