@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { BarChart3, Upload, Lightbulb, Scale, TrendingUp, Users, ChevronLeft, ChevronRight, X, Sparkles } from 'lucide-react'
+import { BarChart3, Upload, Lightbulb, Scale, TrendingUp, Users, ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import logo from '@/assets/pricing-engine-logo-new.png'
 
@@ -15,8 +15,7 @@ export function Sidebar({ isMobileOpen, setIsMobileOpen }: SidebarProps) {
   const { isAdmin } = useAuth()
 
   const items = [
-    { title: 'Destacados', url: '/', icon: Sparkles, requireAdmin: false },
-    { title: 'Dashboard', url: '/dashboard', icon: BarChart3, requireAdmin: false },
+    { title: 'Dashboard', url: '/', icon: BarChart3, requireAdmin: false },
     { title: 'Cargar Datos', url: '/upload', icon: Upload, requireAdmin: true },
     { title: 'Comparar', url: '/compare', icon: Scale, requireAdmin: false },
     { title: 'Evolución de Precios', url: '/price-evolution', icon: TrendingUp, requireAdmin: false },
