@@ -37,15 +37,15 @@
     --sidebar-border: 30 15% 88%;
     --sidebar-ring: 30 49% 58%;
     
-    /* Chart colors - variaciones del color del logo #C99563 */
-    --chart-1: 30 49% 58%;   /* Base: #C99563 */
-    --chart-2: 30 49% 65%;   /* Más claro */
-    --chart-3: 30 49% 72%;   /* Aún más claro */
-    --chart-4: 35 45% 60%;   /* Variación dorada */
-    --chart-5: 25 52% 56%;   /* Variación cálida */
-    --chart-6: 30 49% 50%;   /* Más oscuro */
-    --chart-7: 32 47% 62%;   /* Variación intermedia */
-    --chart-8: 28 51% 54%;   /* Variación profunda */
+    /* Chart colors - paleta con cobrizo y teal complementario */
+    --chart-1: 30 49% 58%;   /* Cobrizo base: #C99563 */
+    --chart-2: 190 65% 48%;  /* Teal vibrante: complementario */
+    --chart-3: 30 49% 65%;   /* Cobrizo claro */
+    --chart-4: 195 58% 55%;  /* Teal claro */
+    --chart-5: 25 52% 56%;   /* Cobrizo cálido */
+    --chart-6: 185 70% 42%;  /* Teal oscuro */
+    --chart-7: 32 47% 62%;   /* Cobrizo suave */
+    --chart-8: 192 62% 50%;  /* Teal medio */
   }
 
   .dark {
@@ -79,15 +79,15 @@
     --sidebar-border: 0 0% 25%;
     --sidebar-ring: 30 49% 58%;
     
-    /* Chart colors - variaciones del color del logo */
+    /* Chart colors - paleta con cobrizo y teal complementario */
     --chart-1: 30 49% 58%;
-    --chart-2: 30 49% 65%;
-    --chart-3: 30 49% 72%;
-    --chart-4: 35 45% 60%;
+    --chart-2: 190 65% 48%;
+    --chart-3: 30 49% 65%;
+    --chart-4: 195 58% 55%;
     --chart-5: 25 52% 56%;
-    --chart-6: 30 49% 50%;
+    --chart-6: 185 70% 42%;
     --chart-7: 32 47% 62%;
-    --chart-8: 28 51% 54%;
+    --chart-8: 192 62% 50%;
   }
 }
 
