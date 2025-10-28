@@ -165,7 +165,8 @@ export default function Dashboard() {
   // ✅ Key única para forzar re-render de gráficos cuando cambia el tema
   const [chartKey, setChartKey] = useState(0);
   const [mounted, setMounted] = useState(false);
-  const COLORS = useMemo(() => chartPalette(12), [theme]);
+  // Usando la paleta por defecto de Chart.js
+  // const COLORS = useMemo(() => chartPalette(12), [theme]);
 
   // ✅ Estado para controlar el tab activo
   const [activeTab, setActiveTab] = useState("general");
@@ -597,7 +598,6 @@ export default function Dashboard() {
                             data: (
                               analytics.chart_data?.models_by_category || []
                             ).map((d) => d.count),
-                            backgroundColor: hslVar("--primary"),
                             borderRadius: 6,
                           },
                         ],
@@ -667,7 +667,6 @@ export default function Dashboard() {
                               analytics.chart_data?.price_distribution ||
                               []
                             ).map((d) => d.count),
-                            backgroundColor: COLORS,
                             borderWidth: 2,
                             borderColor: hslVar("--card"),
                           },
@@ -739,7 +738,6 @@ export default function Dashboard() {
 
                                     return {
                                       text: `${formattedLabel} (${percentage}%)`,
-                                      fillStyle: COLORS[i % COLORS.length],
                                       fontColor: hslVar("--foreground"),
                                       strokeStyle: "transparent",
                                       hidden: false,
@@ -811,8 +809,6 @@ export default function Dashboard() {
                             y: item.avg_price,
                             r: Math.sqrt(item.count) * 3,
                           })),
-                          backgroundColor: hslVar("--primary"),
-                          borderColor: hslVar("--primary"),
                         },
                       ],
                     }}
@@ -929,7 +925,6 @@ export default function Dashboard() {
                             data: (
                               analytics.chart_data?.top_5_expensive || []
                             ).map((d) => d.price),
-                            backgroundColor: hslVar("--chart-5"),
                             borderRadius: 6,
                           },
                         ],
@@ -1003,7 +998,6 @@ export default function Dashboard() {
                             data: (
                               analytics.chart_data?.bottom_5_cheap || []
                             ).map((d) => d.price),
-                            backgroundColor: hslVar("--chart-2"),
                             borderRadius: 6,
                           },
                         ],
@@ -1078,7 +1072,6 @@ export default function Dashboard() {
                           data: (
                             analytics.chart_data?.prices_by_category || []
                           ).map((d) => d.min_price),
-                          backgroundColor: hslVar("--chart-6"),
                           borderRadius: 6,
                         },
                         {
@@ -1086,7 +1079,6 @@ export default function Dashboard() {
                           data: (
                             analytics.chart_data?.prices_by_category || []
                           ).map((d) => d.avg_price),
-                          backgroundColor: hslVar("--primary"),
                           borderRadius: 6,
                         },
                         {
@@ -1094,7 +1086,6 @@ export default function Dashboard() {
                           data: (
                             analytics.chart_data?.prices_by_category || []
                           ).map((d) => d.max_price),
-                          backgroundColor: hslVar("--chart-5"),
                           borderRadius: 6,
                         },
                       ],
@@ -1179,7 +1170,6 @@ export default function Dashboard() {
                           data: (
                             analytics.chart_data?.prices_by_brand || []
                           ).map((d) => d.avg_price),
-                          backgroundColor: hslVar("--primary"),
                           borderRadius: 6,
                         },
                       ],
@@ -1254,7 +1244,6 @@ export default function Dashboard() {
                           data: (
                             analytics.chart_data?.brand_variations || []
                           ).map((d) => d.variation_percent),
-                          backgroundColor: hslVar("--chart-6"),
                           borderRadius: 6,
                         },
                       ],
@@ -1331,7 +1320,6 @@ export default function Dashboard() {
                             analytics.chart_data?.monthly_volatility
                               ?.most_volatile || []
                           ).map((d) => d.avg_monthly_variation),
-                          backgroundColor: hslVar("--chart-7"),
                           borderRadius: 6,
                         },
                       ],
