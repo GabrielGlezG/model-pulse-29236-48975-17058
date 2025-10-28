@@ -37,15 +37,15 @@
     --sidebar-border: 30 15% 88%;
     --sidebar-ring: 30 49% 58%;
     
-    /* Chart colors - variaciones del color del logo #C99563 */
-    --chart-1: 30 49% 58%;   /* Base: #C99563 */
-    --chart-2: 30 49% 65%;   /* Más claro */
-    --chart-3: 30 49% 72%;   /* Aún más claro */
-    --chart-4: 35 45% 60%;   /* Variación dorada */
-    --chart-5: 25 52% 56%;   /* Variación cálida */
-    --chart-6: 30 49% 50%;   /* Más oscuro */
-    --chart-7: 32 47% 62%;   /* Variación intermedia */
-    --chart-8: 28 51% 54%;   /* Variación profunda */
+    /* Chart colors - paleta armoniosa con el cobrizo */
+    --chart-1: 30 49% 58%;   /* Cobrizo principal #C99563 */
+    --chart-2: 210 50% 45%;  /* Azul oscuro */
+    --chart-3: 150 35% 45%;  /* Verde bosque */
+    --chart-4: 25 55% 50%;   /* Marrón cálido */
+    --chart-5: 195 55% 40%;  /* Azul petróleo */
+    --chart-6: 35 60% 55%;   /* Dorado intenso */
+    --chart-7: 160 30% 38%;  /* Verde oliva */
+    --chart-8: 20 45% 48%;   /* Terracota */
   }
 
   .dark {
@@ -79,15 +79,15 @@
     --sidebar-border: 0 0% 25%;
     --sidebar-ring: 30 49% 58%;
     
-    /* Chart colors - variaciones del color del logo */
-    --chart-1: 30 49% 58%;
-    --chart-2: 30 49% 65%;
-    --chart-3: 30 49% 72%;
-    --chart-4: 35 45% 60%;
-    --chart-5: 25 52% 56%;
-    --chart-6: 30 49% 50%;
-    --chart-7: 32 47% 62%;
-    --chart-8: 28 51% 54%;
+    /* Chart colors - paleta armoniosa con el cobrizo */
+    --chart-1: 30 49% 58%;   /* Cobrizo principal */
+    --chart-2: 210 50% 45%;  /* Azul oscuro */
+    --chart-3: 150 35% 45%;  /* Verde bosque */
+    --chart-4: 25 55% 50%;   /* Marrón cálido */
+    --chart-5: 195 55% 40%;  /* Azul petróleo */
+    --chart-6: 35 60% 55%;   /* Dorado intenso */
+    --chart-7: 160 30% 38%;  /* Verde oliva */
+    --chart-8: 20 45% 48%;   /* Terracota */
   }
 }
 
