@@ -597,7 +597,7 @@ export default function Dashboard() {
                             data: (
                               analytics.chart_data?.models_by_category || []
                             ).map((d) => d.count),
-                            backgroundColor: (analytics.chart_data?.models_by_category || []).map((_, i) => COLORS[i % COLORS.length]),
+                            backgroundColor: hslVar("--primary"),
                             borderRadius: 6,
                           },
                         ],
@@ -929,7 +929,7 @@ export default function Dashboard() {
                             data: (
                               analytics.chart_data?.top_5_expensive || []
                             ).map((d) => d.price),
-                            backgroundColor: (analytics.chart_data?.top_5_expensive || []).map((_, i) => COLORS[i % COLORS.length]),
+                            backgroundColor: hslVar("--chart-5"),
                             borderRadius: 6,
                           },
                         ],
@@ -1003,7 +1003,7 @@ export default function Dashboard() {
                             data: (
                               analytics.chart_data?.bottom_5_cheap || []
                             ).map((d) => d.price),
-                            backgroundColor: (analytics.chart_data?.bottom_5_cheap || []).map((_, i) => COLORS[i % COLORS.length]),
+                            backgroundColor: hslVar("--chart-2"),
                             borderRadius: 6,
                           },
                         ],
@@ -1078,7 +1078,7 @@ export default function Dashboard() {
                           data: (
                             analytics.chart_data?.prices_by_category || []
                           ).map((d) => d.min_price),
-                          backgroundColor: (analytics.chart_data?.prices_by_category || []).map((_, i) => COLORS[(i * 3) % COLORS.length]),
+                          backgroundColor: hslVar("--chart-6"),
                           borderRadius: 6,
                         },
                         {
@@ -1086,7 +1086,7 @@ export default function Dashboard() {
                           data: (
                             analytics.chart_data?.prices_by_category || []
                           ).map((d) => d.avg_price),
-                          backgroundColor: (analytics.chart_data?.prices_by_category || []).map((_, i) => COLORS[(i * 3 + 1) % COLORS.length]),
+                          backgroundColor: hslVar("--primary"),
                           borderRadius: 6,
                         },
                         {
@@ -1094,7 +1094,7 @@ export default function Dashboard() {
                           data: (
                             analytics.chart_data?.prices_by_category || []
                           ).map((d) => d.max_price),
-                          backgroundColor: (analytics.chart_data?.prices_by_category || []).map((_, i) => COLORS[(i * 3 + 2) % COLORS.length]),
+                          backgroundColor: hslVar("--chart-5"),
                           borderRadius: 6,
                         },
                       ],
@@ -1179,7 +1179,7 @@ export default function Dashboard() {
                           data: (
                             analytics.chart_data?.prices_by_brand || []
                           ).map((d) => d.avg_price),
-                          backgroundColor: (analytics.chart_data?.prices_by_brand || []).map((_, i) => COLORS[i % COLORS.length]),
+                          backgroundColor: hslVar("--primary"),
                           borderRadius: 6,
                         },
                       ],
@@ -1254,7 +1254,7 @@ export default function Dashboard() {
                           data: (
                             analytics.chart_data?.brand_variations || []
                           ).map((d) => d.variation_percent),
-                          backgroundColor: (analytics.chart_data?.brand_variations || []).map((_, i) => COLORS[i % COLORS.length]),
+                          backgroundColor: hslVar("--chart-6"),
                           borderRadius: 6,
                         },
                       ],
@@ -1331,7 +1331,7 @@ export default function Dashboard() {
                             analytics.chart_data?.monthly_volatility
                               ?.most_volatile || []
                           ).map((d) => d.avg_monthly_variation),
-                          backgroundColor: (analytics.chart_data?.monthly_volatility?.most_volatile || []).map((_, i) => COLORS[i % COLORS.length]),
+                          backgroundColor: hslVar("--chart-7"),
                           borderRadius: 6,
                         },
                       ],
