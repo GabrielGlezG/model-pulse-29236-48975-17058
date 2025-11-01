@@ -595,17 +595,24 @@ export default function Dashboard() {
               <CardContent className="pt-2">
                 <div className="h-[220px] sm:h-[260px]">
                   {mounted && (
-                    <Bar
-                      key={`bar-category-${chartKey}`}
+                    <Line
+                      key={`line-category-${chartKey}`}
                       data={{
                         labels: (
                           analytics.chart_data?.models_by_category || []
                         ).map((d) => d.category),
                         datasets: [
-                          createMultiColorBarDataset(
-                            (analytics.chart_data?.models_by_category || []).map((d) => d.count),
-                            "Cantidad"
-                          ),
+                          {
+                            label: "Cantidad",
+                            data: (analytics.chart_data?.models_by_category || []).map((d) => d.count),
+                            borderColor: hslVar("--chart-1"),
+                            backgroundColor: hslVar("--chart-1", 0.1),
+                            borderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            tension: 0.3,
+                            fill: false,
+                          },
                         ],
                       }}
                       options={{
@@ -1039,17 +1046,17 @@ export default function Dashboard() {
             <CardHeader className="space-y-1 pb-4">
               <CardTitle className="text-lg flex items-center gap-2">
                 <BarChart3 className="h-5 w-5 text-primary" />
-                Precios por Categoría
+                Precios por Categoría (Box Plot)
               </CardTitle>
               <CardDescription>
-                Comparación de rangos de precio por tipo de vehículo
+                Distribución de precios por tipo de vehículo (mínimo, promedio, máximo)
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-2">
               <div className="h-[320px]">
                 {mounted && (
                   <Bar
-                    key={`bar-price-category-${chartKey}`}
+                    key={`boxplot-price-category-${chartKey}`}
                     data={{
                       labels: (
                         analytics.chart_data?.prices_by_category || []
@@ -1060,24 +1067,27 @@ export default function Dashboard() {
                           data: (
                             analytics.chart_data?.prices_by_category || []
                           ).map((d) => d.min_price),
-                          backgroundColor: hslVar("--chart-6"),
-                          borderRadius: 6,
+                          backgroundColor: hslVar("--chart-4", 0.7),
+                          borderColor: hslVar("--chart-4"),
+                          borderWidth: 1,
                         },
                         {
                           label: "Promedio",
                           data: (
                             analytics.chart_data?.prices_by_category || []
                           ).map((d) => d.avg_price),
-                          backgroundColor: hslVar("--primary"),
-                          borderRadius: 6,
+                          backgroundColor: hslVar("--chart-1", 0.7),
+                          borderColor: hslVar("--chart-1"),
+                          borderWidth: 1,
                         },
                         {
                           label: "Máximo",
                           data: (
                             analytics.chart_data?.prices_by_category || []
                           ).map((d) => d.max_price),
-                          backgroundColor: hslVar("--chart-5"),
-                          borderRadius: 6,
+                          backgroundColor: hslVar("--chart-5", 0.7),
+                          borderColor: hslVar("--chart-5"),
+                          borderWidth: 1,
                         },
                       ],
                     }}
@@ -1102,10 +1112,9 @@ export default function Dashboard() {
                           padding: tooltipColors.padding,
                           cornerRadius: tooltipColors.cornerRadius,
                           callbacks: {
-                            label: (context) =>
-                              `${context.dataset.label}: ${formatPrice(
-                                context.parsed.y
-                              )}`,
+                            label: (context: any) => {
+                              return `${context.dataset.label}: ${formatPrice(context.parsed.y)}`;
+                            },
                           },
                         },
                       },
@@ -1142,17 +1151,27 @@ export default function Dashboard() {
             <CardContent className="pt-2">
               <div className="h-[280px] sm:h-[320px]">
                 {mounted && (
-                  <Bar
-                    key={`bar-brand-${chartKey}`}
+                  <Line
+                    key={`line-brand-${chartKey}`}
                     data={{
                       labels: (analytics.chart_data?.prices_by_brand || []).map(
                         (d) => d.brand
                       ),
                       datasets: [
-                        createMultiColorBarDataset(
-                          (analytics.chart_data?.prices_by_brand || []).map((d) => d.avg_price),
-                          "Precio Promedio"
-                        ),
+                        {
+                          label: "Precio Promedio",
+                          data: (analytics.chart_data?.prices_by_brand || []).map((d) => d.avg_price),
+                          borderColor: hslVar("--chart-2"),
+                          backgroundColor: hslVar("--chart-2", 0.1),
+                          borderWidth: 2,
+                          pointRadius: 4,
+                          pointHoverRadius: 6,
+                          pointBackgroundColor: hslVar("--chart-2"),
+                          pointBorderColor: hslVar("--card"),
+                          pointBorderWidth: 2,
+                          tension: 0.3,
+                          fill: false,
+                        },
                       ],
                     }}
                     options={{
@@ -1211,17 +1230,27 @@ export default function Dashboard() {
             <CardContent className="pt-2">
               <div className="h-[260px] sm:h-[300px]">
                 {mounted && (
-                  <Bar
-                    key={`bar-variation-${chartKey}`}
+                  <Line
+                    key={`area-variation-${chartKey}`}
                     data={{
                       labels: (
                         analytics.chart_data?.brand_variations || []
                       ).map((d) => d.brand),
                       datasets: [
-                        createMultiColorBarDataset(
-                          (analytics.chart_data?.brand_variations || []).map((d) => d.variation_percent),
-                          "Variación %"
-                        ),
+                        {
+                          label: "Variación %",
+                          data: (analytics.chart_data?.brand_variations || []).map((d) => d.variation_percent),
+                          borderColor: hslVar("--chart-3"),
+                          backgroundColor: hslVar("--chart-3", 0.3),
+                          borderWidth: 2,
+                          pointRadius: 4,
+                          pointHoverRadius: 6,
+                          pointBackgroundColor: hslVar("--chart-3"),
+                          pointBorderColor: hslVar("--card"),
+                          pointBorderWidth: 2,
+                          tension: 0.3,
+                          fill: true,
+                        },
                       ],
                     }}
                     options={{
