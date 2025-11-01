@@ -171,7 +171,7 @@ export default function Dashboard() {
   const { formatPrice } = useCurrency();
   const { setLastUpdate } = useLastUpdate();
   const { theme } = useTheme();
-  
+
   // ✅ Key única para forzar re-render de gráficos cuando cambia el tema
   const [chartKey, setChartKey] = useState(0);
   const [mounted, setMounted] = useState(false);
@@ -192,11 +192,11 @@ export default function Dashboard() {
     setMounted(false);
     // Incrementa la key para forzar remount de TODOS los gráficos
     setChartKey((prev) => prev + 1);
-    
+
     // Delay más largo en mobile para mejor renderizado
     const isMobile = window.innerWidth < 768;
     const delay = isMobile ? 100 : 50;
-    
+
     const timer = setTimeout(() => setMounted(true), delay);
     return () => clearTimeout(timer);
   }, [theme]);
@@ -367,9 +367,7 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-center">
-        {/* <CurrencySelector /> */}
-      </div>
+      <div className="flex justify-center">{/* <CurrencySelector /> */}</div>
 
       <Card className="border-border/50 shadow-md">
         <CardHeader className="space-y-1 pb-4">
@@ -475,71 +473,67 @@ export default function Dashboard() {
       </Card>
 
       <div className="grid gap-3 sm:gap-4 grid-cols-1 xs:grid-cols-2 lg:grid-cols-4">
-        <Card className="bg-primary border-none shadow-md rounded-2xl">
+        <Card className="bg-[hsl(213,46%,31%)] border-none shadow-md rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-primary-foreground">
+            <CardTitle className="text-sm font-medium text-white">
               Total Modelos
             </CardTitle>
-            <Package className="h-4 w-4 text-primary-foreground/70" />
+            <Package className="h-4 w-4 text-white/80" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-primary-foreground">
+            <div className="text-3xl font-bold text-white">
               {analytics.metrics.total_models}
             </div>
-            <p className="text-xs text-primary-foreground/70 mt-1">
+            <p className="text-xs text-white/80 mt-1">
               {analytics.metrics.total_brands} marcas activas
             </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-primary border-none shadow-md rounded-2xl">
+        <Card className="bg-[hsl(213,46%,31%)] border-none shadow-md rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-primary-foreground">
+            <CardTitle className="text-sm font-medium text-white">
               Precio Promedio
             </CardTitle>
-            <DollarSign className="h-4 w-4 text-primary-foreground/70" />
+            <DollarSign className="h-4 w-4 text-white/80" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-primary-foreground">
+            <div className="text-3xl font-bold text-white">
               {formatPrice(analytics.metrics.avg_price)}
             </div>
-            <p className="text-xs text-primary-foreground/70 mt-1">
+            <p className="text-xs text-white/80 mt-1">
               Variación: {analytics.metrics.variation_coefficient.toFixed(1)}%
             </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-primary border-none shadow-md rounded-2xl">
+        <Card className="bg-[hsl(213,46%,31%)] border-none shadow-md rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-primary-foreground">
+            <CardTitle className="text-sm font-medium text-white">
               Precio Mínimo
             </CardTitle>
-            <TrendingDown className="h-4 w-4 text-primary-foreground/70" />
+            <TrendingDown className="h-4 w-4 text-white/80" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-primary-foreground">
+            <div className="text-3xl font-bold text-white">
               {formatPrice(analytics.metrics.min_price)}
             </div>
-            <p className="text-xs text-primary-foreground/70 mt-1">
-              Valor más accesible
-            </p>
+            <p className="text-xs text-white/80 mt-1">Valor más accesible</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-primary border-none shadow-md rounded-2xl">
+        <Card className="bg-[hsl(213,46%,31%)] border-none shadow-md rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-primary-foreground">
+            <CardTitle className="text-sm font-medium text-white">
               Precio Máximo
             </CardTitle>
-            <TrendingUp className="h-4 w-4 text-primary-foreground/70" />
+            <TrendingUp className="h-4 w-4 text-white/80" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-primary-foreground">
+            <div className="text-3xl font-bold text-white">
               {formatPrice(analytics.metrics.max_price)}
             </div>
-            <p className="text-xs text-primary-foreground/70 mt-1">
-              Valor premium
-            </p>
+            <p className="text-xs text-white/80 mt-1">Valor premium</p>
           </CardContent>
         </Card>
       </div>
@@ -549,38 +543,25 @@ export default function Dashboard() {
         onValueChange={setActiveTab}
         className="space-y-6"
       >
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto bg-card border border-border">
+        <TabsList className="grid w-full grid-cols-2 h-auto bg-card border border-border">
           <TabsTrigger
             value="general"
             className="text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground py-2 sm:py-2.5"
           >
-            <span className="hidden sm:inline">Visión General</span>
-            <span className="sm:hidden">General</span>
+            <BarChart3 className="h-4 w-4 mr-2" />
+            Visión General
           </TabsTrigger>
           <TabsTrigger
             value="modelos"
             className="text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground py-2 sm:py-2.5"
           >
-            <span className="hidden sm:inline">Modelos</span>
-            <span className="sm:hidden">Modelos</span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="precios"
-            className="text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground py-2 sm:py-2.5"
-          >
-            <span className="hidden sm:inline">Análisis de Precios</span>
-            <span className="sm:hidden">Precios</span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="marcas"
-            className="text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground py-2 sm:py-2.5"
-          >
-            <span className="hidden sm:inline">Por Marca</span>
-            <span className="sm:hidden">Marcas</span>
+            <Package className="h-4 w-4 mr-2" />
+            Modelos
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-6">
+          {/* Sección: Distribución y Categorías */}
           <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
             <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
               <CardHeader className="space-y-1 pb-4">
@@ -604,7 +585,9 @@ export default function Dashboard() {
                         datasets: [
                           {
                             label: "Cantidad",
-                            data: (analytics.chart_data?.models_by_category || []).map((d) => d.count),
+                            data: (
+                              analytics.chart_data?.models_by_category || []
+                            ).map((d) => d.count),
                             borderColor: hslVar("--chart-1"),
                             backgroundColor: hslVar("--chart-1", 0.1),
                             borderWidth: 2,
@@ -640,6 +623,7 @@ export default function Dashboard() {
                 </div>
               </CardContent>
             </Card>
+
             <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
               <CardHeader className="space-y-1 pb-4">
                 <CardTitle className="text-lg flex items-center gap-2">
@@ -669,7 +653,11 @@ export default function Dashboard() {
                               []
                             ).map((d) => d.count),
                             backgroundColor: pieChartColors.palette(
-                              (priceDistributionLocal || analytics.chart_data?.price_distribution || []).length
+                              (
+                                priceDistributionLocal ||
+                                analytics.chart_data?.price_distribution ||
+                                []
+                              ).length
                             ),
                             borderWidth: pieChartColors.borderWidth,
                             borderColor: pieChartColors.borderColor(),
@@ -788,120 +776,7 @@ export default function Dashboard() {
             </Card>
           </div>
 
-          <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
-            <CardHeader className="space-y-1 pb-4">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Target className="h-5 w-5 text-primary" />
-                Precio vs Modelo Principal
-              </CardTitle>
-              <CardDescription>
-                Tamaño proporcional al volumen de variantes
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pt-2">
-              <div className="h-[400px]">
-                {mounted && (
-                  <Bubble
-                    key={`bubble-principal-${chartKey}`}
-                    data={{
-                        datasets: [
-                          {
-                            label: "Modelo Principal",
-                            data: (
-                              analytics.chart_data?.models_by_principal || []
-                            ).map((item, index) => ({
-                              x: index + 1,
-                              y: item.avg_price,
-                              r: Math.sqrt(item.count) * 3,
-                            })),
-                            backgroundColor: bubbleChartColors.primary(),
-                            borderColor: bubbleChartColors.primary(),
-                          },
-                        ],
-                    }}
-                    options={{
-                      responsive: true,
-                      maintainAspectRatio: false,
-                        plugins: {
-                          legend: { display: false },
-                          tooltip: {
-                            backgroundColor: tooltipColors.backgroundColor(),
-                            borderColor: tooltipColors.borderColor(),
-                            borderWidth: tooltipColors.borderWidth,
-                            titleColor: tooltipColors.titleColor(),
-                            bodyColor: tooltipColors.bodyColor(),
-                            padding: tooltipColors.padding,
-                            cornerRadius: tooltipColors.cornerRadius,
-                            callbacks: {
-                            label: (context) => {
-                              const item = (analytics.chart_data
-                                ?.models_by_principal || [])[context.dataIndex];
-                              return [
-                                `Modelo: ${item.model_principal}`,
-                                `Precio Promedio: ${formatPrice(
-                                  item.avg_price
-                                )}`,
-                                `Volumen: ${item.count} variantes`,
-                                `Rango: ${formatPrice(
-                                  item.min_price
-                                )} - ${formatPrice(item.max_price)}`,
-                              ];
-                            },
-                          },
-                        },
-                      },
-                        scales: {
-                          x: {
-                            ...getScaleOptions(),
-                            title: {
-                              display: true,
-                              text: "Modelo",
-                              color: axisColors.tickColor(),
-                            },
-                          },
-                          y: {
-                            ...getScaleOptions(),
-                            ticks: {
-                              color: axisColors.tickColor(),
-                              font: { size: axisColors.tickFontSize },
-                              callback: (value) =>
-                                `$${((value as number) / 1000).toFixed(0)}k`,
-                            },
-                            title: {
-                              display: true,
-                              text: "Precio Promedio",
-                              color: axisColors.tickColor(),
-                            },
-                          },
-                        },
-                    }}
-                  />
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="modelos" className="space-y-6">
-          <ModelsTable filters={filters} statusFilter="active" />
-
-          <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
-            <CardHeader className="space-y-1 pb-4">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Package className="h-5 w-5 text-primary" />
-                Modelos Inactivos
-              </CardTitle>
-              <CardDescription>
-                Vehículos descontinuados o fuera de stock
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pt-2">
-              <ModelsTable filters={filters} statusFilter="inactive" />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="precios" className="space-y-6">
+          {/* Sección: Top Modelos */}
           <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
             <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
               <CardHeader className="space-y-1 pb-4">
@@ -924,7 +799,9 @@ export default function Dashboard() {
                         ).map((d) => d.name),
                         datasets: [
                           createMultiColorBarDataset(
-                            (analytics.chart_data?.top_5_expensive || []).map((d) => d.price),
+                            (analytics.chart_data?.top_5_expensive || []).map(
+                              (d) => d.price
+                            ),
                             "Precio"
                           ),
                         ],
@@ -993,7 +870,9 @@ export default function Dashboard() {
                         ).map((d) => d.name),
                         datasets: [
                           createMultiColorBarDataset(
-                            (analytics.chart_data?.bottom_5_cheap || []).map((d) => d.price),
+                            (analytics.chart_data?.bottom_5_cheap || []).map(
+                              (d) => d.price
+                            ),
                             "Precio"
                           ),
                         ],
@@ -1042,14 +921,16 @@ export default function Dashboard() {
             </Card>
           </div>
 
+          {/* Sección: Análisis de Precios */}
           <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
             <CardHeader className="space-y-1 pb-4">
               <CardTitle className="text-lg flex items-center gap-2">
                 <BarChart3 className="h-5 w-5 text-primary" />
-                Precios por Categoría (Box Plot)
+                Precios por Categoría
               </CardTitle>
               <CardDescription>
-                Distribución de precios por tipo de vehículo (mínimo, promedio, máximo)
+                Distribución de precios por tipo de vehículo (mínimo, promedio,
+                máximo)
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-2">
@@ -1113,7 +994,9 @@ export default function Dashboard() {
                           cornerRadius: tooltipColors.cornerRadius,
                           callbacks: {
                             label: (context: any) => {
-                              return `${context.dataset.label}: ${formatPrice(context.parsed.y)}`;
+                              return `${context.dataset.label}: ${formatPrice(
+                                context.parsed.y
+                              )}`;
                             },
                           },
                         },
@@ -1135,234 +1018,359 @@ export default function Dashboard() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Sección: Análisis por Marca */}
+          <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
+            <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
+              <CardHeader className="space-y-1 pb-4">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Building2 className="h-5 w-5 text-primary" />
+                  Precios Promedio por Marca
+                </CardTitle>
+                <CardDescription>
+                  Comparación de precios entre fabricantes
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-2">
+                <div className="h-[280px]">
+                  {mounted && (
+                    <Line
+                      key={`line-brand-${chartKey}`}
+                      data={{
+                        labels: (
+                          analytics.chart_data?.prices_by_brand || []
+                        ).map((d) => d.brand),
+                        datasets: [
+                          {
+                            label: "Precio Promedio",
+                            data: (
+                              analytics.chart_data?.prices_by_brand || []
+                            ).map((d) => d.avg_price),
+                            borderColor: hslVar("--chart-2"),
+                            backgroundColor: hslVar("--chart-2", 0.1),
+                            borderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: hslVar("--chart-2"),
+                            pointBorderColor: hslVar("--card"),
+                            pointBorderWidth: 2,
+                            tension: 0.3,
+                            fill: false,
+                          },
+                        ],
+                      }}
+                      options={{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                          legend: { display: false },
+                          tooltip: {
+                            backgroundColor: tooltipColors.backgroundColor(),
+                            borderColor: tooltipColors.borderColor(),
+                            borderWidth: tooltipColors.borderWidth,
+                            titleColor: tooltipColors.titleColor(),
+                            bodyColor: tooltipColors.bodyColor(),
+                            padding: tooltipColors.padding,
+                            cornerRadius: tooltipColors.cornerRadius,
+                            callbacks: {
+                              label: (context) => formatPrice(context.parsed.y),
+                            },
+                          },
+                        },
+                        scales: {
+                          x: {
+                            ...getScaleOptions(),
+                            ticks: {
+                              ...getScaleOptions().ticks,
+                              maxRotation: 45,
+                              minRotation: 45,
+                            },
+                          },
+                          y: {
+                            ...getScaleOptions(),
+                            ticks: {
+                              ...getScaleOptions().ticks,
+                              callback: (value) =>
+                                `$${((value as number) / 1000).toFixed(0)}k`,
+                            },
+                          },
+                        },
+                      }}
+                    />
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
+              <CardHeader className="space-y-1 pb-4">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Activity className="h-5 w-5 text-primary" />
+                  Variación de Precios por Marca
+                </CardTitle>
+                <CardDescription>
+                  Cambios entre periodos de scraping
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-2">
+                <div className="h-[280px]">
+                  {mounted && (
+                    <Line
+                      key={`area-variation-${chartKey}`}
+                      data={{
+                        labels: (
+                          analytics.chart_data?.brand_variations || []
+                        ).map((d) => d.brand),
+                        datasets: [
+                          {
+                            label: "Variación %",
+                            data: (
+                              analytics.chart_data?.brand_variations || []
+                            ).map((d) => d.variation_percent),
+                            borderColor: hslVar("--chart-3"),
+                            backgroundColor: hslVar("--chart-3", 0.3),
+                            borderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: hslVar("--chart-3"),
+                            pointBorderColor: hslVar("--card"),
+                            pointBorderWidth: 2,
+                            tension: 0.3,
+                            fill: true,
+                          },
+                        ],
+                      }}
+                      options={{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                          legend: { display: false },
+                          tooltip: {
+                            backgroundColor: tooltipColors.backgroundColor(),
+                            borderColor: tooltipColors.borderColor(),
+                            borderWidth: tooltipColors.borderWidth,
+                            titleColor: tooltipColors.titleColor(),
+                            bodyColor: tooltipColors.bodyColor(),
+                            padding: tooltipColors.padding,
+                            cornerRadius: tooltipColors.cornerRadius,
+                            callbacks: {
+                              label: (context) =>
+                                `${context.parsed.y.toFixed(2)}%`,
+                            },
+                          },
+                        },
+                        scales: {
+                          x: {
+                            ...getScaleOptions(),
+                            ticks: {
+                              ...getScaleOptions().ticks,
+                              maxRotation: 45,
+                              minRotation: 45,
+                            },
+                          },
+                          y: {
+                            ...getScaleOptions(),
+                            ticks: {
+                              ...getScaleOptions().ticks,
+                              callback: (value) => `${value}%`,
+                            },
+                          },
+                        },
+                      }}
+                    />
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Sección: Análisis Avanzado */}
+          <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
+            <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
+              <CardHeader className="space-y-1 pb-4">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Target className="h-5 w-5 text-primary" />
+                  Precio vs Modelo Principal
+                </CardTitle>
+                <CardDescription>
+                  Tamaño proporcional al volumen de variantes
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-2">
+                <div className="h-[320px]">
+                  {mounted && (
+                    <Bubble
+                      key={`bubble-principal-${chartKey}`}
+                      data={{
+                        datasets: [
+                          {
+                            label: "Modelo Principal",
+                            data: (
+                              analytics.chart_data?.models_by_principal || []
+                            ).map((item, index) => ({
+                              x: index + 1,
+                              y: item.avg_price,
+                              r: Math.sqrt(item.count) * 3,
+                            })),
+                            backgroundColor: bubbleChartColors.primary(),
+                            borderColor: bubbleChartColors.primary(),
+                          },
+                        ],
+                      }}
+                      options={{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                          legend: { display: false },
+                          tooltip: {
+                            backgroundColor: tooltipColors.backgroundColor(),
+                            borderColor: tooltipColors.borderColor(),
+                            borderWidth: tooltipColors.borderWidth,
+                            titleColor: tooltipColors.titleColor(),
+                            bodyColor: tooltipColors.bodyColor(),
+                            padding: tooltipColors.padding,
+                            cornerRadius: tooltipColors.cornerRadius,
+                            callbacks: {
+                              label: (context) => {
+                                const item = (analytics.chart_data
+                                  ?.models_by_principal || [])[
+                                  context.dataIndex
+                                ];
+                                return [
+                                  `Modelo: ${item.model_principal}`,
+                                  `Precio Promedio: ${formatPrice(
+                                    item.avg_price
+                                  )}`,
+                                  `Volumen: ${item.count} variantes`,
+                                  `Rango: ${formatPrice(
+                                    item.min_price
+                                  )} - ${formatPrice(item.max_price)}`,
+                                ];
+                              },
+                            },
+                          },
+                        },
+                        scales: {
+                          x: {
+                            ...getScaleOptions(),
+                            title: {
+                              display: true,
+                              text: "Modelo",
+                              color: axisColors.tickColor(),
+                            },
+                          },
+                          y: {
+                            ...getScaleOptions(),
+                            ticks: {
+                              color: axisColors.tickColor(),
+                              font: { size: axisColors.tickFontSize },
+                              callback: (value) =>
+                                `$${((value as number) / 1000).toFixed(0)}k`,
+                            },
+                            title: {
+                              display: true,
+                              text: "Precio Promedio",
+                              color: axisColors.tickColor(),
+                            },
+                          },
+                        },
+                      }}
+                    />
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
+              <CardHeader className="space-y-1 pb-4">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Activity className="h-5 w-5 text-primary" />
+                  Modelos con Mayor Volatilidad
+                </CardTitle>
+                <CardDescription>
+                  Detección de cambios intermensual de precios
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-2">
+                <div className="h-[320px]">
+                  {mounted && (
+                    <Bar
+                      key={`bar-volatility-${chartKey}`}
+                      data={{
+                        labels: (
+                          analytics.chart_data?.monthly_volatility
+                            ?.most_volatile || []
+                        ).map((d) => d.model),
+                        datasets: [
+                          createMultiColorBarDataset(
+                            (
+                              analytics.chart_data?.monthly_volatility
+                                ?.most_volatile || []
+                            ).map((d) => d.avg_monthly_variation),
+                            "Volatilidad %"
+                          ),
+                        ],
+                      }}
+                      options={{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                          legend: { display: false },
+                          tooltip: {
+                            backgroundColor: tooltipColors.backgroundColor(),
+                            borderColor: tooltipColors.borderColor(),
+                            borderWidth: tooltipColors.borderWidth,
+                            titleColor: tooltipColors.titleColor(),
+                            bodyColor: tooltipColors.bodyColor(),
+                            padding: tooltipColors.padding,
+                            cornerRadius: tooltipColors.cornerRadius,
+                            callbacks: {
+                              label: (context) =>
+                                `${context.parsed.y.toFixed(2)}%`,
+                            },
+                          },
+                        },
+                        scales: {
+                          x: {
+                            ...getScaleOptions(),
+                            ticks: {
+                              ...getScaleOptions().ticks,
+                              maxRotation: 45,
+                              minRotation: 45,
+                            },
+                          },
+                          y: {
+                            ...getScaleOptions(),
+                            ticks: {
+                              ...getScaleOptions().ticks,
+                              callback: (value) => `${value}%`,
+                            },
+                          },
+                        },
+                      }}
+                    />
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
-        <TabsContent value="marcas" className="space-y-6">
-          <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
-            <CardHeader className="space-y-1 pb-4">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Building2 className="h-5 w-5 text-primary" />
-                Precios Promedio por Marca
-              </CardTitle>
-              <CardDescription>
-                Comparación de precios entre fabricantes
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pt-2">
-              <div className="h-[280px] sm:h-[320px]">
-                {mounted && (
-                  <Line
-                    key={`line-brand-${chartKey}`}
-                    data={{
-                      labels: (analytics.chart_data?.prices_by_brand || []).map(
-                        (d) => d.brand
-                      ),
-                      datasets: [
-                        {
-                          label: "Precio Promedio",
-                          data: (analytics.chart_data?.prices_by_brand || []).map((d) => d.avg_price),
-                          borderColor: hslVar("--chart-2"),
-                          backgroundColor: hslVar("--chart-2", 0.1),
-                          borderWidth: 2,
-                          pointRadius: 4,
-                          pointHoverRadius: 6,
-                          pointBackgroundColor: hslVar("--chart-2"),
-                          pointBorderColor: hslVar("--card"),
-                          pointBorderWidth: 2,
-                          tension: 0.3,
-                          fill: false,
-                        },
-                      ],
-                    }}
-                    options={{
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                          backgroundColor: tooltipColors.backgroundColor(),
-                          borderColor: tooltipColors.borderColor(),
-                          borderWidth: tooltipColors.borderWidth,
-                          titleColor: tooltipColors.titleColor(),
-                          bodyColor: tooltipColors.bodyColor(),
-                          padding: tooltipColors.padding,
-                          cornerRadius: tooltipColors.cornerRadius,
-                          callbacks: {
-                            label: (context) => formatPrice(context.parsed.y),
-                          },
-                        },
-                      },
-                      scales: {
-                        x: {
-                          ...getScaleOptions(),
-                          ticks: {
-                            ...getScaleOptions().ticks,
-                            maxRotation: 45,
-                            minRotation: 45,
-                          },
-                        },
-                        y: {
-                          ...getScaleOptions(),
-                          ticks: {
-                            ...getScaleOptions().ticks,
-                            callback: (value) =>
-                              `$${((value as number) / 1000).toFixed(0)}k`,
-                          },
-                        },
-                      },
-                    }}
-                  />
-                )}
-              </div>
-            </CardContent>
-          </Card>
+        <TabsContent value="modelos" className="space-y-6">
+          <ModelsTable filters={filters} statusFilter="active" />
 
           <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
             <CardHeader className="space-y-1 pb-4">
               <CardTitle className="text-lg flex items-center gap-2">
-                <Activity className="h-5 w-5 text-primary" />
-                Variación de Precios por Marca
+                <Package className="h-5 w-5 text-primary" />
+                Modelos Inactivos
               </CardTitle>
               <CardDescription>
-                Cambios entre periodos de scraping
+                Vehículos descontinuados o fuera de stock
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-2">
-              <div className="h-[260px] sm:h-[300px]">
-                {mounted && (
-                  <Line
-                    key={`area-variation-${chartKey}`}
-                    data={{
-                      labels: (
-                        analytics.chart_data?.brand_variations || []
-                      ).map((d) => d.brand),
-                      datasets: [
-                        {
-                          label: "Variación %",
-                          data: (analytics.chart_data?.brand_variations || []).map((d) => d.variation_percent),
-                          borderColor: hslVar("--chart-3"),
-                          backgroundColor: hslVar("--chart-3", 0.3),
-                          borderWidth: 2,
-                          pointRadius: 4,
-                          pointHoverRadius: 6,
-                          pointBackgroundColor: hslVar("--chart-3"),
-                          pointBorderColor: hslVar("--card"),
-                          pointBorderWidth: 2,
-                          tension: 0.3,
-                          fill: true,
-                        },
-                      ],
-                    }}
-                    options={{
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                          backgroundColor: tooltipColors.backgroundColor(),
-                          borderColor: tooltipColors.borderColor(),
-                          borderWidth: tooltipColors.borderWidth,
-                          titleColor: tooltipColors.titleColor(),
-                          bodyColor: tooltipColors.bodyColor(),
-                          padding: tooltipColors.padding,
-                          cornerRadius: tooltipColors.cornerRadius,
-                          callbacks: {
-                            label: (context) =>
-                              `${context.parsed.y.toFixed(2)}%`,
-                          },
-                        },
-                      },
-                      scales: {
-                        x: {
-                          ...getScaleOptions(),
-                          ticks: {
-                            ...getScaleOptions().ticks,
-                            maxRotation: 45,
-                            minRotation: 45,
-                          },
-                        },
-                        y: {
-                          ...getScaleOptions(),
-                          ticks: {
-                            ...getScaleOptions().ticks,
-                            callback: (value) => `${value}%`,
-                          },
-                        },
-                      },
-                    }}
-                  />
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border/50 shadow-md hover:shadow-lg transition-shadow">
-            <CardHeader className="space-y-1 pb-4">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Activity className="h-5 w-5 text-primary" />
-                Modelos con Mayor Volatilidad
-              </CardTitle>
-              <CardDescription>
-                Detección de cambios intermensual de precios
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pt-2">
-              <div className="h-[300px]">
-                {mounted && (
-                  <Bar
-                    key={`bar-volatility-${chartKey}`}
-                    data={{
-                      labels: (
-                        analytics.chart_data?.monthly_volatility
-                          ?.most_volatile || []
-                      ).map((d) => d.model),
-                      datasets: [
-                        createMultiColorBarDataset(
-                          (analytics.chart_data?.monthly_volatility?.most_volatile || []).map((d) => d.avg_monthly_variation),
-                          "Volatilidad %"
-                        ),
-                      ],
-                    }}
-                    options={{
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                          backgroundColor: tooltipColors.backgroundColor(),
-                          borderColor: tooltipColors.borderColor(),
-                          borderWidth: tooltipColors.borderWidth,
-                          titleColor: tooltipColors.titleColor(),
-                          bodyColor: tooltipColors.bodyColor(),
-                          padding: tooltipColors.padding,
-                          cornerRadius: tooltipColors.cornerRadius,
-                          callbacks: {
-                            label: (context) =>
-                              `${context.parsed.y.toFixed(2)}%`,
-                          },
-                        },
-                      },
-                      scales: {
-                        x: {
-                          ...getScaleOptions(),
-                          ticks: {
-                            ...getScaleOptions().ticks,
-                            maxRotation: 45,
-                            minRotation: 45,
-                          },
-                        },
-                        y: {
-                          ...getScaleOptions(),
-                          ticks: {
-                            ...getScaleOptions().ticks,
-                            callback: (value) => `${value}%`,
-                          },
-                        },
-                      },
-                    }}
-                  />
-                )}
-              </div>
+              <ModelsTable filters={filters} statusFilter="inactive" />
             </CardContent>
           </Card>
         </TabsContent>
